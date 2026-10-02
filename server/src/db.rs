@@ -64,7 +64,7 @@ mod tests {
         assert_eq!(ext, "postgis");
 
         // The core schema tables exist.
-        for table in ["pois", "stations", "measurements"] {
+        for table in ["pois", "stations", "measurements", "devices", "helper_windows"] {
             let (name,): (Option<String>,) = sqlx::query_as("SELECT to_regclass($1)::text")
                 .bind(table)
                 .fetch_one(&pool)
@@ -82,6 +82,20 @@ mod tests {
         .await
         .expect("pois.geom should be a geography column");
         assert_eq!(srid, 4326);
+
+        // Device and window positions use the same geography convention.
+        for (table, column) in [("devices", "last_location"), ("helper_windows", "location")] {
+            let (srid,): (i32,) = sqlx::query_as(
+                "SELECT srid FROM geography_columns \
+                 WHERE f_table_name = $1 AND f_geography_column = $2",
+            )
+            .bind(table)
+            .bind(column)
+            .fetch_one(&pool)
+            .await
+            .expect("geography column should exist");
+            assert_eq!(srid, 4326, "{table}.{column} should be SRID 4326");
+        }
 
         pool.close().await;
     }

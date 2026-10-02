@@ -1,38 +1,62 @@
 //! HTTP API: router and endpoints.
 
+pub mod devices;
+pub mod error;
 pub mod snapshot;
+#[cfg(test)]
+pub(crate) mod test_support;
+pub mod types;
+pub mod windows;
 
-use axum::routing::get;
+use axum::routing::{get, patch, post, put};
 use axum::Router;
+use sqlx::PgPool;
 use tower_http::cors::CorsLayer;
 
 /// Builds the application router (CORS is permissive for the prototype).
-pub fn router() -> Router {
+///
+/// Identity note: the `device_id` in a request path *is* the caller (ADR 0004
+/// – no accounts, no secrets). Every devices/windows handler scopes its SQL to
+/// that id, so a device can only ever read or change its own rows.
+pub fn router(pool: PgPool) -> Router {
     Router::new()
         .route("/api/v1/snapshot", get(snapshot::get_snapshot))
+        .route("/api/v1/devices/{device_id}", put(devices::upsert_device))
+        .route(
+            "/api/v1/devices/{device_id}/windows",
+            get(windows::list_windows).post(windows::create_window),
+        )
+        .route(
+            "/api/v1/devices/{device_id}/windows/{window_id}",
+            patch(windows::patch_window).delete(windows::delete_window),
+        )
+        .with_state(pool)
         .layer(CorsLayer::permissive())
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use axum::body::Body;
     use axum::http::{Request, StatusCode};
     use chrono::DateTime;
     use tower::ServiceExt;
 
     /// GET /api/v1/snapshot returns 200 with empty GeoJSON FeatureCollections
-    /// for pois and stations plus a generated_at timestamp.
+    /// for pois and stations plus a generated_at timestamp. DB-gated: the
+    /// router now carries the Postgres pool (ticket 04 devices/windows).
     #[tokio::test]
     async fn snapshot_returns_empty_feature_collections_and_generated_at() {
-        let app = router();
+        let Some(app) = test_support::test_app().await else {
+            eprintln!("DATABASE_URL not set – skipping postgres test");
+            return;
+        };
 
         let response = app
             .oneshot(
                 Request::builder()
                     .method("GET")
                     .uri("/api/v1/snapshot")
-                    .body(Body::empty())
+                    .body(axum::body::Body::empty())
                     .unwrap(),
             )
             .await
@@ -59,14 +83,17 @@ mod tests {
     /// The permissive CORS policy is visible on normal responses.
     #[tokio::test]
     async fn snapshot_response_carries_permissive_cors_header() {
-        let app = router();
+        let Some(app) = test_support::test_app().await else {
+            eprintln!("DATABASE_URL not set – skipping postgres test");
+            return;
+        };
 
         let response = app
             .oneshot(
                 Request::builder()
                     .method("GET")
                     .uri("/api/v1/snapshot")
-                    .body(Body::empty())
+                    .body(axum::body::Body::empty())
                     .unwrap(),
             )
             .await

@@ -59,7 +59,7 @@ async fn serve() -> anyhow::Result<()> {
     let pool = db::init().await?;
 
     let addr: SocketAddr = config::bind_addr()?;
-    let app = api::router();
+    let app = api::router(pool.clone());
     let listener = tokio::net::TcpListener::bind(addr).await?;
     println!("lana-server listening on http://{addr}");
     axum::serve(listener, app).await?;
