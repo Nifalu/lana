@@ -78,7 +78,10 @@ pub struct ImportSummary {
 }
 
 /// Fetches every dataset from `source`, parses it and upserts it.
-pub async fn run(pool: &PgPool, source: &impl DatasetSource) -> anyhow::Result<ImportSummary> {
+pub(crate) async fn run(
+    pool: &PgPool,
+    source: &impl DatasetSource,
+) -> anyhow::Result<ImportSummary> {
     let fountains = parse_fountains(&source.fountains().await?)?;
     upsert_pois(pool, &fountains).await?;
 
