@@ -1,0 +1,70 @@
+{
+ "total_count": 198,
+ "results": [
+  {
+   "name_original": "0320024A",
+   "name_custom": "St. Johann",
+   "dates_min_date": "2019-08-20T06:56:34+00:00",
+   "dates_max_date": "2026-10-02T15:09:39+00:00",
+   "coords": {
+    "lon": 7.58201,
+    "lat": 47.56597
+   },
+   "lon": 7.58201,
+   "lat": 47.56597,
+   "stadtklima_basel_link": "https://meteoblue.com/de/products/cityclimate/basel#0320024A"
+  },
+  {
+   "name_original": "0340015E",
+   "name_custom": "Lysbüchel 1",
+   "dates_min_date": "2019-08-12T05:26:51+00:00",
+   "dates_max_date": "2026-10-02T14:55:21+00:00",
+   "coords": {
+    "lon": 7.57355,
+    "lat": 47.57355
+   },
+   "lon": 7.57355,
+   "lat": 47.57355,
+   "stadtklima_basel_link": "https://meteoblue.com/de/products/cityclimate/basel#0340015E"
+  },
+  {
+   "name_original": "03400168",
+   "name_custom": "Schweizerhalle",
+   "dates_min_date": "2019-10-07T05:43:11+00:00",
+   "dates_max_date": "2026-10-02T15:09:06+00:00",
+   "coords": {
+    "lon": 7.66182,
+    "lat": 47.53086
+   },
+   "lon": 7.66182,
+   "lat": 47.53086,
+   "stadtklima_basel_link": "https://meteoblue.com/de/products/cityclimate/basel#03400168"
+  },
+  {
+   "name_original": "0340018F",
+   "name_custom": "Kantstraße",
+   "dates_min_date": "2019-08-14T05:37:08+00:00",
+   "dates_max_date": "2026-04-26T15:41:26+00:00",
+   "coords": {
+    "lon": 7.6799486,
+    "lat": 47.55199167
+   },
+   "lon": 7.6799486,
+   "lat": 47.55199167,
+   "stadtklima_basel_link": "https://meteoblue.com/de/products/cityclimate/basel#0340018F"
+  },
+  {
+   "name_original": "0340019A",
+   "name_custom": "Gleisbett (Mast 2)",
+   "dates_min_date": "2019-10-24T03:54:29+00:00",
+   "dates_max_date": "2026-10-02T14:57:59+00:00",
+   "coords": {
+    "lon": 7.60985,
+    "lat": 47.54253
+   },
+   "lon": 7.60985,
+   "lat": 47.54253,
+   "stadtklima_basel_link": "https://meteoblue.com/de/products/cityclimate/basel#0340019A"
+  }
+ ]
+}

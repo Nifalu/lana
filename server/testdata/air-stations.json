@@ -1,0 +1,70 @@
+{
+ "total_count": 198,
+ "results": [
+  {
+   "name_original": "0020F940",
+   "name_custom": "Syngenta",
+   "dates_min_date": "2022-06-23T02:45:25+00:00",
+   "dates_max_date": "2026-10-02T15:00:01+00:00",
+   "coords": {
+    "lon": 7.604586,
+    "lat": 47.56656
+   },
+   "lon": 7.604586,
+   "lat": 47.56656,
+   "stadtklima_basel_link": "https://meteoblue.com/de/products/cityclimate/basel#0020F940"
+  },
+  {
+   "name_original": "03200241",
+   "name_custom": "Office",
+   "dates_min_date": "2026-04-01T12:30:45+00:00",
+   "dates_max_date": "2026-04-28T01:51:14+00:00",
+   "coords": {
+    "lon": 7.59328,
+    "lat": 47.5614
+   },
+   "lon": 7.59328,
+   "lat": 47.5614,
+   "stadtklima_basel_link": "https://meteoblue.com/de/products/cityclimate/basel#03200241"
+  },
+  {
+   "name_original": "03200242",
+   "name_custom": "A.W.",
+   "dates_min_date": "2026-04-01T12:25:21+00:00",
+   "dates_max_date": "2026-04-09T06:56:55+00:00",
+   "coords": {
+    "lon": 7.59328,
+    "lat": 47.5614
+   },
+   "lon": 7.59328,
+   "lat": 47.5614,
+   "stadtklima_basel_link": "https://meteoblue.com/de/products/cityclimate/basel#03200242"
+  },
+  {
+   "name_original": "03200244",
+   "name_custom": "A.W.",
+   "dates_min_date": "2026-04-01T12:25:02+00:00",
+   "dates_max_date": "2026-04-09T04:26:47+00:00",
+   "coords": {
+    "lon": 7.59328,
+    "lat": 47.5614
+   },
+   "lon": 7.59328,
+   "lat": 47.5614,
+   "stadtklima_basel_link": "https://meteoblue.com/de/products/cityclimate/basel#03200244"
+  },
+  {
+   "name_original": "03200246",
+   "name_custom": "Binningen",
+   "dates_min_date": "2019-10-31T13:02:20+00:00",
+   "dates_max_date": "2026-10-02T14:59:08+00:00",
+   "coords": {
+    "lon": 7.58355,
+    "lat": 47.5411
+   },
+   "lon": 7.58355,
+   "lat": 47.5411,
+   "stadtklima_basel_link": "https://meteoblue.com/de/products/cityclimate/basel#03200246"
+  }
+ ]
+}

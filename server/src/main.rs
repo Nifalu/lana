@@ -8,8 +8,14 @@ mod api;
 mod config;
 mod db;
 mod geojson;
+mod import;
+mod ods;
+#[cfg(test)]
+mod test_support;
 
 use std::net::SocketAddr;
+
+use crate::ods::OdsClient;
 
 /// What the binary should do, chosen by the first CLI argument.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -48,18 +54,17 @@ async fn main() {
 async fn dispatch(mode: Mode) -> anyhow::Result<()> {
     match mode {
         Mode::Serve => serve().await,
-        Mode::Import => Err(anyhow::anyhow!("import: not implemented (ticket 02)")),
+        Mode::Import => import().await,
     }
 }
 
 /// Applies migrations, then serves the API until killed.
 async fn serve() -> anyhow::Result<()> {
-    // Applies the schema on startup; the API itself reads Postgres from
-    // ticket 02 on.
+    // Applies the schema on startup, then serves live data from Postgres.
     let pool = db::init().await?;
 
     let addr: SocketAddr = config::bind_addr()?;
-    let app = api::router();
+    let app = api::router(pool.clone());
     let listener = tokio::net::TcpListener::bind(addr).await?;
     println!("lana-server listening on http://{addr}");
     axum::serve(listener, app).await?;
@@ -67,22 +72,22 @@ async fn serve() -> anyhow::Result<()> {
     Ok(())
 }
 
+/// Idempotent refresh of the open-data imports: fetches every dataset from
+/// data.bs.ch, parses it and upserts it (safe to re-run any time).
+async fn import() -> anyhow::Result<()> {
+    let pool = db::init().await?;
+    let summary = import::run(&pool, &OdsClient::from_env()).await?;
+    println!(
+        "import complete: {} fountains, {} swim areas, {} cool places, {} air stations",
+        summary.fountains, summary.swim_areas, summary.cool_places, summary.air_stations
+    );
+    pool.close().await;
+    Ok(())
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    /// `import` exists as a mode but is not implemented yet – it fails loudly
-    /// instead of silently doing nothing (ticket 02 fills it in).
-    #[tokio::test]
-    async fn import_mode_reports_not_implemented() {
-        let err = dispatch(Mode::Import)
-            .await
-            .expect_err("import should not succeed yet");
-        assert!(
-            err.to_string().contains("not implemented"),
-            "unexpected error: {err:#}"
-        );
-    }
 
     /// The mode parser accepts exactly the documented mode names.
     #[test]
