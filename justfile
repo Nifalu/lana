@@ -3,6 +3,10 @@ pgdata := '.pgdata'
 default:
     @just --list
 
+# Run the backend API server (needs the dev database: just db-start)
+serve:
+    cargo run -p lana-server -- serve
+
 # Run the Tauri app in dev mode (needs the dev database: just db-start)
 dev: fe-build
     cargo tauri dev
