@@ -17,5 +17,11 @@
     "svelte-check": "^4.7.6",
     "typescript": "~6.0.2",
     "vite": "^8.3.0"
+  },
+  "dependencies": {
+    "maplibre-gl": "^6.11.2"
+  },
+  "allowScripts": {
+    "fsevents@2.3.3": true
   }
 }
