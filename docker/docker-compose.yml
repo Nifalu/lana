@@ -1,0 +1,23 @@
+services:
+  postgres:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+
+    container_name: hackamrhein-postgres
+
+    environment:
+      POSTGRES_DB: hackamrhein
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: hackzheworld
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

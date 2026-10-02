@@ -1,0 +1,12 @@
+[project]
+name = "lana"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "fastapi[standard]>=0.142.2",
+    "psycopg-pool>=3.3.3",
+    "psycopg[c]>=3.3.6",
+    "pytz>=2026.4",
+]
