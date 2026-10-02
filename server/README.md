@@ -1,8 +1,8 @@
 # lana server
 
 Rust backend for lana: REST API (`serve` mode) + idempotent open-data
-import (`import` mode, ticket 02). Rust, axum, sqlx against PostgreSQL
-with PostGIS.
+import (`import` mode, ticket 02) + background live-measurement poller
+(ticket 03). Rust, axum, sqlx against PostgreSQL with PostGIS.
 
 ```sh
 just db-start && just db-createdb   # once
@@ -12,6 +12,48 @@ just serve                          # migrations run on startup
 The server applies the SQL migrations in `migrations/` on startup (tracked
 in `_sqlx_server_migrations` so it can share a dev database with the Tauri
 app). Never edit an applied migration – add a new numbered file.
+
+## Modes
+
+- `lana-server serve` – REST API + background poller (below).
+- `lana-server import` – idempotent refresh of the static datasets
+  (fountains, swim areas, air stations; cool places come from the committed
+  seed). Safe to re-run any time.
+- `lana-server poll` – **manual poll trigger**: one poll cycle of the live
+  measurements, on demand (demos/tests instead of waiting for the timer).
+
+## Background poller (ticket 03)
+
+While `serve` runs, a tokio task fetches the live datasets from data.bs.ch
+and upserts the **latest value per station** (first cycle immediately,
+then every `LANA_POLL_INTERVAL_SECS`, default 600 – roughly 10 minutes):
+
+- **Air temperature** (dataset 100009): pages newest-first; a station's
+  newest row wins. Paging stops once two consecutive pages discover no new
+  station (page cap 20 × 100 rows bounds the walk). Stations join on
+  `name_original` – the ids imported from dataset 100082.
+- **Rhine water temperature** (dataset 100046): 15-minute aggregates from
+  the Rheinüberwachungsstation Weil am Rhein (RUES, sensor strand "Strang
+  S3"); only the newest row is read. The dataset has no station id and no
+  coordinates, so the poller owns one fixed station (`rues-s3`). Its
+  position exists only as Swiss LV03 `611740 / 272310` (EPSG:21781) in a
+  field description; it was transformed **once** to WGS84 with PostGIS
+  `ST_Transform(ST_SetSRID(ST_MakePoint(611740, 272310), 21781), 4326)` →
+  `7.5947299 / 47.6013689` and committed as a constant – never converted
+  at runtime.
+- **Gartenbäder pool temperatures** (dataset 100384): one row per pool per
+  scraper run, joined on the pool `name`; the poller creates one station
+  per pool (id: slugified name, e.g. `hallenbad-eglisee`).
+
+Rhine/pool stations are created by the poller itself (kinds `water`/`pool`);
+air stations embedded in measurement rows are ensured too, so `serve` shows
+live temperatures even without a prior `import`. Upserts conflict on
+`(station_id, measured_at)` and are ignored – idempotent, and a station
+that has not reported keeps its last known value. Every cycle logs what it
+fetched; failures are logged and retried on the next tick.
+
+Environment: `LANA_POLL_INTERVAL_SECS` (seconds, > 0, default 600),
+`LANA_ODS_BASE_URL` (data.bs.ch override for local experiments).
 
 ## API
 
@@ -88,6 +130,11 @@ Window document:
 `GET /api/v1/snapshot` – full offline-sync snapshot (GeoJSON
 FeatureCollections for `pois` and `stations` + `generated_at`). Ticket 02
 fills it from Postgres.
+
+Station features carry `id`, `kind`, `name`, `source` plus their latest
+measurement from the poller: `temperature_c` (number, °C) and `measured_at`
+(RFC 3339) – both `null` while the station has never reported, last known
+value once it has.
 
 ### Errors
 

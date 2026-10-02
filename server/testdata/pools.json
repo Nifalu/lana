@@ -1,0 +1,50 @@
+{
+ "total_count": 151681,
+ "results": [
+  {
+   "name": "Bachgraben Sportbad",
+   "temperatur": 21,
+   "zeitpunkt_job": "2026-10-02T15:00:18+00:00",
+   "koordinaten": {
+    "lon": 7.556763,
+    "lat": 47.56169
+   }
+  },
+  {
+   "name": "Hallenbad Eglisee",
+   "temperatur": 21,
+   "zeitpunkt_job": "2026-10-02T15:00:18+00:00",
+   "koordinaten": {
+    "lon": 7.61478,
+    "lat": 47.570491
+   }
+  },
+  {
+   "name": "Eglisee Frauenbad",
+   "temperatur": 18,
+   "zeitpunkt_job": "2026-10-02T15:00:18+00:00",
+   "koordinaten": {
+    "lon": 7.61543,
+    "lat": 47.570848
+   }
+  },
+  {
+   "name": "St. Jakob Familienbad",
+   "temperatur": 20,
+   "zeitpunkt_job": "2026-10-02T15:00:18+00:00",
+   "koordinaten": {
+    "lon": 7.620919,
+    "lat": 47.538282
+   }
+  },
+  {
+   "name": "Bachgraben Familienbad",
+   "temperatur": 22,
+   "zeitpunkt_job": "2026-10-02T15:00:18+00:00",
+   "koordinaten": {
+    "lon": 7.557569,
+    "lat": 47.562072
+   }
+  }
+ ]
+}

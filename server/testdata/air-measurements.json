@@ -1,0 +1,80 @@
+{
+ "total_count": 6824533,
+ "results": [
+  {
+   "name_original": "03409FF2",
+   "name_custom": "Güterstrasse",
+   "dates_max_date": "2026-10-02T15:10:02+00:00",
+   "meta_airtemp": 21.06,
+   "meta_rain_1h_val": 0.0,
+   "meta_rain24h_sum": 0.0,
+   "meta_rain48h_sum": 0.0,
+   "coords": {
+    "lon": 7.58816,
+    "lat": 47.54538
+   },
+   "stadtklima_basel_link": "https://meteoblue.com/de/products/cityclimate/basel#03409FF2",
+   "unix_timestamp": 1790953802
+  },
+  {
+   "name_original": "034001AF",
+   "name_custom": "St. Johann",
+   "dates_max_date": "2026-10-02T15:09:56+00:00",
+   "meta_airtemp": 22.15,
+   "meta_rain_1h_val": 0.0,
+   "meta_rain24h_sum": 0.8,
+   "meta_rain48h_sum": 1.0,
+   "coords": {
+    "lon": 7.58201,
+    "lat": 47.56597
+   },
+   "stadtklima_basel_link": "https://meteoblue.com/de/products/cityclimate/basel#034001AF",
+   "unix_timestamp": 1790953796
+  },
+  {
+   "name_original": "0340AD89",
+   "name_custom": "Unterer Rheinweg 82",
+   "dates_max_date": "2026-10-02T15:09:51+00:00",
+   "meta_airtemp": 25.72,
+   "meta_rain_1h_val": 0.0,
+   "meta_rain24h_sum": 2.2,
+   "meta_rain48h_sum": 2.2,
+   "coords": {
+    "lon": 7.58697,
+    "lat": 47.56599
+   },
+   "stadtklima_basel_link": "https://meteoblue.com/de/products/cityclimate/basel#0340AD89",
+   "unix_timestamp": 1790953791
+  },
+  {
+   "name_original": "034099D6",
+   "name_custom": "St. Johanns-Ring",
+   "dates_max_date": "2026-10-02T15:09:47+00:00",
+   "meta_airtemp": 23.15,
+   "meta_rain_1h_val": 0.0,
+   "meta_rain24h_sum": 2.4,
+   "meta_rain48h_sum": 2.4,
+   "coords": {
+    "lon": 7.57414,
+    "lat": 47.56208
+   },
+   "stadtklima_basel_link": "https://meteoblue.com/de/products/cityclimate/basel#034099D6",
+   "unix_timestamp": 1790953787
+  },
+  {
+   "name_original": "0320024A",
+   "name_custom": "St. Johann",
+   "dates_max_date": "2026-10-02T15:09:39+00:00",
+   "meta_airtemp": 21.05,
+   "meta_rain_1h_val": 0.0,
+   "meta_rain24h_sum": 3.4,
+   "meta_rain48h_sum": 3.6,
+   "coords": {
+    "lon": 7.58201,
+    "lat": 47.56597
+   },
+   "stadtklima_basel_link": "https://meteoblue.com/de/products/cityclimate/basel#0320024A",
+   "unix_timestamp": 1790953779
+  }
+ ]
+}
