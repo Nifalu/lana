@@ -70,6 +70,8 @@ mod tests {
             "measurements",
             "devices",
             "helper_windows",
+            "help_requests",
+            "help_request_notified",
         ] {
             let (name,): (Option<String>,) = sqlx::query_as("SELECT to_regclass($1)::text")
                 .bind(table)

@@ -1,8 +1,30 @@
 //! API error responses: one uniform JSON shape (`{"error": "…"}`).
 
+use axum::extract::FromRequest;
 use axum::http::StatusCode;
 use axum::response::{IntoResponse, Response};
 use axum::Json;
+use serde::de::DeserializeOwned;
+
+/// JSON extractor that maps deserialization failures onto the uniform error
+/// shape (422 `{"error": …}`) instead of axum's plain-text rejections – a
+/// malformed payload is a validation failure, not an axum-internal one.
+pub struct ApiJson<T>(pub T);
+
+impl<S, T> FromRequest<S> for ApiJson<T>
+where
+    T: DeserializeOwned,
+    S: Send + Sync,
+{
+    type Rejection = ApiError;
+
+    async fn from_request(req: axum::extract::Request, state: &S) -> Result<Self, Self::Rejection> {
+        match axum::Json::<T>::from_request(req, state).await {
+            Ok(axum::Json(value)) => Ok(Self(value)),
+            Err(rejection) => Err(Self::Rejection::Validation(rejection.body_text())),
+        }
+    }
+}
 
 /// Errors that map onto HTTP status codes.
 ///

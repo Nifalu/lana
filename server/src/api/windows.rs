@@ -13,9 +13,9 @@ use axum::http::StatusCode;
 use axum::Json;
 use chrono::NaiveTime;
 use serde::{Deserialize, Serialize};
-use sqlx::PgPool;
 
 use super::error::ApiError;
+use super::AppState;
 use super::types::{self, wall_time, LonLat};
 
 /// Create payload (POST `/devices/{id}/windows`). `active` defaults to true.
@@ -113,7 +113,7 @@ fn validate_window(
 }
 
 pub async fn create_window(
-    State(pool): State<PgPool>,
+    State(state): State<AppState>,
     Path(device_id): Path<uuid::Uuid>,
     Json(payload): Json<WindowCreate>,
 ) -> Result<(StatusCode, Json<Window>), ApiError> {
@@ -140,7 +140,7 @@ pub async fn create_window(
         .bind(payload.location.lat)
         .bind(payload.radius_m)
         .bind(&payload.label)
-        .fetch_one(&pool)
+        .fetch_one(&state.pool)
         .await
         .map_err(|err| {
             // Windows hang off a registered device; a missing device_id is a
@@ -156,7 +156,7 @@ pub async fn create_window(
 }
 
 pub async fn list_windows(
-    State(pool): State<PgPool>,
+    State(state): State<AppState>,
     Path(device_id): Path<uuid::Uuid>,
 ) -> Result<Json<Vec<Window>>, ApiError> {
     const LIST: &str = "SELECT id, active, weekday, start_time, end_time, \
@@ -164,7 +164,7 @@ pub async fn list_windows(
          FROM helper_windows WHERE device_id = $1 ORDER BY id";
     let rows: Vec<WindowRow> = sqlx::query_as(LIST)
         .bind(device_id)
-        .fetch_all(&pool)
+        .fetch_all(&state.pool)
         .await?;
 
     Ok(Json(
@@ -175,7 +175,7 @@ pub async fn list_windows(
 }
 
 pub async fn patch_window(
-    State(pool): State<PgPool>,
+    State(state): State<AppState>,
     Path((device_id, window_id)): Path<(uuid::Uuid, i64)>,
     Json(patch): Json<WindowPatch>,
 ) -> Result<Json<Window>, ApiError> {
@@ -187,7 +187,7 @@ pub async fn patch_window(
     let current: WindowRow = sqlx::query_as(OWNED)
         .bind(window_id)
         .bind(device_id)
-        .fetch_optional(&pool)
+        .fetch_optional(&state.pool)
         .await?
         .ok_or(ApiError::NotFound("window not found"))?;
     let current = Window::from_row(device_id, current);
@@ -232,7 +232,7 @@ pub async fn patch_window(
         .bind(merged_location.lat)
         .bind(merged_radius_m)
         .bind(&merged_label)
-        .fetch_optional(&pool)
+        .fetch_optional(&state.pool)
         .await?
         .ok_or(ApiError::NotFound("window not found"))?;
 
@@ -240,14 +240,14 @@ pub async fn patch_window(
 }
 
 pub async fn delete_window(
-    State(pool): State<PgPool>,
+    State(state): State<AppState>,
     Path((device_id, window_id)): Path<(uuid::Uuid, i64)>,
 ) -> Result<StatusCode, ApiError> {
     const DELETE: &str = "DELETE FROM helper_windows WHERE id = $1 AND device_id = $2";
     let result = sqlx::query(DELETE)
         .bind(window_id)
         .bind(device_id)
-        .execute(&pool)
+        .execute(&state.pool)
         .await?;
     if result.rows_affected() == 0 {
         return Err(ApiError::NotFound("window not found"));
