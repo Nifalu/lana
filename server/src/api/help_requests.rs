@@ -11,6 +11,7 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
 use super::error::{ApiError, ApiJson};
+use super::events::Notification;
 use super::types::{self, LonLat};
 use super::AppState;
 
@@ -53,7 +54,7 @@ pub struct HelpRequestListQuery {
 ///
 /// Anonymity (ADR 0004): the shape carries NO requester or responder fields –
 /// only the opaque request `id` and its status transitions are public.
-#[derive(Debug, Serialize)]
+#[derive(Debug, Clone, Serialize)]
 pub struct HelpRequest {
     pub id: uuid::Uuid,
     pub status: String,
@@ -142,9 +143,87 @@ pub async fn create_help_request(
         .fetch_one(&mut *tx)
         .await?;
 
+    // Matching happens atomically with the insert (ADR 0004): every device
+    // that matches is recorded as "originally notified" so later fan-outs
+    // still reach it after its location or windows changed.
+    let matched = match_devices(
+        &mut tx,
+        request_id,
+        payload.device_id,
+        payload.location,
+        radius_m,
+    )
+    .await?;
+
     tx.commit().await?;
 
+    if !matched.is_empty() {
+        let request = HelpRequest::from_row(row.clone());
+        state
+            .hub
+            .publish(matched, Notification::HelpRequestNew(request));
+    }
+
     Ok((StatusCode::CREATED, Json(HelpRequest::from_row(row))))
+}
+
+/// The devices matched for a new SOS, recorded in `help_request_notified`
+/// and returned for the SSE push (ADR 0004 matching rule):
+///
+/// - live location: `is_helper`, a shared `last_location` within the
+///   effective radius, seen within the last 24 hours;
+/// - OR an `active` recurring window whose weekday + Zurich time-of-day
+///   contains now (start and end inclusive) and whose point is within the
+///   effective radius.
+///
+/// The requester is never matched against their own SOS.
+async fn match_devices(
+    tx: &mut sqlx::PgConnection,
+    request_id: uuid::Uuid,
+    requester_id: uuid::Uuid,
+    location: LonLat,
+    radius_m: f64,
+) -> Result<Vec<uuid::Uuid>, ApiError> {
+    use chrono::Datelike;
+    let zurich_now = chrono::Utc::now().with_timezone(&chrono_tz::Europe::Zurich);
+    let weekday = zurich_now.weekday().num_days_from_monday() as i16;
+    let time_of_day = zurich_now.time();
+
+    const MATCH: &str = "WITH matched AS ( \
+            SELECT d.id FROM devices d \
+            WHERE d.is_helper AND d.id <> $1 \
+              AND ( \
+                    (d.last_location IS NOT NULL \
+                     AND d.last_seen_at >= now() - INTERVAL '24 hours' \
+                     AND ST_DWithin(d.last_location, \
+                         ST_SetSRID(ST_MakePoint($2, $3), 4326)::geography, $4)) \
+                 OR EXISTS ( \
+                     SELECT 1 FROM helper_windows w \
+                     WHERE w.device_id = d.id \
+                       AND w.active \
+                       AND w.weekday = $5 \
+                       AND w.start_time <= $6 AND w.end_time >= $6 \
+                       AND ST_DWithin(w.location, \
+                           ST_SetSRID(ST_MakePoint($2, $3), 4326)::geography, $4)) \
+              ) \
+        ), \
+        notified AS ( \
+            INSERT INTO help_request_notified (help_request_id, device_id) \
+            SELECT $7, id FROM matched \
+            RETURNING device_id \
+        ) \
+        SELECT device_id FROM notified";
+    let rows: Vec<(uuid::Uuid,)> = sqlx::query_as(MATCH)
+        .bind(requester_id)
+        .bind(location.lon)
+        .bind(location.lat)
+        .bind(radius_m)
+        .bind(weekday)
+        .bind(time_of_day)
+        .bind(request_id)
+        .fetch_all(tx)
+        .await?;
+    Ok(rows.into_iter().map(|(id,)| id).collect())
 }
 
 /// Parses a `lon,lat` pair for the `near` filter.
@@ -153,12 +232,14 @@ fn parse_near(s: &str) -> Result<LonLat, ApiError> {
         .split_once(',')
         .ok_or_else(|| ApiError::Validation("near must be 'lon,lat'".to_string()))?;
     let point = LonLat {
-        lon: lon.trim().parse().map_err(|_| {
-            ApiError::Validation("near lon must be a number".to_string())
-        })?,
-        lat: lat.trim().parse().map_err(|_| {
-            ApiError::Validation("near lat must be a number".to_string())
-        })?,
+        lon: lon
+            .trim()
+            .parse()
+            .map_err(|_| ApiError::Validation("near lon must be a number".to_string()))?,
+        lat: lat
+            .trim()
+            .parse()
+            .map_err(|_| ApiError::Validation("near lat must be a number".to_string()))?,
     };
     ApiError::check(point.validate())?;
     Ok(point)
@@ -180,9 +261,7 @@ pub async fn list_help_requests(
         Some(near) => Some(parse_near(near)?),
         None => {
             if query.radius_m.is_some() {
-                return Err(ApiError::Validation(
-                    "radius_m requires near".to_string(),
-                ));
+                return Err(ApiError::Validation("radius_m requires near".to_string()));
             }
             None
         }
@@ -200,14 +279,18 @@ pub async fn list_help_requests(
         qb.push(" WHERE status = ").push_bind(status.clone());
     }
     if let Some(near) = near {
-        qb.push(if query.status.is_some() { " AND " } else { " WHERE " })
-            .push("ST_DWithin(location, ST_SetSRID(ST_MakePoint(")
-            .push_bind(near.lon)
-            .push(",")
-            .push_bind(near.lat)
-            .push("), 4326)::geography, ")
-            .push_bind(radius_m)
-            .push(")");
+        qb.push(if query.status.is_some() {
+            " AND "
+        } else {
+            " WHERE "
+        })
+        .push("ST_DWithin(location, ST_SetSRID(ST_MakePoint(")
+        .push_bind(near.lon)
+        .push(",")
+        .push_bind(near.lat)
+        .push("), 4326)::geography, ")
+        .push_bind(radius_m)
+        .push(")");
     }
     qb.push(" ORDER BY created_at DESC");
 
@@ -238,14 +321,24 @@ pub async fn cancel_help_request(
 
 #[cfg(test)]
 mod tests {
-    use super::super::test_support::{assert_anonymous, lock_db, new_device_id, scenario_point, send_json, skip, test_app};
+    use super::super::test_support::{
+        assert_anonymous, lock_db, new_device_id, offset, router_with_state, scenario_point,
+        send_json, skip, spawn_server, test_app, test_state, SseStream,
+    };
     use axum::http::StatusCode;
     use chrono::DateTime;
     use serde_json::{json, Value};
+    use std::time::Duration;
+
+    /// How long a positive SSE assertion waits for its event.
+    const SSE_EVENT_TIMEOUT: Duration = Duration::from_secs(10);
+    /// How long a negative SSE assertion waits to confirm NO event arrives.
+    const SSE_SILENCE_TIMEOUT: Duration = Duration::from_millis(700);
 
     /// POSTs a help request and asserts 201; returns the body.
     async fn create_request(app: &axum::Router, payload: Value) -> Value {
-        let (status, body) = send_json(app.clone(), "POST", "/api/v1/help-requests", Some(payload)).await;
+        let (status, body) =
+            send_json(app.clone(), "POST", "/api/v1/help-requests", Some(payload)).await;
         assert_eq!(status, StatusCode::CREATED, "create help request: {body}");
         body
     }
@@ -256,6 +349,63 @@ mod tests {
             "device_id": device_id,
             "location": {"lon": point.lon, "lat": point.lat},
         })
+    }
+
+    /// Registers a device via the devices API (identity: ADR 0004).
+    async fn put_device(
+        app: &axum::Router,
+        device_id: uuid::Uuid,
+        is_helper: bool,
+        location: Option<super::super::types::LonLat>,
+    ) {
+        let mut payload = json!({ "is_helper": is_helper });
+        if let Some(point) = location {
+            payload["location"] = json!({"lon": point.lon, "lat": point.lat});
+        }
+        let (status, body) = send_json(
+            app.clone(),
+            "PUT",
+            &format!("/api/v1/devices/{device_id}"),
+            Some(payload),
+        )
+        .await;
+        assert_eq!(status, StatusCode::OK, "device upsert: {body}");
+    }
+
+    /// Creates a helper window for an already-registered device.
+    async fn create_window(
+        app: &axum::Router,
+        device_id: uuid::Uuid,
+        weekday: i16,
+        location: super::super::types::LonLat,
+        active: bool,
+    ) -> Value {
+        let (status, body) = send_json(
+            app.clone(),
+            "POST",
+            &format!("/api/v1/devices/{device_id}/windows"),
+            Some(json!({
+                "weekday": weekday,
+                "start_time": "00:00",
+                "end_time": "23:59",
+                "location": {"lon": location.lon, "lat": location.lat},
+                "radius_m": 500,
+                "label": "test window",
+                "active": active,
+            })),
+        )
+        .await;
+        assert_eq!(status, StatusCode::CREATED, "window create: {body}");
+        body
+    }
+
+    /// Today's weekday in Europe/Zurich as the API encodes it (0=Monday).
+    fn today_in_zurich() -> i16 {
+        use chrono::Datelike;
+        chrono::Utc::now()
+            .with_timezone(&chrono_tz::Europe::Zurich)
+            .weekday()
+            .num_days_from_monday() as i16
     }
 
     fn parse_rfc3339(value: &Value) -> DateTime<chrono::Utc> {
@@ -286,7 +436,10 @@ mod tests {
         )
         .await;
 
-        assert!(!body["id"].as_str().unwrap().is_empty(), "server-assigned id");
+        assert!(
+            !body["id"].as_str().unwrap().is_empty(),
+            "server-assigned id"
+        );
         assert_eq!(body["status"], "open");
         assert_eq!(body["note"], "dizzy, need water");
         // PostGIS round-trips coordinates with ULP-level drift.
@@ -324,7 +477,13 @@ mod tests {
                    "note": "x".repeat(super::MAX_NOTE_CHARS + 1)}),
         ];
         for payload in invalid_payloads {
-            let (status, body) = send_json(app.clone(), "POST", "/api/v1/help-requests", Some(payload.clone())).await;
+            let (status, body) = send_json(
+                app.clone(),
+                "POST",
+                "/api/v1/help-requests",
+                Some(payload.clone()),
+            )
+            .await;
             assert_eq!(
                 status,
                 StatusCode::UNPROCESSABLE_ENTITY,
@@ -363,7 +522,11 @@ mod tests {
             })),
         )
         .await;
-        assert_eq!(status, StatusCode::CREATED, "requester device must exist: {body}");
+        assert_eq!(
+            status,
+            StatusCode::CREATED,
+            "requester device must exist: {body}"
+        );
     }
 
     /// A per-request radius override is stored and echoed.
@@ -389,26 +552,35 @@ mod tests {
         assert_anonymous(&body);
     }
 
+    /// Existing DB-gated tests use the plain router helper.
+    async fn list_app() -> Option<axum::Router> {
+        let state = test_state().await?;
+        Some(router_with_state(&state))
+    }
+
     /// The list endpoint filters by status and by near/radius (helper map).
     #[tokio::test]
     async fn list_filters_by_status_and_near_radius() {
-        let Some(app) = test_app().await else {
+        let Some(app) = list_app().await else {
             skip();
             return;
         };
         let _db = lock_db().await;
         let base = scenario_point();
-        let step = 0.001; // ~111 m south
-        let near_a = super::super::types::LonLat { lon: base.lon, lat: base.lat };
-        let near_b = super::super::types::LonLat { lon: base.lon, lat: base.lat - step };
-        let far = super::super::types::LonLat { lon: base.lon + 0.2, lat: base.lat };
+        // Small radius and short offsets: this test shares the per-ticket
+        // database with every other run, and only a query circle this tight
+        // makes cross-run leftovers irrelevant (bases are random, ≥5 km from
+        // Basel, but two bases could still land within a wide radius).
+        let near_a = base;
+        let near_b = offset(base, 111.0, 0.0); // ~111 m south
+        let far = offset(base, 6_000.0, 0.0); // ~6 km north
 
         let a = create_request(&app, create_payload(new_device_id(), near_a)).await;
         let b = create_request(&app, create_payload(new_device_id(), near_b)).await;
         let _far = create_request(&app, create_payload(new_device_id(), far)).await;
 
         let uri = format!(
-            "/api/v1/help-requests?status=open&near={},{}&radius_m=1000",
+            "/api/v1/help-requests?status=open&near={},{}&radius_m=300",
             base.lon, base.lat
         );
         let (status, listed) = send_json(app.clone(), "GET", &uri, None).await;
@@ -419,8 +591,14 @@ mod tests {
             .iter()
             .map(|r| r["id"].as_str().expect("id"))
             .collect();
-        assert!(ids.contains(&a["id"].as_str().unwrap()), "near open A in {ids:?}");
-        assert!(ids.contains(&b["id"].as_str().unwrap()), "near open B in {ids:?}");
+        assert!(
+            ids.contains(&a["id"].as_str().unwrap()),
+            "near open A in {ids:?}"
+        );
+        assert!(
+            ids.contains(&b["id"].as_str().unwrap()),
+            "near open B in {ids:?}"
+        );
         assert_eq!(ids.len(), 2, "far request filtered out by radius: {ids:?}");
         for request in listed.as_array().unwrap() {
             assert_anonymous(request);
@@ -428,7 +606,7 @@ mod tests {
 
         // A status that nothing matches proves the status filter applies.
         let uri = format!(
-            "/api/v1/help-requests?status=responded&near={},{}&radius_m=1000",
+            "/api/v1/help-requests?status=responded&near={},{}&radius_m=300",
             base.lon, base.lat
         );
         let (status, listed) = send_json(app, "GET", &uri, None).await;
@@ -440,7 +618,7 @@ mod tests {
     /// near, non-positive radius, radius without near.
     #[tokio::test]
     async fn list_rejects_invalid_filters() {
-        let Some(app) = test_app().await else {
+        let Some(app) = list_app().await else {
             skip();
             return;
         };
@@ -454,12 +632,225 @@ mod tests {
             "near=not-a-point".to_string(),
         ];
         for query in invalid_queries {
-            let (status, body) = send_json(app.clone(), "GET", &format!("/api/v1/help-requests?{query}"), None).await;
+            let (status, body) = send_json(
+                app.clone(),
+                "GET",
+                &format!("/api/v1/help-requests?{query}"),
+                None,
+            )
+            .await;
             assert_eq!(
                 status,
                 StatusCode::UNPROCESSABLE_ENTITY,
                 "expected 422 for ?{query}: {body}"
             );
         }
+    }
+
+    /// A helper sharing a live location within the request radius and seen
+    /// recently receives `help_request_new` over SSE; helpers outside the
+    /// radius, non-helpers and the requester itself receive nothing. Event
+    /// payloads carry the anonymous public shape only (ADR 0004).
+    #[tokio::test]
+    async fn sos_notifies_helpers_with_fresh_live_location_within_radius() {
+        let Some(state) = test_state().await else {
+            skip();
+            return;
+        };
+        let _db = lock_db().await;
+        let app = router_with_state(&state);
+        let addr = spawn_server(app.clone()).await;
+        let sos_point = scenario_point();
+
+        let helper_in = new_device_id();
+        let helper_out = new_device_id();
+        let civilian = new_device_id();
+        let requester = new_device_id();
+        put_device(&app, helper_in, true, Some(offset(sos_point, 30.0, 0.0))).await;
+        put_device(
+            &app,
+            helper_out,
+            true,
+            Some(offset(sos_point, 3_000.0, 0.0)),
+        )
+        .await;
+        put_device(&app, civilian, false, Some(offset(sos_point, 20.0, 0.0))).await;
+
+        // Streams open BEFORE the SOS exists so nothing can be missed.
+        let mut stream_in = SseStream::connect(addr, helper_in).await;
+        let mut stream_out = SseStream::connect(addr, helper_out).await;
+        let mut stream_civilian = SseStream::connect(addr, civilian).await;
+        let mut stream_requester = SseStream::connect(addr, requester).await;
+
+        let body = create_request(&app, create_payload(requester, sos_point)).await;
+
+        let (event, data) = stream_in.read_event(SSE_EVENT_TIMEOUT).await;
+        assert_eq!(event, "help_request_new", "matched helper is notified");
+        assert_eq!(data["id"], body["id"]);
+        assert_eq!(data["status"], "open");
+        assert_anonymous(&data);
+
+        for (stream, who) in [
+            (&mut stream_out, "out-of-radius helper"),
+            (&mut stream_civilian, "non-helper"),
+            (&mut stream_requester, "requester (own SOS)"),
+        ] {
+            assert!(
+                stream.try_read_event(SSE_SILENCE_TIMEOUT).await.is_none(),
+                "{who} must not be notified"
+            );
+        }
+    }
+
+    /// A helper with an ACTIVE all-day window on today's Zurich weekday whose
+    /// point is within the radius matches without any live location; the
+    /// wrong weekday, an inactive window (vacation toggle) and a far-away
+    /// window point do not match.
+    #[tokio::test]
+    async fn sos_notifies_helpers_with_active_all_day_window_today() {
+        let Some(state) = test_state().await else {
+            skip();
+            return;
+        };
+        let _db = lock_db().await;
+        let app = router_with_state(&state);
+        let addr = spawn_server(app.clone()).await;
+        let sos_point = scenario_point();
+        let today = today_in_zurich();
+        let other_day = (today + 1) % 7;
+
+        let helper_today = new_device_id();
+        let helper_wrong_day = new_device_id();
+        let helper_inactive = new_device_id();
+        let helper_far = new_device_id();
+        for helper in [helper_today, helper_wrong_day, helper_inactive, helper_far] {
+            put_device(&app, helper, true, None).await; // no live location
+        }
+        create_window(
+            &app,
+            helper_today,
+            today,
+            offset(sos_point, 100.0, 0.0),
+            true,
+        )
+        .await;
+        create_window(
+            &app,
+            helper_wrong_day,
+            other_day,
+            offset(sos_point, 100.0, 0.0),
+            true,
+        )
+        .await;
+        create_window(
+            &app,
+            helper_inactive,
+            today,
+            offset(sos_point, 100.0, 0.0),
+            false,
+        )
+        .await;
+        create_window(
+            &app,
+            helper_far,
+            today,
+            offset(sos_point, 3_000.0, 0.0),
+            true,
+        )
+        .await;
+
+        let mut stream_today = SseStream::connect(addr, helper_today).await;
+        let mut stream_wrong_day = SseStream::connect(addr, helper_wrong_day).await;
+        let mut stream_inactive = SseStream::connect(addr, helper_inactive).await;
+        let mut stream_far = SseStream::connect(addr, helper_far).await;
+
+        let body = create_request(&app, create_payload(new_device_id(), sos_point)).await;
+
+        let (event, data) = stream_today.read_event(SSE_EVENT_TIMEOUT).await;
+        assert_eq!(event, "help_request_new", "window helper is notified");
+        assert_eq!(data["id"], body["id"]);
+        assert_anonymous(&data);
+
+        for (stream, who) in [
+            (&mut stream_wrong_day, "wrong-weekday window"),
+            (&mut stream_inactive, "inactive window"),
+            (&mut stream_far, "far window point"),
+        ] {
+            assert!(
+                stream.try_read_event(SSE_SILENCE_TIMEOUT).await.is_none(),
+                "{who} must not match"
+            );
+        }
+    }
+
+    /// A helper whose last_seen_at is older than 24 h does not match via its
+    /// live location, even when the point is inside the radius. The age is
+    /// backdated directly in the database: `last_seen_at` has no API lever
+    /// (the devices API always refreshes it) and no clock control exists.
+    #[tokio::test]
+    async fn sos_ignores_helpers_not_seen_in_last_24_hours() {
+        let Some(state) = test_state().await else {
+            skip();
+            return;
+        };
+        let _db = lock_db().await;
+        let app = router_with_state(&state);
+        let addr = spawn_server(app.clone()).await;
+        let sos_point = scenario_point();
+
+        let stale_helper = new_device_id();
+        put_device(&app, stale_helper, true, Some(offset(sos_point, 30.0, 0.0))).await;
+        sqlx::query("UPDATE devices SET last_seen_at = now() - INTERVAL '25 hours' WHERE id = $1")
+            .bind(stale_helper)
+            .execute(&state.pool)
+            .await
+            .expect("backdate works");
+
+        let mut stream = SseStream::connect(addr, stale_helper).await;
+        create_request(&app, create_payload(new_device_id(), sos_point)).await;
+
+        assert!(
+            stream.try_read_event(SSE_SILENCE_TIMEOUT).await.is_none(),
+            "stale helper must not be notified"
+        );
+    }
+
+    /// The per-request radius override widens matching: a helper at ~800 m is
+    /// outside the default 500 m radius but inside a 1 500 m override.
+    #[tokio::test]
+    async fn sos_radius_override_extends_matching() {
+        let Some(state) = test_state().await else {
+            skip();
+            return;
+        };
+        let _db = lock_db().await;
+        let app = router_with_state(&state);
+        let addr = spawn_server(app.clone()).await;
+        let sos_point = scenario_point();
+
+        let helper = new_device_id();
+        put_device(&app, helper, true, Some(offset(sos_point, 800.0, 0.0))).await;
+        let mut stream = SseStream::connect(addr, helper).await;
+
+        let default_sos = create_request(&app, create_payload(new_device_id(), sos_point)).await;
+        assert!(
+            stream.try_read_event(SSE_SILENCE_TIMEOUT).await.is_none(),
+            "800 m is outside the default 500 m radius"
+        );
+
+        let wide = create_request(
+            &app,
+            json!({
+                "device_id": new_device_id(),
+                "location": {"lon": sos_point.lon, "lat": sos_point.lat},
+                "radius_m": 1500,
+            }),
+        )
+        .await;
+        let (event, data) = stream.read_event(SSE_EVENT_TIMEOUT).await;
+        assert_eq!(event, "help_request_new");
+        assert_eq!(data["id"], wide["id"], "notified about the wide-radius SOS");
+        assert_ne!(data["id"], default_sos["id"]);
+        assert_anonymous(&data);
     }
 }

@@ -133,10 +133,14 @@ mod tests {
             .unwrap();
         let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
 
+        // Structural assertions only: whether pois/stations are empty depends
+        // on whether the import (ticket 02) has run against this shared,
+        // persistent per-ticket database – an emptiness claim can never hold
+        // there once it has.
         assert_eq!(json["pois"]["type"], "FeatureCollection");
-        assert_eq!(json["pois"]["features"], serde_json::json!([]));
+        assert!(json["pois"]["features"].is_array());
         assert_eq!(json["stations"]["type"], "FeatureCollection");
-        assert_eq!(json["stations"]["features"], serde_json::json!([]));
+        assert!(json["stations"]["features"].is_array());
 
         let generated_at = json["generated_at"]
             .as_str()

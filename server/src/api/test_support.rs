@@ -5,16 +5,22 @@
 //! Postgres are DB-gated: they skip silently when `DATABASE_URL` is unset,
 //! following the repo convention (see `db.rs`).
 
+use std::net::SocketAddr;
 use std::sync::Mutex;
 use std::sync::MutexGuard;
+use std::time::Duration;
 
 use axum::body::Body;
 use axum::http::{Request, StatusCode};
 use axum::Router;
 use serde_json::Value;
+use tokio::io::{AsyncBufReadExt, BufReader};
+use tokio::net::tcp::OwnedReadHalf;
 use tower::ServiceExt;
 
+use super::events::Hub;
 use super::types::LonLat;
+use super::AppState;
 
 static DB_LOCK: Mutex<()> = Mutex::new(());
 
@@ -30,11 +36,153 @@ pub async fn lock_db() -> MutexGuard<'static, ()> {
 /// Builds the fully migrated app against the database at `DATABASE_URL`.
 /// Returns `None` (the test skips) when `DATABASE_URL` is unset.
 pub async fn test_app() -> Option<Router> {
+    test_state().await.map(|state| router_with_state(&state))
+}
+
+/// Builds the fully migrated app state (pool + fresh hub) against the
+/// database at `DATABASE_URL`. Returns `None` (the test skips) when
+/// `DATABASE_URL` is unset. Cloning the state shares one hub across every
+/// router built from it, so SSE assertions observe oneshot-driven publishes.
+pub async fn test_state() -> Option<AppState> {
     let url = std::env::var("DATABASE_URL").ok()?;
     let pool = crate::db::init_with_url(&url)
         .await
         .expect("db init failed");
-    Some(super::router(pool))
+    Some(AppState {
+        pool,
+        hub: Hub::new(),
+    })
+}
+
+/// Builds a router sharing `state`'s pool and hub.
+pub fn router_with_state(state: &AppState) -> Router {
+    super::router_with_state(state.clone())
+}
+
+/// Serves `app` on an ephemeral port (127.0.0.1:0 – never a fixed port, the
+/// port space is shared) for tests that need a real streaming connection
+/// (SSE). Returns the bound address.
+pub async fn spawn_server(app: Router) -> SocketAddr {
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
+        .await
+        .expect("ephemeral bind works");
+    let addr = listener.local_addr().unwrap();
+    tokio::spawn(async move {
+        axum::serve(listener, app)
+            .await
+            .expect("server task failed");
+    });
+    addr
+}
+
+/// An open SSE connection to `GET /api/v1/events?device_id=…`: the request
+/// is sent and the response headers consumed (asserted 200 event-stream).
+/// Opening is bounded by [`SSE_CONNECT_TIMEOUT`] so a broken endpoint fails
+/// the test instead of hanging it (and, via `lock_db`, the whole suite).
+pub struct SseStream {
+    reader: BufReader<OwnedReadHalf>,
+    /// Kept alive for the connection's lifetime: dropping tokio's write half
+    /// shuts down the write side (TCP FIN), which would end the SSE stream.
+    _write: tokio::net::tcp::OwnedWriteHalf,
+}
+
+/// How long opening one SSE stream may take in tests.
+const SSE_CONNECT_TIMEOUT: Duration = Duration::from_secs(10);
+
+impl SseStream {
+    pub async fn connect(addr: SocketAddr, device_id: uuid::Uuid) -> Self {
+        use tokio::io::AsyncWriteExt;
+        let open = async {
+            let stream = tokio::net::TcpStream::connect(addr)
+                .await
+                .expect("SSE connect works");
+            let (read, mut write) = stream.into_split();
+            let request = format!(
+                "GET /api/v1/events?device_id={device_id} HTTP/1.1\r\nHost: {addr}\r\nAccept: text/event-stream\r\n\r\n"
+            );
+            write
+                .write_all(request.as_bytes())
+                .await
+                .expect("SSE request write works");
+            let mut reader = BufReader::new(read);
+            let mut status_line = String::new();
+            reader
+                .read_line(&mut status_line)
+                .await
+                .expect("SSE response arrives");
+            assert!(
+                status_line.contains(" 200 "),
+                "SSE endpoint must answer 200, got {status_line:?}"
+            );
+            let mut content_type = String::new();
+            loop {
+                let mut line = String::new();
+                reader
+                    .read_line(&mut line)
+                    .await
+                    .expect("SSE headers arrive");
+                if line == "\r\n" || line.is_empty() {
+                    break;
+                }
+                if line.to_ascii_lowercase().starts_with("content-type:") {
+                    content_type = line;
+                }
+            }
+            assert!(
+                content_type.contains("text/event-stream"),
+                "SSE content-type expected, got {content_type:?}"
+            );
+            Self {
+                reader,
+                _write: write,
+            }
+        };
+        tokio::time::timeout(SSE_CONNECT_TIMEOUT, open)
+            .await
+            .expect("SSE connect completes in time")
+    }
+
+    /// Reads the next `event:`/`data:` pair, skipping keep-alive comments.
+    /// Panics when the event does not arrive within `timeout` – use
+    /// [`try_read_event`] for negative assertions.
+    pub async fn read_event(&mut self, timeout: Duration) -> (String, Value) {
+        self.try_read_event(timeout)
+            .await
+            .unwrap_or_else(|| panic!("no SSE event within {timeout:?}"))
+    }
+
+    /// Like [`read_event`], but returns `None` on timeout instead of
+    /// panicking: the assertion for "this device is NOT notified".
+    pub async fn try_read_event(&mut self, timeout: Duration) -> Option<(String, Value)> {
+        let read = async {
+            let mut name = String::from("message");
+            let mut data = String::new();
+            loop {
+                let mut line = String::new();
+                let n = self
+                    .reader
+                    .read_line(&mut line)
+                    .await
+                    .expect("SSE stream stays readable");
+                assert!(n > 0, "SSE stream ended unexpectedly");
+                let line = line.trim_end_matches(['\r', '\n']);
+                if line.is_empty() {
+                    if data.is_empty() {
+                        continue; // bare keep-alive separator
+                    }
+                    let parsed: Value = serde_json::from_str(&data).expect("SSE data is JSON");
+                    return (name, parsed);
+                }
+                if let Some(rest) = line.strip_prefix("event: ") {
+                    name = rest.to_string();
+                } else if let Some(rest) = line.strip_prefix("data: ") {
+                    data = rest.to_string();
+                }
+                // Other lines (`:` comments) are ignored.
+            }
+        };
+        tokio::time::timeout(timeout, read).await.ok()
+    }
 }
 
 /// Standard skip preamble: returns true when the caller should bail out
@@ -100,6 +248,18 @@ pub fn scenario_point() -> LonLat {
     }
 }
 
+/// A point `north_m` meters north and `east_m` meters east of `base`
+/// (good to a few percent at Basel's latitude – enough for radius tests that
+/// stay far away from any boundary).
+pub fn offset(base: LonLat, north_m: f64, east_m: f64) -> LonLat {
+    let meters_per_degree_lat = 111_320.0;
+    let meters_per_degree_lon = 111_320.0 * base.lat.to_radians().cos();
+    LonLat {
+        lon: base.lon + east_m / meters_per_degree_lon,
+        lat: base.lat + north_m / meters_per_degree_lat,
+    }
+}
+
 /// Fails the test when any JSON key anywhere in `value` hints at an identity:
 /// the SOS API never exposes requester or responder identity beyond what the
 /// status transitions already show (ADR 0004 anonymity).
@@ -135,7 +295,10 @@ mod tests {
         for point in [a, b] {
             let dlat = (point.lat - 47.5596).abs();
             let dlon = (point.lon - 7.5886).abs();
-            assert!(dlat >= 0.05 && dlon >= 0.05, "too close to Basel: {point:?}");
+            assert!(
+                dlat >= 0.05 && dlon >= 0.05,
+                "too close to Basel: {point:?}"
+            );
             assert!(point.lat < 90.0 && point.lon < 180.0);
         }
     }

@@ -15,8 +15,8 @@ use chrono::NaiveTime;
 use serde::{Deserialize, Serialize};
 
 use super::error::ApiError;
-use super::AppState;
 use super::types::{self, wall_time, LonLat};
+use super::AppState;
 
 /// Create payload (POST `/devices/{id}/windows`). `active` defaults to true.
 #[derive(Debug, Deserialize)]

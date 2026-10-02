@@ -25,7 +25,9 @@ pub struct Snapshot {
     pub generated_at: DateTime<Utc>,
 }
 
-pub async fn get_snapshot(State(state): State<super::AppState>) -> Result<Json<Snapshot>, super::ApiError> {
+pub async fn get_snapshot(
+    State(state): State<super::AppState>,
+) -> Result<Json<Snapshot>, super::ApiError> {
     let pois = load_pois(&state.pool).await?;
     let stations = load_stations(&state.pool).await?;
     Ok(Json(Snapshot {

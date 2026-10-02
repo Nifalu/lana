@@ -13,8 +13,8 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
 use super::error::ApiError;
-use super::AppState;
 use super::types::LonLat;
+use super::AppState;
 
 /// The device's self-declared state.
 #[derive(Debug, Deserialize)]
