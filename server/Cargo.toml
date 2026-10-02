@@ -19,7 +19,7 @@ reqwest = { version = "0.12", default-features = false, features = [
 sha2 = "0.10"
 serde.workspace = true
 serde_json.workspace = true
-sqlx = { workspace = true, features = ["chrono", "uuid"] }
+sqlx = { workspace = true, features = ["postgres", "chrono", "uuid"] }
 tokio = { version = "1", features = ["rt-multi-thread", "macros", "net", "time", "io-util", "sync"] }
 tokio-stream = { version = "0.1", features = ["sync"] }
 tower-http = { version = "0.6", features = ["cors"] }

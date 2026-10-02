@@ -1,27 +1,49 @@
-//! PostgreSQL setup and migrations.
+//! Embedded SQLite cache setup (ADR 0002).
 //!
-//! The connection string comes from `DATABASE_URL` (the nix dev shell exports
-//! a default pointing at the local cluster created by `just db-init`).
+//! The app is a client of the lana server and owns no Postgres: it embeds a
+//! SQLite database in the platform app-data directory as its offline cache.
 //! Schema changes are plain SQL files in `migrations/`, applied in filename
-//! order at app startup by sqlx. Never edit an already-applied migration –
-//! add a new numbered file instead.
+//! order at startup by sqlx. Never edit an already-applied migration – add a
+//! new numbered file instead.
+
+use std::path::Path;
 
 use anyhow::Context;
-use sqlx::PgPool;
+use sqlx::sqlite::{SqliteConnectOptions, SqliteJournalMode, SqlitePool, SqlitePoolOptions};
 
-/// Connects to Postgres and applies pending migrations.
-pub async fn init() -> anyhow::Result<PgPool> {
-    let url = std::env::var("DATABASE_URL").context(
-        "DATABASE_URL is not set – the nix dev shell exports a default; \
-         create the local cluster with `just db-init && just db-start && just db-createdb`",
-    )?;
-    let pool = PgPool::connect(&url)
+/// File name of the cache database inside the app-data directory.
+const CACHE_FILE: &str = "cache.sqlite3";
+
+/// Opens (creating if needed) the cache database in `app_data_dir` and
+/// applies pending migrations.
+pub async fn init(app_data_dir: &Path) -> anyhow::Result<SqlitePool> {
+    open_at(&app_data_dir.join(CACHE_FILE)).await
+}
+
+/// Opens (creating if needed) the cache database at `path` and applies
+/// pending migrations. Tests use this to work on a temp file.
+pub async fn open_at(path: &Path) -> anyhow::Result<SqlitePool> {
+    if let Some(parent) = path.parent() {
+        if !parent.as_os_str().is_empty() {
+            std::fs::create_dir_all(parent)
+                .with_context(|| format!("failed to create {}", parent.display()))?;
+        }
+    }
+    let options = SqliteConnectOptions::new()
+        .filename(path)
+        .create_if_missing(true)
+        // WAL lets map reads proceed while a sync writes (mobile-friendly).
+        .journal_mode(SqliteJournalMode::Wal)
+        .foreign_keys(true);
+    let pool = SqlitePoolOptions::new()
+        .max_connections(5)
+        .connect_with(options)
         .await
-        .context("failed to connect to Postgres (is the server running? try `just db-start`)")?;
+        .with_context(|| format!("failed to open SQLite cache at {}", path.display()))?;
     sqlx::migrate!("./migrations")
         .run(&pool)
         .await
-        .context("failed to apply migrations")?;
+        .context("failed to apply cache migrations")?;
     Ok(pool)
 }
 
@@ -29,22 +51,19 @@ pub async fn init() -> anyhow::Result<PgPool> {
 mod tests {
     use super::*;
 
-    /// Requires a running Postgres and `DATABASE_URL` (both provided by the
-    /// nix dev shell + `just db-start`). Skips silently otherwise.
-    #[test]
-    fn migrations_apply() {
-        if std::env::var("DATABASE_URL").is_err() {
-            eprintln!("DATABASE_URL not set – skipping postgres test");
-            return;
-        }
-        tauri::async_runtime::block_on(async move {
-            let pool = init().await.expect("db::init failed");
-            let (one,): (i32,) = sqlx::query_as("SELECT 1")
-                .fetch_one(&pool)
-                .await
-                .expect("query failed");
-            assert_eq!(one, 1);
-            pool.close().await;
-        });
+    /// A fresh cache file is created with the full schema applied (the
+    /// settings/meta tables exist and are queryable).
+    #[tokio::test]
+    async fn opens_new_cache_and_applies_migrations() {
+        let dir = tempfile::tempdir().unwrap();
+        let pool = open_at(&dir.path().join("subdir/cache.sqlite3"))
+            .await
+            .expect("open_at failed");
+        let (count,): (i64,) = sqlx::query_as("SELECT COUNT(*) FROM cache_meta")
+            .fetch_one(&pool)
+            .await
+            .expect("cache_meta should exist");
+        assert_eq!(count, 1, "exactly one cache_meta row");
+        pool.close().await;
     }
 }
