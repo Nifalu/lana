@@ -2,11 +2,23 @@
   /**
    * Full-screen opening overlay. Shows the looping logo while `visible`
    * is true and fades out when it turns false.
+   *
+   * Plays the opening sound once on mount. The Tauri webview allows
+   * media to start without a user gesture, so it plays there. Plain
+   * browsers block it, and then it simply stays silent.
    */
+  import { onMount } from 'svelte';
   import { fade } from 'svelte/transition';
   import Logo from './Logo.svelte';
+  import soundUrl from '../../assets/lana-sound.mp3';
 
   let { visible = true }: { visible?: boolean } = $props();
+
+  onMount(() => {
+    new Audio(soundUrl)
+      .play()
+      .catch(() => console.debug('opening sound: autoplay blocked by host'));
+  });
 </script>
 
 {#if visible}
