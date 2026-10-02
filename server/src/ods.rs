@@ -1,9 +1,10 @@
 //! Thin HTTP shell for the data.bs.ch Opendatasoft explore API v2.1.
 //!
 //! This module only *fetches* raw bodies. All parsing lives in
-//! [`crate::import`] as pure functions tested against committed fixtures –
-//! nothing here is exercised by tests, and the import never touches the
-//! network in tests (see [`DatasetSource`]).
+//! [`crate::import`] and [`crate::poller`] as pure functions tested against
+//! committed fixtures – nothing here is exercised by tests, and the import
+//! and poller never touch the network in tests (see [`DatasetSource`] and
+//! [`crate::poller::MeasurementSource`]).
 //!
 //! API notes (verified 2026-10-02, see the exploration notes):
 //! - `/exports/geojson` returns the complete dataset as a GeoJSON
@@ -18,6 +19,16 @@ use anyhow::Context;
 pub const DATASET_FOUNTAINS: &str = "100008";
 pub const DATASET_SWIM_AREAS: &str = "100270";
 pub const DATASET_AIR_STATIONS: &str = "100082";
+pub const DATASET_AIR_MEASUREMENTS: &str = "100009";
+pub const DATASET_RHINE: &str = "100046";
+pub const DATASET_POOLS: &str = "100384";
+
+/// Deterministic newest-first sorts for the live datasets – the poller reads
+/// only the newest rows, so each dataset's timestamp field (they all name it
+/// differently) must be sorted descending.
+pub const ORDER_BY_AIR_MEASUREMENTS: &str = "dates_max_date desc";
+pub const ORDER_BY_RHINE: &str = "startzeitpunkt desc";
+pub const ORDER_BY_POOLS: &str = "zeitpunkt_job desc";
 
 /// Where the Opendatasoft explore API lives unless `LANA_ODS_BASE_URL` says
 /// otherwise (overridable for local experiments).
@@ -136,6 +147,30 @@ impl DatasetSource for OdsClient {
             offset += rows;
         }
         Ok(pages)
+    }
+}
+
+/// Live-dataset fetching for the poller: newest-first pages of the three
+/// measurement datasets, sized to [`crate::poller::AIR_PAGE_SIZE`] (the
+/// API's maximum) so one walk covers the stations with few requests.
+impl crate::poller::MeasurementSource for OdsClient {
+    async fn air_page(&self, offset: usize) -> anyhow::Result<String> {
+        self.records_page(
+            DATASET_AIR_MEASUREMENTS,
+            crate::poller::AIR_PAGE_SIZE,
+            offset,
+            ORDER_BY_AIR_MEASUREMENTS,
+        )
+        .await
+    }
+
+    async fn rhine(&self) -> anyhow::Result<String> {
+        self.records_page(DATASET_RHINE, 1, 0, ORDER_BY_RHINE).await
+    }
+
+    async fn pools(&self) -> anyhow::Result<String> {
+        self.records_page(DATASET_POOLS, RECORDS_PAGE_SIZE, 0, ORDER_BY_POOLS)
+            .await
     }
 }
 

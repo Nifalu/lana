@@ -44,14 +44,23 @@ pub async fn reset_db(pool: &PgPool) {
 
 /// DatasetSource backed by the committed fixture files in `testdata/` – the
 /// same bodies the real Opendatasoft client would deliver, minus the network.
+/// Implements both the import source and the poller's [`MeasurementSource`],
+/// so tests drive one fixture set end to end. Individual fields are public
+/// and overridable (e.g. an empty air feed to simulate a silent station).
 pub(crate) struct FixtureSource {
     pub fountains: String,
+    pub air_measurements: String,
+    pub rhine: String,
+    pub pools: String,
 }
 
 impl Default for FixtureSource {
     fn default() -> Self {
         Self {
             fountains: include_str!("../testdata/fountains.geojson").to_string(),
+            air_measurements: include_str!("../testdata/air-measurements.json").to_string(),
+            rhine: include_str!("../testdata/rhine.json").to_string(),
+            pools: include_str!("../testdata/pools.json").to_string(),
         }
     }
 }
@@ -70,5 +79,24 @@ impl DatasetSource for FixtureSource {
             include_str!("../testdata/air-stations.json").to_string(),
             include_str!("../testdata/air-stations-page2.json").to_string(),
         ])
+    }
+}
+
+impl crate::poller::MeasurementSource for FixtureSource {
+    async fn air_page(&self, offset: usize) -> anyhow::Result<String> {
+        // The fixture is one 5-row page; anything beyond it is exhausted.
+        if offset == 0 {
+            Ok(self.air_measurements.clone())
+        } else {
+            Ok(r#"{"total_count": 5, "results": []}"#.to_string())
+        }
+    }
+
+    async fn rhine(&self) -> anyhow::Result<String> {
+        Ok(self.rhine.clone())
+    }
+
+    async fn pools(&self) -> anyhow::Result<String> {
+        Ok(self.pools.clone())
     }
 }
