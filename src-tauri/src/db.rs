@@ -39,8 +39,7 @@ pub fn init(data_dir: &Path) -> anyhow::Result<Connection> {
 
 /// Applies all migration batches newer than the current `user_version`.
 fn migrate(conn: &Connection) -> anyhow::Result<()> {
-    let mut current: u32 =
-        conn.query_row("PRAGMA user_version", [], |row| row.get(0))?;
+    let mut current = user_version(conn)?;
 
     for (idx, batch) in MIGRATIONS.iter().enumerate() {
         let version = (idx + 1) as u32;

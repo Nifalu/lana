@@ -21,9 +21,10 @@
           pkgs = nixpkgs.legacyPackages.${system};
           lib = pkgs.lib;
 
-          # Linux-only system libraries needed to build/run WebKitGTK (Tauri).
+          # GUI/system libraries for building and running Tauri on Linux.
+          # Reused for both linking (pkg-config) and the runtime LD_LIBRARY_PATH.
           # On macOS Tauri uses the system WebKit, so nothing extra is needed.
-          linuxGuiDeps = lib.optionals pkgs.stdenv.hostPlatform.isLinux (with pkgs; [
+          linuxGuiLibs = with pkgs; [
             glib
             gtk3
             webkitgtk_4_1
@@ -38,7 +39,7 @@
             openssl
             curl
             wget
-          ]);
+          ];
 
           commonDeps = with pkgs; [
             # Rust toolchain (pinned by flake.lock via nixpkgs)
@@ -64,25 +65,12 @@
         in
         {
           default = pkgs.mkShell {
-            buildInputs = linuxGuiDeps;
+            buildInputs = lib.optionals pkgs.stdenv.hostPlatform.isLinux linuxGuiLibs;
             nativeBuildInputs = commonDeps;
 
             env = lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
               # Runtime lookup for shared libs when running the debug binary
-              LD_LIBRARY_PATH = lib.makeLibraryPath (with pkgs; [
-                webkitgtk_4_1
-                gtk3
-                glib
-                gobject-introspection
-                gdk-pixbuf
-                pango
-                cairo
-                librsvg
-                libsoup_3
-                dbus
-                openssl
-                curl
-              ]);
+              LD_LIBRARY_PATH = lib.makeLibraryPath linuxGuiLibs;
               # SVG loading support for gdk-pixbuf
               GDK_PIXBUF_MODULE_FILE = "${pkgs.librsvg}/lib/gdk-pixbuf/loaders.cache";
               # glib networking modules (TLS) for WebKitGTK
