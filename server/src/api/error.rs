@@ -33,6 +33,9 @@ where
 #[derive(Debug)]
 pub enum ApiError {
     NotFound(&'static str),
+    /// A state conflict on a lifecycle action (e.g. a second responder):
+    /// the request is valid but the current status forbids it.
+    Conflict(&'static str),
     Validation(String),
     Database(sqlx::Error),
 }
@@ -54,6 +57,7 @@ impl IntoResponse for ApiError {
     fn into_response(self) -> Response {
         let (status, message) = match self {
             Self::NotFound(what) => (StatusCode::NOT_FOUND, what.to_string()),
+            Self::Conflict(why) => (StatusCode::CONFLICT, why.to_string()),
             Self::Validation(message) => (StatusCode::UNPROCESSABLE_ENTITY, message),
             Self::Database(err) => {
                 eprintln!("database error: {err}");

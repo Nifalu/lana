@@ -185,12 +185,6 @@ impl SseStream {
     }
 }
 
-/// Standard skip preamble: returns true when the caller should bail out
-/// because no database is configured.
-pub fn skip_reason() -> bool {
-    std::env::var("DATABASE_URL").is_err()
-}
-
 /// Standard skip preamble for DB-gated tests: use as
 /// `let Some(app) = test_app().await else { skip(); return; };`.
 pub fn skip() {
@@ -225,6 +219,18 @@ pub async fn send_json(
         serde_json::from_slice(&bytes).expect("response body is JSON")
     };
     (status, json)
+}
+
+/// Sends a request and returns only its status, ignoring the body (use when
+/// the rejection body is not JSON, e.g. axum's plain-text query rejections).
+pub async fn send_status(app: Router, method: &str, uri: &str) -> StatusCode {
+    let request = Request::builder()
+        .method(method)
+        .uri(uri)
+        .body(Body::empty())
+        .unwrap();
+    let response = app.oneshot(request).await.unwrap();
+    response.status()
 }
 
 /// A fresh random device UUID, unique per call so parallel tests never

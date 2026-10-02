@@ -115,7 +115,6 @@ async fn load_stations(pool: &PgPool) -> Result<FeatureCollection, super::ApiErr
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use crate::api::router;
     use crate::import;
     use crate::import::ImportSummary;

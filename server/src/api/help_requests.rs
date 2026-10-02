@@ -298,25 +298,222 @@ pub async fn list_help_requests(
     Ok(Json(rows.into_iter().map(HelpRequest::from_row).collect()))
 }
 
+/// Action payload for respond/resolve/cancel: the acting device (ADR 0004 –
+/// the device UUID is the whole identity).
+#[derive(Debug, Deserialize)]
+pub struct HelpRequestAction {
+    pub device_id: uuid::Uuid,
+}
+
+/// Responds to an SOS: the first responder wins and the status becomes
+/// `responded`; repeating the same responder's call is idempotent; any other
+/// device (or the requester) gets a conflict. Unknown requests are 404.
+/// A successful transition fans out `help_request_updated` to the requester,
+/// the responder and the originally notified helpers.
 pub async fn respond_help_request(
-    State(_state): State<AppState>,
-    Path(_request_id): Path<uuid::Uuid>,
+    State(state): State<AppState>,
+    Path(request_id): Path<uuid::Uuid>,
+    ApiJson(action): ApiJson<HelpRequestAction>,
 ) -> Result<Json<HelpRequest>, ApiError> {
-    Err(ApiError::NotFound("not implemented"))
+    let mut tx = state.pool.begin().await?;
+
+    // Parties decide every branch (404 vs idempotent vs conflict).
+    let parties: Option<(uuid::Uuid, String, Option<uuid::Uuid>)> = sqlx::query_as(
+        "SELECT requester_id, status, responder_id FROM help_requests WHERE id = $1",
+    )
+    .bind(request_id)
+    .fetch_optional(&mut *tx)
+    .await?;
+    let Some((requester_id, status, responder_id)) = parties else {
+        return Err(ApiError::NotFound("help request not found"));
+    };
+
+    let (request, changed) = if status == "open" && requester_id != action.device_id {
+        // The atomic claim: a concurrent second responder's UPDATE affects no
+        // row, and the None branch turns it into the conflict.
+        const CLAIM: &str = "UPDATE help_requests \
+             SET responder_id = $1, status = 'responded', updated_at = now() \
+             WHERE id = $2 AND status = 'open' \
+             RETURNING id, status, note, ST_X(location::geometry), \
+                 ST_Y(location::geometry), radius_m, created_at, updated_at";
+        let claimed: Option<HelpRequestRow> = sqlx::query_as(CLAIM)
+            .bind(action.device_id)
+            .bind(request_id)
+            .fetch_optional(&mut *tx)
+            .await?;
+        match claimed {
+            Some(row) => (HelpRequest::from_row(row), true),
+            None => return Err(ApiError::Conflict("someone else is already responding")),
+        }
+    } else if status == "responded" && responder_id == Some(action.device_id) {
+        // Idempotent repeat: no state change, no fan-out.
+        let request = fetch_request(&mut *tx, request_id)
+            .await?
+            .ok_or(ApiError::NotFound("help request not found"))?;
+        (request, false)
+    } else if requester_id == action.device_id {
+        return Err(ApiError::Conflict(
+            "the requester cannot respond to their own request",
+        ));
+    } else {
+        return Err(ApiError::Conflict(
+            "the request is no longer open for responses",
+        ));
+    };
+
+    tx.commit().await?;
+    if changed {
+        fan_out_status_change(&state, &request).await?;
+    }
+    Ok(Json(request))
 }
 
+/// Resolves an SOS: requester or responder only, and only from `responded`
+/// (the lifecycle is open → responded → resolved / cancelled). Re-resolving
+/// is idempotent for the participants; everyone else gets a conflict.
 pub async fn resolve_help_request(
-    State(_state): State<AppState>,
-    Path(_request_id): Path<uuid::Uuid>,
+    State(state): State<AppState>,
+    Path(request_id): Path<uuid::Uuid>,
+    ApiJson(action): ApiJson<HelpRequestAction>,
 ) -> Result<Json<HelpRequest>, ApiError> {
-    Err(ApiError::NotFound("not implemented"))
+    transition_request(
+        &state,
+        request_id,
+        action.device_id,
+        // 'resolved' → idempotent repeat; otherwise resolve is only valid
+        // from 'responded'.
+        |status, is_participant| {
+            if !is_participant {
+                Err("only the requester or the responder can resolve")
+            } else if status == "resolved" || status == "responded" {
+                Ok(())
+            } else {
+                Err("the request cannot be resolved from its current status")
+            }
+        },
+        "UPDATE help_requests SET status = 'resolved', updated_at = now() \
+         WHERE id = $1 AND status = 'responded' \
+         RETURNING id, status, note, ST_X(location::geometry), \
+             ST_Y(location::geometry), radius_m, created_at, updated_at",
+    )
+    .await
 }
 
+/// Cancels an SOS: requester only, and only while `open`.
 pub async fn cancel_help_request(
-    State(_state): State<AppState>,
-    Path(_request_id): Path<uuid::Uuid>,
+    State(state): State<AppState>,
+    Path(request_id): Path<uuid::Uuid>,
+    ApiJson(action): ApiJson<HelpRequestAction>,
 ) -> Result<Json<HelpRequest>, ApiError> {
-    Err(ApiError::NotFound("not implemented"))
+    transition_request(
+        &state,
+        request_id,
+        action.device_id,
+        |status, is_participant| {
+            if !is_participant {
+                Err("only the requester can cancel")
+            } else if status == "open" {
+                Ok(())
+            } else {
+                Err("only an open request can be cancelled")
+            }
+        },
+        "UPDATE help_requests SET status = 'cancelled', updated_at = now() \
+         WHERE id = $1 AND status = 'open' \
+         RETURNING id, status, note, ST_X(location::geometry), \
+             ST_Y(location::geometry), radius_m, created_at, updated_at",
+    )
+    .await
+}
+
+/// Shared transition for resolve/cancel: loads the parties, checks the
+/// rules (as `check`), applies `update` (a full `UPDATE … RETURNING <public
+/// columns>` literal) atomically when a change is due, commits and fans the
+/// new status out. Idempotent repeats change nothing and fan nothing out.
+async fn transition_request(
+    state: &AppState,
+    request_id: uuid::Uuid,
+    device_id: uuid::Uuid,
+    check: impl Fn(&str, bool) -> Result<(), &'static str>,
+    update: &'static str,
+) -> Result<Json<HelpRequest>, ApiError> {
+    let mut tx = state.pool.begin().await?;
+
+    let parties: Option<(uuid::Uuid, String, Option<uuid::Uuid>)> = sqlx::query_as(
+        "SELECT requester_id, status, responder_id FROM help_requests WHERE id = $1",
+    )
+    .bind(request_id)
+    .fetch_optional(&mut *tx)
+    .await?;
+    let Some((requester_id, status, responder_id)) = parties else {
+        return Err(ApiError::NotFound("help request not found"));
+    };
+    let is_participant = requester_id == device_id || responder_id == Some(device_id);
+
+    let (request, changed) = if status == "open" || status == "responded" {
+        check(&status, is_participant).map_err(ApiError::Conflict)?;
+        let row: HelpRequestRow = sqlx::query_as(update)
+            .bind(request_id)
+            .fetch_one(&mut *tx)
+            .await?;
+        (HelpRequest::from_row(row), true)
+    } else if status == "resolved" && is_participant {
+        // Terminal repeat: idempotent, no state change, no fan-out.
+        let request = fetch_request(&mut *tx, request_id)
+            .await?
+            .ok_or(ApiError::NotFound("help request not found"))?;
+        (request, false)
+    } else {
+        return Err(ApiError::Conflict(
+            "the request cannot transition from its current status",
+        ));
+    };
+
+    tx.commit().await?;
+    if changed {
+        fan_out_status_change(state, &request).await?;
+    }
+    Ok(Json(request))
+}
+
+/// The help request's public document, by id.
+async fn fetch_request(
+    exec: impl sqlx::PgExecutor<'_>,
+    request_id: uuid::Uuid,
+) -> Result<Option<HelpRequest>, ApiError> {
+    const SELECT: &str = "SELECT id, status, note, ST_X(location::geometry), \
+         ST_Y(location::geometry), radius_m, created_at, updated_at \
+         FROM help_requests WHERE id = $1";
+    let row: Option<HelpRequestRow> = sqlx::query_as(SELECT)
+        .bind(request_id)
+        .fetch_optional(exec)
+        .await?;
+    Ok(row.map(HelpRequest::from_row))
+}
+
+/// Publishes `help_request_updated` to everyone following this request:
+/// requester + responder + the originally notified helpers (ADR 0004),
+/// deduplicated.
+async fn fan_out_status_change(state: &AppState, request: &HelpRequest) -> Result<(), ApiError> {
+    let (requester_id, responder_id): (uuid::Uuid, Option<uuid::Uuid>) =
+        sqlx::query_as("SELECT requester_id, responder_id FROM help_requests WHERE id = $1")
+            .bind(request.id)
+            .fetch_one(&state.pool)
+            .await?;
+    let notified: Vec<(uuid::Uuid,)> =
+        sqlx::query_as("SELECT device_id FROM help_request_notified WHERE help_request_id = $1")
+            .bind(request.id)
+            .fetch_all(&state.pool)
+            .await?;
+
+    let mut targets = std::collections::HashSet::new();
+    targets.insert(requester_id);
+    targets.extend(responder_id);
+    targets.extend(notified.into_iter().map(|(id,)| id));
+    state
+        .hub
+        .publish(targets, Notification::HelpRequestUpdated(request.clone()));
+    Ok(())
 }
 
 #[cfg(test)]
@@ -852,5 +1049,360 @@ mod tests {
         assert_eq!(data["id"], wide["id"], "notified about the wide-radius SOS");
         assert_ne!(data["id"], default_sos["id"]);
         assert_anonymous(&data);
+    }
+
+    /// The respond transition: the first responder wins, repeating the same
+    /// responder's call is idempotent, any other device gets a conflict and
+    /// the requester cannot respond to their own SOS. Responder identity
+    /// never appears in any body (ADR 0004).
+    #[tokio::test]
+    async fn respond_first_wins_idempotent_conflicts_for_others() {
+        let Some(state) = test_state().await else {
+            skip();
+            return;
+        };
+        let _db = lock_db().await;
+        let app = router_with_state(&state);
+        let addr = spawn_server(app.clone()).await;
+        let sos_point = scenario_point();
+
+        let helper = new_device_id();
+        let requester = new_device_id();
+        put_device(&app, helper, true, Some(offset(sos_point, 30.0, 0.0))).await;
+        let mut stream = SseStream::connect(addr, helper).await;
+
+        let body = create_request(&app, create_payload(requester, sos_point)).await;
+        let id = body["id"].as_str().unwrap().to_string();
+        let _ = stream.read_event(SSE_EVENT_TIMEOUT).await; // help_request_new
+
+        // First responder wins.
+        let (status, responded) = send_json(
+            app.clone(),
+            "POST",
+            &format!("/api/v1/help-requests/{id}/respond"),
+            Some(json!({ "device_id": helper })),
+        )
+        .await;
+        assert_eq!(status, StatusCode::OK, "first responder wins: {responded}");
+        assert_eq!(responded["status"], "responded");
+        assert_anonymous(&responded);
+
+        // The same responder repeating is idempotent.
+        let (status, repeat) = send_json(
+            app.clone(),
+            "POST",
+            &format!("/api/v1/help-requests/{id}/respond"),
+            Some(json!({ "device_id": helper })),
+        )
+        .await;
+        assert_eq!(status, StatusCode::OK, "same responder repeats: {repeat}");
+        assert_eq!(repeat["status"], "responded");
+
+        // A different device gets a conflict.
+        let (status, conflict) = send_json(
+            app.clone(),
+            "POST",
+            &format!("/api/v1/help-requests/{id}/respond"),
+            Some(json!({ "device_id": new_device_id() })),
+        )
+        .await;
+        assert_eq!(status, StatusCode::CONFLICT, "other device: {conflict}");
+        assert!(conflict["error"].is_string());
+
+        // The requester cannot respond to their own SOS.
+        let (status, own) = send_json(
+            app.clone(),
+            "POST",
+            &format!("/api/v1/help-requests/{id}/respond"),
+            Some(json!({ "device_id": requester })),
+        )
+        .await;
+        assert_eq!(
+            status,
+            StatusCode::CONFLICT,
+            "requester self-respond: {own}"
+        );
+
+        // Unknown requests are 404.
+        let (status, unknown) = send_json(
+            app,
+            "POST",
+            &format!("/api/v1/help-requests/{}/respond", new_device_id()),
+            Some(json!({ "device_id": helper })),
+        )
+        .await;
+        assert_eq!(status, StatusCode::NOT_FOUND, "unknown request: {unknown}");
+
+        // Exactly one status fan-out reached the responder (the idempotent
+        // repeat and the rejected attempts changed nothing).
+        let (event, data) = stream.read_event(SSE_EVENT_TIMEOUT).await;
+        assert_eq!(event, "help_request_updated");
+        assert_eq!(data["id"], body["id"]);
+        assert_eq!(data["status"], "responded");
+        assert_anonymous(&data);
+        assert!(
+            stream.try_read_event(SSE_SILENCE_TIMEOUT).await.is_none(),
+            "no further events after the single transition"
+        );
+    }
+
+    /// Status changes fan out as `help_request_updated` to the requester,
+    /// the responder and the ORIGINALLY notified helpers – the helper here
+    /// moves away after matching and must still hear the fan-out (ADR 0004).
+    /// Helpers that never matched hear nothing.
+    #[tokio::test]
+    async fn status_changes_fan_out_to_requester_responder_and_originally_notified() {
+        let Some(state) = test_state().await else {
+            skip();
+            return;
+        };
+        let _db = lock_db().await;
+        let app = router_with_state(&state);
+        let addr = spawn_server(app.clone()).await;
+        let sos_point = scenario_point();
+
+        let helper = new_device_id();
+        let outsider = new_device_id();
+        let requester = new_device_id();
+        put_device(&app, helper, true, Some(offset(sos_point, 30.0, 0.0))).await;
+        put_device(&app, outsider, true, Some(offset(sos_point, 3_000.0, 0.0))).await;
+
+        let mut stream_helper = SseStream::connect(addr, helper).await;
+        let mut stream_outsider = SseStream::connect(addr, outsider).await;
+        let mut stream_requester = SseStream::connect(addr, requester).await;
+
+        let body = create_request(&app, create_payload(requester, sos_point)).await;
+        let id = body["id"].as_str().unwrap().to_string();
+        let (event, _) = stream_helper.read_event(SSE_EVENT_TIMEOUT).await;
+        assert_eq!(event, "help_request_new");
+        assert!(stream_requester
+            .try_read_event(SSE_SILENCE_TIMEOUT)
+            .await
+            .is_none());
+        assert!(stream_outsider
+            .try_read_event(SSE_SILENCE_TIMEOUT)
+            .await
+            .is_none());
+
+        // The helper moves away AFTER matching – fan-out still reaches it.
+        put_device(&app, helper, true, Some(offset(sos_point, 2_000.0, 0.0))).await;
+
+        let (status, responded) = send_json(
+            app.clone(),
+            "POST",
+            &format!("/api/v1/help-requests/{id}/respond"),
+            Some(json!({ "device_id": helper })),
+        )
+        .await;
+        assert_eq!(status, StatusCode::OK, "respond after moving: {responded}");
+
+        let (event, data) = stream_requester.read_event(SSE_EVENT_TIMEOUT).await;
+        assert_eq!(
+            event, "help_request_updated",
+            "requester sees the transition"
+        );
+        assert_eq!(data["status"], "responded");
+        assert_anonymous(&data);
+        let (event, data) = stream_helper.read_event(SSE_EVENT_TIMEOUT).await;
+        assert_eq!(event, "help_request_updated", "responder hears the fan-out");
+        assert_eq!(data["status"], "responded");
+        assert!(
+            stream_outsider
+                .try_read_event(SSE_SILENCE_TIMEOUT)
+                .await
+                .is_none(),
+            "unmatched helper must not be fanned out to"
+        );
+
+        // Requester resolves; everyone addressed hears it, the moved-away
+        // helper included (originally notified set).
+        let (status, resolved) = send_json(
+            app.clone(),
+            "POST",
+            &format!("/api/v1/help-requests/{id}/resolve"),
+            Some(json!({ "device_id": requester })),
+        )
+        .await;
+        assert_eq!(status, StatusCode::OK, "requester resolves: {resolved}");
+        assert_eq!(resolved["status"], "resolved");
+        for (stream, who) in [
+            (&mut stream_requester, "requester"),
+            (&mut stream_helper, "originally notified helper"),
+        ] {
+            let (event, data) = stream.read_event(SSE_EVENT_TIMEOUT).await;
+            assert_eq!(event, "help_request_updated", "{who} hears the resolve");
+            assert_eq!(data["status"], "resolved");
+            assert_anonymous(&data);
+        }
+        assert!(stream_outsider
+            .try_read_event(SSE_SILENCE_TIMEOUT)
+            .await
+            .is_none());
+
+        // Re-resolving is idempotent and emits no further events; an
+        // uninvolved device cannot resolve.
+        let (status, again) = send_json(
+            app.clone(),
+            "POST",
+            &format!("/api/v1/help-requests/{id}/resolve"),
+            Some(json!({ "device_id": requester })),
+        )
+        .await;
+        assert_eq!(status, StatusCode::OK, "resolve is idempotent: {again}");
+        let (status, forbidden) = send_json(
+            app,
+            "POST",
+            &format!("/api/v1/help-requests/{id}/resolve"),
+            Some(json!({ "device_id": outsider })),
+        )
+        .await;
+        assert_eq!(
+            status,
+            StatusCode::CONFLICT,
+            "uninvolved resolver: {forbidden}"
+        );
+        for (stream, who) in [
+            (&mut stream_requester, "requester"),
+            (&mut stream_helper, "helper"),
+            (&mut stream_outsider, "outsider"),
+        ] {
+            assert!(
+                stream.try_read_event(SSE_SILENCE_TIMEOUT).await.is_none(),
+                "{who} must hear nothing more"
+            );
+        }
+    }
+
+    /// Cancel works only for the requester and only while open; the
+    /// responder can resolve a request they responded to.
+    #[tokio::test]
+    async fn cancel_rules_and_responder_resolve() {
+        let Some(state) = test_state().await else {
+            skip();
+            return;
+        };
+        let _db = lock_db().await;
+        let app = router_with_state(&state);
+        let addr = spawn_server(app.clone()).await;
+        let sos_point = scenario_point();
+
+        let helper = new_device_id();
+        let requester = new_device_id();
+        put_device(&app, helper, true, Some(offset(sos_point, 30.0, 0.0))).await;
+        let mut stream = SseStream::connect(addr, helper).await;
+
+        // Cancelled while open: only the requester may cancel.
+        let body = create_request(&app, create_payload(requester, sos_point)).await;
+        let id = body["id"].as_str().unwrap().to_string();
+        let _ = stream.read_event(SSE_EVENT_TIMEOUT).await;
+
+        let (status, foreign) = send_json(
+            app.clone(),
+            "POST",
+            &format!("/api/v1/help-requests/{id}/cancel"),
+            Some(json!({ "device_id": helper })),
+        )
+        .await;
+        assert_eq!(
+            status,
+            StatusCode::CONFLICT,
+            "only requester cancels: {foreign}"
+        );
+
+        let (status, cancelled) = send_json(
+            app.clone(),
+            "POST",
+            &format!("/api/v1/help-requests/{id}/cancel"),
+            Some(json!({ "device_id": requester })),
+        )
+        .await;
+        assert_eq!(status, StatusCode::OK, "requester cancels: {cancelled}");
+        assert_eq!(cancelled["status"], "cancelled");
+        assert_anonymous(&cancelled);
+
+        let (status, late) = send_json(
+            app.clone(),
+            "POST",
+            &format!("/api/v1/help-requests/{id}/respond"),
+            Some(json!({ "device_id": helper })),
+        )
+        .await;
+        assert_eq!(
+            status,
+            StatusCode::CONFLICT,
+            "no respond after cancel: {late}"
+        );
+        let (status, twice) = send_json(
+            app.clone(),
+            "POST",
+            &format!("/api/v1/help-requests/{id}/cancel"),
+            Some(json!({ "device_id": requester })),
+        )
+        .await;
+        assert_eq!(status, StatusCode::CONFLICT, "no second cancel: {twice}");
+        let (status, unresolvable) = send_json(
+            app.clone(),
+            "POST",
+            &format!("/api/v1/help-requests/{id}/resolve"),
+            Some(json!({ "device_id": requester })),
+        )
+        .await;
+        assert_eq!(
+            status,
+            StatusCode::CONFLICT,
+            "no resolve after cancel: {unresolvable}"
+        );
+
+        // A responded request can no longer be cancelled but the responder
+        // can resolve it.
+        let body = create_request(&app, create_payload(requester, sos_point)).await;
+        let id = body["id"].as_str().unwrap().to_string();
+        let _ = stream.read_event(SSE_EVENT_TIMEOUT).await;
+        let (status, responded) = send_json(
+            app.clone(),
+            "POST",
+            &format!("/api/v1/help-requests/{id}/respond"),
+            Some(json!({ "device_id": helper })),
+        )
+        .await;
+        assert_eq!(status, StatusCode::OK, "helper responds: {responded}");
+        let (status, no_cancel) = send_json(
+            app.clone(),
+            "POST",
+            &format!("/api/v1/help-requests/{id}/cancel"),
+            Some(json!({ "device_id": requester })),
+        )
+        .await;
+        assert_eq!(
+            status,
+            StatusCode::CONFLICT,
+            "no cancel after respond: {no_cancel}"
+        );
+        let (status, resolved) = send_json(
+            app.clone(),
+            "POST",
+            &format!("/api/v1/help-requests/{id}/resolve"),
+            Some(json!({ "device_id": helper })),
+        )
+        .await;
+        assert_eq!(status, StatusCode::OK, "responder resolves: {resolved}");
+        assert_eq!(resolved["status"], "resolved");
+        assert_anonymous(&resolved);
+    }
+
+    /// The events endpoint rejects a malformed device_id (not a UUID).
+    #[tokio::test]
+    async fn events_rejects_malformed_device_id() {
+        let Some(app) = list_app().await else {
+            skip();
+            return;
+        };
+        let status = super::super::test_support::send_status(
+            app,
+            "GET",
+            "/api/v1/events?device_id=not-a-uuid",
+        )
+        .await;
+        assert!(!status.is_success(), "malformed device_id must be rejected");
     }
 }

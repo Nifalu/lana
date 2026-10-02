@@ -54,12 +54,18 @@ impl Notification {
     }
 }
 
+/// One device's open streams; cloning a sender adds a delivery route.
+type DeviceStreams = Vec<mpsc::UnboundedSender<Arc<Notification>>>;
+
+/// The hub's routing table: device UUID → its open streams.
+type Subscribers = Arc<Mutex<HashMap<uuid::Uuid, DeviceStreams>>>;
+
 /// In-memory fan-out hub: routes notifications to the SSE connections of the
 /// addressed devices. Cloning shares one routing table; devices can hold
 /// several concurrent streams (all receive the notification).
 #[derive(Clone, Default)]
 pub struct Hub {
-    subscribers: Arc<Mutex<HashMap<uuid::Uuid, Vec<mpsc::UnboundedSender<Arc<Notification>>>>>>,
+    subscribers: Subscribers,
 }
 
 impl Hub {
