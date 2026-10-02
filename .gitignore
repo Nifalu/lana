@@ -1,0 +1,20 @@
+# Rust
+/src-tauri/target
+
+# Tauri codegen output
+/src-tauri/gen/schemas
+
+# Node
+node_modules/
+
+# Nix
+result
+.direnv/
+
+# SQLite
+*.db
+*.db-wal
+*.db-shm
+
+# Misc
+.DS_Store
