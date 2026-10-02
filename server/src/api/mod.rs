@@ -2,6 +2,8 @@
 
 pub mod devices;
 pub mod error;
+pub mod events;
+pub mod help_requests;
 pub mod snapshot;
 #[cfg(test)]
 pub(crate) mod test_support;
@@ -9,18 +11,35 @@ pub mod types;
 pub mod windows;
 
 use axum::response::{IntoResponse, Response};
-use axum::routing::{get, patch, put};
+use axum::routing::{get, patch, post, put};
 use axum::Router;
 use sqlx::PgPool;
 use tower_http::cors::CorsLayer;
 
+/// Shared handler state: the Postgres pool plus the in-memory SSE hub that
+/// routes notifications to connected devices (ADR 0003).
+#[derive(Clone)]
+pub struct AppState {
+    pub pool: PgPool,
+    pub hub: events::Hub,
+}
+
 /// Builds the application router around the shared Postgres pool (CORS is
-/// permissive for the prototype).
+/// permissive for the prototype) with a fresh notification hub.
 ///
 /// Identity note: the `device_id` in a request path *is* the caller (ADR 0004
 /// – no accounts, no secrets). Every devices/windows handler scopes its SQL to
 /// that id, so a device can only ever read or change its own rows.
 pub fn router(pool: PgPool) -> Router {
+    router_with_state(AppState {
+        pool,
+        hub: events::Hub::new(),
+    })
+}
+
+/// Builds the router around an explicit state (used by tests to share one
+/// hub across assertions).
+pub fn router_with_state(state: AppState) -> Router {
     Router::new()
         .route("/api/v1/snapshot", get(snapshot::get_snapshot))
         .route("/api/v1/devices/{device_id}", put(devices::upsert_device))
@@ -32,8 +51,25 @@ pub fn router(pool: PgPool) -> Router {
             "/api/v1/devices/{device_id}/windows/{window_id}",
             patch(windows::patch_window).delete(windows::delete_window),
         )
+        .route(
+            "/api/v1/help-requests",
+            get(help_requests::list_help_requests).post(help_requests::create_help_request),
+        )
+        .route(
+            "/api/v1/help-requests/{request_id}/respond",
+            post(help_requests::respond_help_request),
+        )
+        .route(
+            "/api/v1/help-requests/{request_id}/resolve",
+            post(help_requests::resolve_help_request),
+        )
+        .route(
+            "/api/v1/help-requests/{request_id}/cancel",
+            post(help_requests::cancel_help_request),
+        )
+        .route("/api/v1/events", get(events::events))
         .layer(CorsLayer::permissive())
-        .with_state(pool)
+        .with_state(state)
 }
 
 /// Handler-level error: anything goes wrong → 500 with the error chain as
@@ -97,10 +133,14 @@ mod tests {
             .unwrap();
         let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
 
+        // Structural assertions only: whether pois/stations are empty depends
+        // on whether the import (ticket 02) has run against this shared,
+        // persistent per-ticket database – an emptiness claim can never hold
+        // there once it has.
         assert_eq!(json["pois"]["type"], "FeatureCollection");
-        assert_eq!(json["pois"]["features"], serde_json::json!([]));
+        assert!(json["pois"]["features"].is_array());
         assert_eq!(json["stations"]["type"], "FeatureCollection");
-        assert_eq!(json["stations"]["features"], serde_json::json!([]));
+        assert!(json["stations"]["features"].is_array());
 
         let generated_at = json["generated_at"]
             .as_str()

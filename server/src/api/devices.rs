@@ -11,10 +11,10 @@ use axum::extract::{Path, State};
 use axum::Json;
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
-use sqlx::PgPool;
 
 use super::error::ApiError;
 use super::types::LonLat;
+use super::AppState;
 
 /// The device's self-declared state.
 #[derive(Debug, Deserialize)]
@@ -38,7 +38,7 @@ pub struct Device {
 /// Inserts the device if unknown, otherwise updates its state and refreshes
 /// `last_seen_at`. Idempotent per device_id.
 pub async fn upsert_device(
-    State(pool): State<PgPool>,
+    State(state): State<AppState>,
     Path(device_id): Path<uuid::Uuid>,
     Json(payload): Json<DeviceUpsert>,
 ) -> Result<Json<Device>, ApiError> {
@@ -64,7 +64,7 @@ pub async fn upsert_device(
             .bind(payload.is_helper)
             .bind(location.lon)
             .bind(location.lat)
-            .fetch_one(&pool)
+            .fetch_one(&state.pool)
             .await?
         }
         None => {
@@ -78,7 +78,7 @@ pub async fn upsert_device(
             )
             .bind(device_id)
             .bind(payload.is_helper)
-            .fetch_one(&pool)
+            .fetch_one(&state.pool)
             .await?
         }
     };

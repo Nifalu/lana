@@ -129,12 +129,63 @@ Window document:
 
 `GET /api/v1/snapshot` – full offline-sync snapshot (GeoJSON
 FeatureCollections for `pois` and `stations` + `generated_at`). Ticket 02
-fills it from Postgres.
+fills it from Postgres. Station features carry `id`, `kind`, `name`,
+`source` plus their latest measurement from the poller: `temperature_c`
+(number, °C) and `measured_at` (RFC 3339) – both `null` while the station
+has never reported, last known value once it has.
 
-Station features carry `id`, `kind`, `name`, `source` plus their latest
-measurement from the poller: `temperature_c` (number, °C) and `measured_at`
-(RFC 3339) – both `null` while the station has never reported, last known
-value once it has.
+### Help requests (SOS)
+
+The anonymous help platform (ADR 0004). A person feeling unwell creates a
+request with their location (GPS fix or dropped pin) and an optional short
+note; nearby helpers are matched and notified over SSE. There are no
+requester/responder identity fields anywhere on the wire – parties only
+observe status transitions.
+
+- `POST /api/v1/help-requests` – create, `201`. Payload:
+  `{ "device_id": "…", "location": {"lon": …, "lat": …}, "note": "…", "radius_m": 500 }`
+  (`note` optional, ≤ 500 chars; `radius_m` optional, default 500). The
+  requester device is auto-registered when unknown; status starts `open`.
+  At creation the server matches helpers: devices sharing a live location
+  within the radius and seen in the last 24 h, or with an **active** window
+  whose weekday/time-of-day (Europe/Zurich) contains now and whose window
+  point lies within the radius. Matched helpers receive `help_request_new`.
+- `GET /api/v1/help-requests?status=open&near=7.59,47.56&radius_m=500` –
+  list for the helper map; all filters optional.
+- `POST /api/v1/help-requests/{request_id}/respond` – payload
+  `{ "device_id": "…" }`. First responder wins → `responded`; the same
+  responder repeating is idempotent (`200`); a different device gets `409`.
+- `POST /api/v1/help-requests/{request_id}/resolve` – requester or
+  responder → `resolved`.
+- `POST /api/v1/help-requests/{request_id}/cancel` – requester only, only
+  while `open` → `cancelled`.
+
+Help-request document (also the SSE event data):
+
+```json
+{
+  "id": "…",
+  "status": "open",
+  "note": "dizzy, need water",
+  "location": { "lon": 7.5886, "lat": 47.5596 },
+  "radius_m": 500.0,
+  "created_at": "2026-10-02T12:00:00Z",
+  "updated_at": "2026-10-02T12:00:00Z"
+}
+```
+
+### Events (SSE)
+
+`GET /api/v1/events?device_id=<uuid>` – server-sent events addressed to
+this device (ADR 0003):
+
+- `help_request_new` – a new SOS the device was matched for;
+- `help_request_updated` – a status change of a request the device is a
+  party to (requester/responder) or was originally notified about.
+
+Event data is the help-request document above. The hub is in-memory and
+per-process: notifications reach devices whose stream is open when the
+event is published (SSE only for the prototype, no push).
 
 ### Errors
 

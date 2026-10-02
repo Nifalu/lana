@@ -25,9 +25,11 @@ pub struct Snapshot {
     pub generated_at: DateTime<Utc>,
 }
 
-pub async fn get_snapshot(State(pool): State<PgPool>) -> Result<Json<Snapshot>, super::ApiError> {
-    let pois = load_pois(&pool).await?;
-    let stations = load_stations(&pool).await?;
+pub async fn get_snapshot(
+    State(state): State<super::AppState>,
+) -> Result<Json<Snapshot>, super::ApiError> {
+    let pois = load_pois(&state.pool).await?;
+    let stations = load_stations(&state.pool).await?;
     Ok(Json(Snapshot {
         pois,
         stations,
@@ -128,7 +130,7 @@ async fn load_stations(pool: &PgPool) -> Result<FeatureCollection, super::ApiErr
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use chrono::DateTime;
     use crate::api::router;
     use crate::import;
     use crate::import::ImportSummary;
