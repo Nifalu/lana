@@ -64,7 +64,13 @@ mod tests {
         assert_eq!(ext, "postgis");
 
         // The core schema tables exist.
-        for table in ["pois", "stations", "measurements", "devices", "helper_windows"] {
+        for table in [
+            "pois",
+            "stations",
+            "measurements",
+            "devices",
+            "helper_windows",
+        ] {
             let (name,): (Option<String>,) = sqlx::query_as("SELECT to_regclass($1)::text")
                 .bind(table)
                 .fetch_one(&pool)

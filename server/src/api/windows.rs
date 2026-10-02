@@ -69,9 +69,6 @@ pub struct Window {
 /// Column order shared by SELECT and RETURNING clauses.
 type WindowRow = (i64, bool, i16, NaiveTime, NaiveTime, f64, f64, f64, String);
 
-const WINDOW_COLUMNS: &str = "id, active, weekday, start_time, end_time, \
-     ST_X(location::geometry), ST_Y(location::geometry), radius_m, label";
-
 impl Window {
     fn from_row(device_id: uuid::Uuid, row: WindowRow) -> Self {
         let (id, active, weekday, start_time, end_time, lon, lat, radius_m, label) = row;
@@ -347,15 +344,19 @@ mod tests {
             json!({"weekday": -1}),
             json!({"radius_m": 0}),
             json!({"radius_m": -5}),
-            json!({"end_time": "09:00"}),  // end == start
-            json!({"end_time": "08:00"}),  // end < start
+            json!({"end_time": "09:00"}), // end == start
+            json!({"end_time": "08:00"}), // end < start
             json!({"location": {"lon": 200.0, "lat": 47.5}}),
             json!({"location": {"lon": 7.5, "lat": 91.0}}),
         ];
         for override_payload in invalid_payloads {
             let mut payload = valid.clone();
             payload.as_object_mut().unwrap().extend(
-                override_payload.as_object().unwrap().iter().map(|(k, v)| (k.clone(), v.clone())),
+                override_payload
+                    .as_object()
+                    .unwrap()
+                    .iter()
+                    .map(|(k, v)| (k.clone(), v.clone())),
             );
             let (status, body) = send_json(app.clone(), "POST", &uri, Some(payload)).await;
             assert_eq!(
@@ -397,11 +398,7 @@ mod tests {
         assert_eq!(status, StatusCode::NOT_FOUND);
     }
 
-    async fn create_window_for(
-        app: &axum::Router,
-        device_id: uuid::Uuid,
-        payload: Value,
-    ) -> Value {
+    async fn create_window_for(app: &axum::Router, device_id: uuid::Uuid, payload: Value) -> Value {
         let (status, body) = send_json(
             app.clone(),
             "POST",
@@ -426,7 +423,8 @@ mod tests {
         let uri = format!("/api/v1/devices/{device_id}/windows/{}", window["id"]);
 
         // Vacation: toggle off. The window must stay listed, inactive.
-        let (status, patched) = send_json(app.clone(), "PATCH", &uri, Some(json!({"active": false}))).await;
+        let (status, patched) =
+            send_json(app.clone(), "PATCH", &uri, Some(json!({"active": false}))).await;
         assert_eq!(status, StatusCode::OK);
         assert_eq!(patched["active"], false);
         assert_eq!(patched["label"], "Büro", "unrelated fields stay");
@@ -563,7 +561,11 @@ mod tests {
 
         let (status, listed) = list_windows(&app, intruder).await;
         assert_eq!(status, StatusCode::OK);
-        assert_eq!(listed.as_array().expect("array").len(), 0, "foreign windows invisible");
+        assert_eq!(
+            listed.as_array().expect("array").len(),
+            0,
+            "foreign windows invisible"
+        );
 
         let (status, _) = send_json(
             app.clone(),

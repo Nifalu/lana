@@ -50,33 +50,37 @@ pub async fn upsert_device(
     // sharing") leaves a previously shared location untouched on update;
     // an explicit null clears it via EXCLUDED.last_location = NULL.
     let (created_at, last_seen_at): (DateTime<Utc>, DateTime<Utc>) = match &payload.location {
-        Some(location) => sqlx::query_as(
-            "INSERT INTO devices (id, is_helper, last_location, last_seen_at) \
+        Some(location) => {
+            sqlx::query_as(
+                "INSERT INTO devices (id, is_helper, last_location, last_seen_at) \
              VALUES ($1, $2, ST_SetSRID(ST_MakePoint($3, $4), 4326)::geography, now()) \
              ON CONFLICT (id) DO UPDATE SET \
                  is_helper = EXCLUDED.is_helper, \
                  last_location = EXCLUDED.last_location, \
                  last_seen_at = now() \
              RETURNING created_at, last_seen_at",
-        )
-        .bind(device_id)
-        .bind(payload.is_helper)
-        .bind(location.lon)
-        .bind(location.lat)
-        .fetch_one(&pool)
-        .await?,
-        None => sqlx::query_as(
-            "INSERT INTO devices (id, is_helper, last_seen_at) \
+            )
+            .bind(device_id)
+            .bind(payload.is_helper)
+            .bind(location.lon)
+            .bind(location.lat)
+            .fetch_one(&pool)
+            .await?
+        }
+        None => {
+            sqlx::query_as(
+                "INSERT INTO devices (id, is_helper, last_seen_at) \
              VALUES ($1, $2, now()) \
              ON CONFLICT (id) DO UPDATE SET \
                  is_helper = EXCLUDED.is_helper, \
                  last_seen_at = now() \
              RETURNING created_at, last_seen_at",
-        )
-        .bind(device_id)
-        .bind(payload.is_helper)
-        .fetch_one(&pool)
-        .await?,
+            )
+            .bind(device_id)
+            .bind(payload.is_helper)
+            .fetch_one(&pool)
+            .await?
+        }
     };
 
     Ok(Json(Device {
@@ -220,6 +224,9 @@ mod tests {
         .await;
 
         assert_eq!(status, StatusCode::UNPROCESSABLE_ENTITY);
-        assert!(body["error"].as_str().expect("error message").contains("lon"));
+        assert!(body["error"]
+            .as_str()
+            .expect("error message")
+            .contains("lon"));
     }
 }

@@ -8,7 +8,7 @@ pub(crate) mod test_support;
 pub mod types;
 pub mod windows;
 
-use axum::routing::{get, patch, post, put};
+use axum::routing::{get, patch, put};
 use axum::Router;
 use sqlx::PgPool;
 use tower_http::cors::CorsLayer;
