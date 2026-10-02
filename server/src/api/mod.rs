@@ -151,10 +151,12 @@ mod tests {
     /// The permissive CORS policy is visible on responses even when the
     /// database is unreachable (handler errors must not strip the headers).
     /// The pool is created lazily against a closed port, so no server is
-    /// needed and no fixed port is bound.
+    /// needed and no fixed port is bound; the short acquire timeout keeps
+    /// the unreachable database from costing the default 30 s per run.
     #[tokio::test]
     async fn snapshot_response_carries_permissive_cors_header() {
         let pool = sqlx::postgres::PgPoolOptions::new()
+            .acquire_timeout(std::time::Duration::from_millis(250))
             .connect_lazy("postgres://lana:lana@127.0.0.1:1/does_not_exist")
             .unwrap();
         let app = router(pool);
