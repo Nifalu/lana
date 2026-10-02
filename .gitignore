@@ -11,10 +11,9 @@ node_modules/
 result
 .direnv/
 
-# SQLite
-*.db
-*.db-wal
-*.db-shm
+# Local Postgres dev cluster
+/.pgdata/
+/.pgdata.log
 
 # Misc
 .DS_Store

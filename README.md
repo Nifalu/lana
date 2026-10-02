@@ -28,8 +28,11 @@ just dev      # run the app (first build takes a while)
 
 - Frontend framework is not chosen yet; `frontend/dist` holds a static
   placeholder that `just dev` serves.
-- SQLite via bundled rusqlite. Schema changes are appended to `MIGRATIONS` in
-  `src-tauri/src/db.rs`. Inspect the DB with `sqlite3` from the dev shell.
+- PostgreSQL (+ PostGIS for GIS work). The dev shell exports `DATABASE_URL`
+  (`postgres://lana:lana@127.0.0.1:5432/lana`). First time, run
+  `just db-init`, `just db-start`, `just db-createdb`; stop with `just db-stop`.
+  Inspect the DB with `psql "$DATABASE_URL"`. Schema changes are SQL files in
+  `src-tauri/migrations/`, applied at app startup by sqlx.
 - The Tauri CLI is invoked as `cargo tauri …` (nixpkgs ships it as
   `cargo-tauri`).
 - No Nix? Install Rust, Node, and the

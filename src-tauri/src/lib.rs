@@ -1,12 +1,10 @@
 mod db;
 
-use std::sync::Mutex;
-
 use tauri::{Manager, State};
 
 /// Shared application state managed by Tauri.
 pub struct AppState {
-    pub conn: Mutex<rusqlite::Connection>,
+    pub pool: sqlx::PgPool,
 }
 
 /// Example command – reachable from the frontend via `invoke("greet", { name })`.
@@ -17,22 +15,23 @@ fn greet(name: &str) -> String {
 
 /// Example command demonstrating DB access from the frontend.
 #[tauri::command]
-fn db_user_version(state: State<AppState>) -> Result<u32, String> {
-    let conn = state.conn.lock().map_err(|e| e.to_string())?;
-    db::user_version(&conn).map_err(|e| e.to_string())
+async fn db_version(state: State<'_, AppState>) -> Result<String, String> {
+    let (version,): (String,) = sqlx::query_as("SELECT version()")
+        .fetch_one(&state.pool)
+        .await
+        .map_err(|e| e.to_string())?;
+    Ok(version)
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
         .setup(|app| {
-            let conn = db::init(&app.path().app_data_dir()?)?;
-            app.manage(AppState {
-                conn: Mutex::new(conn),
-            });
+            let pool = tauri::async_runtime::block_on(db::init())?;
+            app.manage(AppState { pool });
             Ok(())
         })
-        .invoke_handler(tauri::generate_handler![greet, db_user_version])
+        .invoke_handler(tauri::generate_handler![greet, db_version])
         .run(tauri::generate_context!())
         .expect("error while running lana");
 }

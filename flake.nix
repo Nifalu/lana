@@ -55,8 +55,10 @@
             # Frontend tooling – extend once the framework is chosen
             nodejs
 
-            # DB
-            sqlite # CLI for inspecting the app database
+            # Postgres with PostGIS (GIS work) – CLI + local server for dev
+            (if pkgs.stdenv.hostPlatform.isLinux then
+              pkgs.postgresql.withPackages (p: [ p.postgis ])
+            else pkgs.postgresql)
 
             # Misc
             just
@@ -68,7 +70,10 @@
             buildInputs = lib.optionals pkgs.stdenv.hostPlatform.isLinux linuxGuiLibs;
             nativeBuildInputs = commonDeps;
 
-            env = lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
+            env = {
+              # Local dev database (create with: just db-init && just db-start && just db-createdb)
+              DATABASE_URL = "postgres://lana:lana@127.0.0.1:5432/lana";
+            } // lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
               # Runtime lookup for shared libs when running the debug binary
               LD_LIBRARY_PATH = lib.makeLibraryPath linuxGuiLibs;
               # SVG loading support for gdk-pixbuf
@@ -78,9 +83,9 @@
             };
 
             shellHook = ''
-              echo "lana dev shell – rust $(rustc --version | cut -d' ' -f2), node $(node --version), sqlite $(sqlite3 --version | cut -d' ' -f1)"
-              echo "quick start: just dev"
-            '';
+              echo "lana dev shell – rust $(rustc --version | cut -d' ' -f2), node $(node --version), postgres $(psql --version | awk '{print $3}')"
+              echo "quick start: just db-init && just db-start && just db-createdb (once), then just dev"
+                        '';
           };
         });
     };
