@@ -79,48 +79,66 @@ async fn load_pois(pool: &PgPool) -> Result<FeatureCollection, super::ApiError> 
 }
 
 /// Loads every station as a GeoJSON feature; the station `id` doubles as the
-/// join key for later measurement tickets.
+/// join key for later measurement tickets. Each feature carries its latest
+/// measurement (`temperature_c` + `measured_at`, both null until the poller
+/// has seen the station report) so the snapshot serves "now" values and the
+/// offline cache keeps the last known reading.
 async fn load_stations(pool: &PgPool) -> Result<FeatureCollection, super::ApiError> {
     let rows = sqlx::query_as::<
         _,
         (
-            String, // id
-            String, // kind
-            String, // name
-            String, // source
-            String, // ST_AsGeoJSON(geom)
+            String,                // id
+            String,                // kind
+            String,                // name
+            String,                // source
+            String,                // ST_AsGeoJSON(geom)
+            Option<f64>,           // latest temperature_c
+            Option<DateTime<Utc>>, // latest measured_at
         ),
     >(
-        "SELECT id, kind, name, source, COALESCE(ST_AsGeoJSON(geom), '') \
-         FROM stations ORDER BY id",
+        "SELECT s.id, s.kind, s.name, s.source, COALESCE(ST_AsGeoJSON(s.geom), ''), \
+                m.temperature_c, m.measured_at \
+         FROM stations s \
+         LEFT JOIN LATERAL ( \
+             SELECT temperature_c, measured_at FROM measurements \
+             WHERE station_id = s.id ORDER BY measured_at DESC LIMIT 1 \
+         ) m ON true \
+         ORDER BY s.id",
     )
     .fetch_all(pool)
     .await?;
 
     let features = rows
         .into_iter()
-        .map(|(id, kind, name, source, geojson)| {
-            let geometry: Geometry = serde_json::from_str(&geojson)
-                .map_err(|e| anyhow::anyhow!("stored geometry is not valid GeoJSON: {e}"))?;
-            let mut properties = serde_json::Map::new();
-            properties.insert("id".to_string(), json!(id));
-            properties.insert("kind".to_string(), json!(kind));
-            properties.insert("name".to_string(), json!(name));
-            properties.insert("source".to_string(), json!(source));
-            Ok(Feature::new(geometry, properties))
-        })
+        .map(
+            |(id, kind, name, source, geojson, temperature_c, measured_at)| {
+                let geometry: Geometry = serde_json::from_str(&geojson)
+                    .map_err(|e| anyhow::anyhow!("stored geometry is not valid GeoJSON: {e}"))?;
+                let mut properties = serde_json::Map::new();
+                properties.insert("id".to_string(), json!(id));
+                properties.insert("kind".to_string(), json!(kind));
+                properties.insert("name".to_string(), json!(name));
+                properties.insert("source".to_string(), json!(source));
+                properties.insert("temperature_c".to_string(), json!(temperature_c));
+                properties.insert("measured_at".to_string(), json!(measured_at));
+                Ok(Feature::new(geometry, properties))
+            },
+        )
         .collect::<Result<Vec<_>, super::ApiError>>()?;
     Ok(FeatureCollection::new(features))
 }
 
 #[cfg(test)]
 mod tests {
+    use chrono::DateTime;
     use crate::api::router;
     use crate::import;
     use crate::import::ImportSummary;
+    use crate::poller;
     use crate::test_support::{self, FixtureSource};
     use axum::body::Body;
     use axum::http::{Request, StatusCode};
+    use chrono::TimeZone;
     use tower::ServiceExt;
 
     async fn get_snapshot_json(app: &axum::Router) -> serde_json::Value {
@@ -271,6 +289,74 @@ mod tests {
         assert_eq!(pois.len(), 27, "updated rows must not duplicate");
         let fountain = find_feature(pois, "name", "Spritz-Brunnen");
         assert_eq!(fountain["properties"]["desc"], "Neue Beschreibung");
+
+        pool.close().await;
+    }
+
+    /// Ticket 03: station features carry their latest measurement as
+    /// `temperature_c` + `measured_at` properties – null while the station
+    /// has never reported, filled once the poller upserts a value (the
+    /// fixed Rhine and pool stations the poller owns appear alongside the
+    /// imported air stations).
+    #[tokio::test]
+    async fn stations_carry_latest_measurement_or_null() {
+        let Some(pool) = test_support::db_pool().await else {
+            return;
+        };
+        let _db = test_support::lock_db().await;
+        test_support::reset_db(&pool).await;
+        let app = router(pool.clone());
+
+        // After the import alone, no station has ever reported.
+        import::run(&pool, &FixtureSource::default()).await.unwrap();
+        let json = get_snapshot_json(&app).await;
+        let stations = json["stations"]["features"].as_array().unwrap();
+        assert_eq!(stations.len(), 10);
+        let never = find_feature(stations, "id", "0020F940");
+        assert_eq!(
+            never["properties"]["temperature_c"],
+            serde_json::Value::Null
+        );
+        assert_eq!(never["properties"]["measured_at"], serde_json::Value::Null);
+
+        // One poll cycle: the five air stations of the measurement fixture
+        // get their latest value; the other five stay null (they never
+        // reported, and a silent station keeps its last known value).
+        poller::run(&pool, &FixtureSource::default()).await.unwrap();
+        let json = get_snapshot_json(&app).await;
+        let stations = json["stations"]["features"].as_array().unwrap();
+        assert_eq!(
+            stations.len(),
+            20,
+            "10 imported air + 4 poller-ensured air + 1 Rhine + 5 pools"
+        );
+
+        let reporting = find_feature(stations, "id", "03409FF2");
+        assert_eq!(reporting["properties"]["temperature_c"], 21.06);
+        let measured =
+            DateTime::parse_from_rfc3339(reporting["properties"]["measured_at"].as_str().unwrap())
+                .unwrap();
+        assert_eq!(
+            measured,
+            chrono::Utc
+                .with_ymd_and_hms(2026, 10, 2, 15, 10, 2)
+                .unwrap()
+        );
+
+        let silent = find_feature(stations, "id", "0020F940");
+        assert_eq!(
+            silent["properties"]["temperature_c"],
+            serde_json::Value::Null
+        );
+        assert_eq!(silent["properties"]["measured_at"], serde_json::Value::Null);
+
+        // The poller-owned stations are visible with their values too.
+        let rhine = find_feature(stations, "id", "rues-s3");
+        assert_eq!(rhine["properties"]["kind"], "water");
+        assert_eq!(rhine["properties"]["temperature_c"], 20.72);
+        let pool_station = find_feature(stations, "id", "hallenbad-eglisee");
+        assert_eq!(pool_station["properties"]["kind"], "pool");
+        assert_eq!(pool_station["properties"]["temperature_c"], 21.0);
 
         pool.close().await;
     }
