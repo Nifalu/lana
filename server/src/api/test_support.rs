@@ -27,6 +27,12 @@ pub fn skip_reason() -> bool {
     std::env::var("DATABASE_URL").is_err()
 }
 
+/// Standard skip preamble for DB-gated tests: use as
+/// `let Some(app) = test_app().await else { skip(); return; };`.
+pub fn skip() {
+    eprintln!("DATABASE_URL not set \u{2013} skipping postgres test");
+}
+
 /// Sends a request with an optional JSON body and returns the status plus
 /// the parsed body (a missing/empty body parses to `Value::Null`).
 pub async fn send_json(

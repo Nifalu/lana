@@ -90,14 +90,10 @@ pub async fn upsert_device(
 
 #[cfg(test)]
 mod tests {
-    use super::super::test_support::{new_device_id, send_json, test_app};
+    use super::super::test_support::{new_device_id, send_json, skip, test_app};
     use axum::http::StatusCode;
     use chrono::{DateTime, Utc};
     use serde_json::json;
-
-    fn skip() {
-        eprintln!("DATABASE_URL not set – skipping postgres test");
-    }
 
     fn parse_rfc3339(value: &serde_json::Value) -> DateTime<Utc> {
         DateTime::parse_from_rfc3339(value.as_str().expect("RFC 3339 string"))
