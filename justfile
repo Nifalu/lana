@@ -1,28 +1,38 @@
-manifest := 'src-tauri/Cargo.toml'
 pgdata := '.pgdata'
 
 default:
     @just --list
 
+# Run the backend API server (needs the dev database: just db-start)
+serve:
+    cargo run -p lana-server -- serve
+
 # Run the Tauri app in dev mode (needs the dev database: just db-start)
-dev:
+dev: fe-build
     cargo tauri dev
 
-# Type-check the Rust backend
-check:
-    cargo check --manifest-path {{manifest}}
+# Build the frontend if frontend/dist is missing (tauri codegen needs it)
+fe-build:
+    #!/bin/sh
+    if [ ! -f frontend/dist/index.html ]; then
+        cd frontend && npm ci && npm run build
+    fi
+
+# Type-check the Rust workspace (Tauri app + server)
+check: fe-build
+    cargo check --workspace
 
 # Run backend tests (needs the dev database running: just db-start)
-test:
-    cargo test --manifest-path {{manifest}}
+test: fe-build
+    cargo test --workspace
 
-# Lint the Rust backend
-lint:
-    cargo clippy --manifest-path {{manifest}} -- -D warnings
+# Lint the Rust workspace
+lint: fe-build
+    cargo clippy --workspace -- -D warnings
 
-# Format the Rust backend
+# Format the Rust workspace
 fmt:
-    cargo fmt --manifest-path {{manifest}}
+    cargo fmt --all
 
 # Create a local Postgres cluster in .pgdata (first-time setup)
 db-init:
