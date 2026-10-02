@@ -130,7 +130,6 @@ async fn load_stations(pool: &PgPool) -> Result<FeatureCollection, super::ApiErr
 
 #[cfg(test)]
 mod tests {
-    use chrono::DateTime;
     use crate::api::router;
     use crate::import;
     use crate::import::ImportSummary;
@@ -138,6 +137,7 @@ mod tests {
     use crate::test_support::{self, FixtureSource};
     use axum::body::Body;
     use axum::http::{Request, StatusCode};
+    use chrono::DateTime;
     use chrono::TimeZone;
     use tower::ServiceExt;
 
