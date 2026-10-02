@@ -1,5 +1,5 @@
 # Rust
-/src-tauri/target
+/target
 
 # Tauri codegen output
 /src-tauri/gen/schemas

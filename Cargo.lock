@@ -1880,6 +1880,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "lana-server"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+]
+
+[[package]]
 name = "libappindicator"
 version = "0.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"

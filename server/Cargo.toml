@@ -1,0 +1,8 @@
+[package]
+name = "lana-server"
+version = "0.1.0"
+description = "lana – backend server (REST API + import)"
+edition = "2021"
+
+[dependencies]
+anyhow.workspace = true
