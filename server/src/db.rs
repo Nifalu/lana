@@ -73,7 +73,8 @@ mod tests {
             assert_eq!(name.as_deref(), Some(table), "table {table} should exist");
         }
 
-        // POI positions are stored as geography (PostGIS, lon/lat SRID 4326).
+        // POI positions are stored as geography (PostGIS, lon/lat SRID 4326);
+        // the type is GEOMETRY (not POINT) so swim-area polygons fit.
         let (srid,): (i32,) = sqlx::query_as(
             "SELECT srid FROM geography_columns \
              WHERE f_table_name = 'pois' AND f_geography_column = 'geom'",
@@ -82,6 +83,24 @@ mod tests {
         .await
         .expect("pois.geom should be a geography column");
         assert_eq!(srid, 4326);
+        let (geom_type,): (String,) = sqlx::query_as(
+            "SELECT type FROM geography_columns \
+             WHERE f_table_name = 'pois' AND f_geography_column = 'geom'",
+        )
+        .fetch_one(&pool)
+        .await
+        .expect("pois.geom should be a geography column");
+        assert_eq!(geom_type, "Geometry");
+
+        // Stations expose their origin dataset via the source column.
+        let (source_col,): (Option<String>,) = sqlx::query_as(
+            "SELECT column_name FROM information_schema.columns \
+             WHERE table_name = 'stations' AND column_name = 'source'",
+        )
+        .fetch_one(&pool)
+        .await
+        .expect("information_schema query failed");
+        assert_eq!(source_col.as_deref(), Some("source"));
 
         pool.close().await;
     }

@@ -1,0 +1,104 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "geometry": {
+    "coordinates": [
+     7.5900145,
+     47.5704258
+    ],
+    "type": "Point"
+   },
+   "properties": {
+    "name": "Spritz-Brunnen",
+    "desc": "Dreirosenanlage / Klybeckstrasse (Foto Christian Lienhard, Basel)",
+    "gx_media_links": {
+     "thumbnail": true,
+     "filename": "download",
+     "format": "JPEG",
+     "width": 1200,
+     "id": "09486f6deb55264f5b15fdbdd0a74268",
+     "height": 800,
+     "color_summary": [
+      "rgba(73, 74, 84, 1.00)",
+      "rgba(94, 83, 84, 1.00)",
+      "rgba(151, 143, 142, 1.00)"
+     ],
+     "url": "https://data.bs.ch/api/explore/v2.1/catalog/datasets/100008/files/09486f6deb55264f5b15fdbdd0a74268"
+    },
+    "picture_link": "https://mymaps.usercontent.google.com/hostedimage/m/*/3AAjQbR7NkIx2dPrxSNWB0nKhOnWwQT5Dem1uNQIeUNHe3l40lWNoELY-FtvC0Ka20BhK2bvsfH_EUN2x4YKPfNZ0_12jFhRathsnklN09UPpqvdZrU08eO-6S2b3ehTJPtVVFbeWRlChs9SMYVev5665b-NpEDyWDUc3fAiJJKe40LvkTGO0MRV55-WSFOgbnXYxYgb1f9U?fife=s16383",
+    "geo_point_2d": {
+     "lon": 7.5900145,
+     "lat": 47.5704258
+    }
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "coordinates": [
+     7.5887686,
+     47.5587034
+    ],
+    "type": "Point"
+   },
+   "properties": {
+    "name": "Sevogel-Brunnen",
+    "desc": "Martinskirchplatz (Foto Christian Lienhard, Basel)",
+    "gx_media_links": {
+     "thumbnail": true,
+     "filename": "download",
+     "format": "JPEG",
+     "width": 1200,
+     "id": "a4ce1fa4a837962dbd50a5bcafa4e35c",
+     "height": 800,
+     "color_summary": [
+      "rgba(99, 85, 79, 1.00)",
+      "rgba(81, 74, 63, 1.00)",
+      "rgba(173, 156, 153, 1.00)"
+     ],
+     "url": "https://data.bs.ch/api/explore/v2.1/catalog/datasets/100008/files/a4ce1fa4a837962dbd50a5bcafa4e35c"
+    },
+    "picture_link": "https://mymaps.usercontent.google.com/hostedimage/m/*/3AAjQbR4RfyVIfZqHEdTZfwlt_DKYUqjzMwXpgl88aVFnIGAbDci3kj3FbkLZXTX3VwT0HY8qBGYCjJB5C4BF6r2z5_KQ1DzTSCOYvhSGDWDnUm8F17vXpWlu3T4H68fgL4knAhuGKNKHRrCWt70hoSigteGGPcfQyI7s9TvNpIDijq8IDi3cLP_LukNFUdLtCCqXR2V0moY?fife=s16383",
+    "geo_point_2d": {
+     "lon": 7.5887686,
+     "lat": 47.5587034
+    }
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "coordinates": [
+     7.5756137,
+     47.5491627
+    ],
+    "type": "Point"
+   },
+   "properties": {
+    "name": "Rütimeyer Brunnen",
+    "desc": "Rütimeyer-Platz (Foto Christian Lienhard, Basel)",
+    "gx_media_links": {
+     "thumbnail": true,
+     "filename": "download",
+     "format": "JPEG",
+     "width": 1200,
+     "id": "480d51899563b17c2f7c38d977c9a15b",
+     "height": 800,
+     "color_summary": [
+      "rgba(78, 83, 71, 1.00)",
+      "rgba(109, 116, 113, 1.00)",
+      "rgba(160, 172, 173, 1.00)"
+     ],
+     "url": "https://data.bs.ch/api/explore/v2.1/catalog/datasets/100008/files/480d51899563b17c2f7c38d977c9a15b"
+    },
+    "picture_link": "https://mymaps.usercontent.google.com/hostedimage/m/*/3AAjQbR5caGkMk4N1fEGp5EyiLeXAm7IF5Ohoiszv1RwZenKGn55H6M9LzZOx_B-5BzoaTlT5G06sVsR06T-QQpvWpN4NhZsAjpEPdRqGoycYXnjdzXU6sVSjfc09BpbpMTMLQXRW6dTZO53u8f4scd9T6l0m04-90kIx2lzFGiz_seU9q5AEudDD-A01dGVHtZbPxc65XKU?fife=s16383",
+    "geo_point_2d": {
+     "lon": 7.5756137,
+     "lat": 47.5491627
+    }
+   }
+  }
+ ]
+}
