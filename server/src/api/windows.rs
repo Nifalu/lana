@@ -182,14 +182,80 @@ pub async fn patch_window(
     Path((device_id, window_id)): Path<(uuid::Uuid, i64)>,
     Json(patch): Json<WindowPatch>,
 ) -> Result<Json<Window>, ApiError> {
-    Err(ApiError::NotFound("not implemented"))
+    // Load the owned row first: unknown and foreign windows are the same
+    // 404, and the merged state is what gets validated.
+    const OWNED: &str = "SELECT id, active, weekday, start_time, end_time, \
+         ST_X(location::geometry), ST_Y(location::geometry), radius_m, label \
+         FROM helper_windows WHERE id = $1 AND device_id = $2";
+    let current: WindowRow = sqlx::query_as(OWNED)
+        .bind(window_id)
+        .bind(device_id)
+        .fetch_optional(&pool)
+        .await?
+        .ok_or(ApiError::NotFound("window not found"))?;
+    let current = Window::from_row(device_id, current);
+
+    let merged_start = match &patch.start_time {
+        Some(raw) => types::parse_wall_time(raw).map_err(ApiError::Validation)?,
+        None => current.start_time,
+    };
+    let merged_end = match &patch.end_time {
+        Some(raw) => types::parse_wall_time(raw).map_err(ApiError::Validation)?,
+        None => current.end_time,
+    };
+    let merged_location = patch.location.unwrap_or(current.location);
+    let merged_radius_m = patch.radius_m.unwrap_or(current.radius_m);
+    let merged_weekday = patch.weekday.unwrap_or(current.weekday);
+    let merged_label = patch.label.unwrap_or(current.label);
+    let merged_active = patch.active.unwrap_or(current.active);
+
+    validate_window(
+        merged_weekday,
+        merged_start,
+        merged_end,
+        merged_location,
+        merged_radius_m,
+    )?;
+
+    const UPDATE: &str = "UPDATE helper_windows SET \
+         active = $3, weekday = $4, start_time = $5, end_time = $6, \
+         location = ST_SetSRID(ST_MakePoint($7, $8), 4326)::geography, \
+         radius_m = $9, label = $10 \
+         WHERE id = $1 AND device_id = $2 \
+         RETURNING id, active, weekday, start_time, end_time, \
+             ST_X(location::geometry), ST_Y(location::geometry), radius_m, label";
+    let row: WindowRow = sqlx::query_as(UPDATE)
+        .bind(window_id)
+        .bind(device_id)
+        .bind(merged_active)
+        .bind(merged_weekday)
+        .bind(merged_start)
+        .bind(merged_end)
+        .bind(merged_location.lon)
+        .bind(merged_location.lat)
+        .bind(merged_radius_m)
+        .bind(&merged_label)
+        .fetch_optional(&pool)
+        .await?
+        .ok_or(ApiError::NotFound("window not found"))?;
+
+    Ok(Json(Window::from_row(device_id, row)))
 }
 
 pub async fn delete_window(
     State(pool): State<PgPool>,
     Path((device_id, window_id)): Path<(uuid::Uuid, i64)>,
 ) -> Result<StatusCode, ApiError> {
-    Err(ApiError::NotFound("not implemented"))
+    const DELETE: &str = "DELETE FROM helper_windows WHERE id = $1 AND device_id = $2";
+    let result = sqlx::query(DELETE)
+        .bind(window_id)
+        .bind(device_id)
+        .execute(&pool)
+        .await?;
+    if result.rows_affected() == 0 {
+        return Err(ApiError::NotFound("window not found"));
+    }
+    Ok(StatusCode::NO_CONTENT)
 }
 
 #[cfg(test)]
@@ -329,5 +395,190 @@ mod tests {
         .await;
 
         assert_eq!(status, StatusCode::NOT_FOUND);
+    }
+
+    async fn create_window_for(
+        app: &axum::Router,
+        device_id: uuid::Uuid,
+        payload: Value,
+    ) -> Value {
+        let (status, body) = send_json(
+            app.clone(),
+            "POST",
+            &format!("/api/v1/devices/{device_id}/windows"),
+            Some(payload),
+        )
+        .await;
+        assert_eq!(status, StatusCode::CREATED, "window creation: {body}");
+        body
+    }
+
+    /// PATCH updates single fields (here: the `active` vacation switch)
+    /// without deleting the window.
+    #[tokio::test]
+    async fn patch_toggles_active_without_deleting() {
+        let Some(app) = test_app().await else {
+            skip();
+            return;
+        };
+        let (device_id, payload) = registered_device_with_payload(&app).await;
+        let window = create_window_for(&app, device_id, payload).await;
+        let uri = format!("/api/v1/devices/{device_id}/windows/{}", window["id"]);
+
+        // Vacation: toggle off. The window must stay listed, inactive.
+        let (status, patched) = send_json(app.clone(), "PATCH", &uri, Some(json!({"active": false}))).await;
+        assert_eq!(status, StatusCode::OK);
+        assert_eq!(patched["active"], false);
+        assert_eq!(patched["label"], "Büro", "unrelated fields stay");
+
+        let (_, listed) = list_windows(&app, device_id).await;
+        assert_eq!(listed.as_array().expect("array").len(), 1, "still stored");
+        assert_eq!(listed[0]["active"], false);
+
+        // Back from holiday: toggle on again.
+        let (status, patched) = send_json(app, "PATCH", &uri, Some(json!({"active": true}))).await;
+        assert_eq!(status, StatusCode::OK);
+        assert_eq!(patched["active"], true);
+    }
+
+    /// PATCH accepts several fields at once and normalizes times.
+    #[tokio::test]
+    async fn patch_updates_multiple_fields() {
+        let Some(app) = test_app().await else {
+            skip();
+            return;
+        };
+        let (device_id, payload) = registered_device_with_payload(&app).await;
+        let window = create_window_for(&app, device_id, payload).await;
+        let uri = format!("/api/v1/devices/{device_id}/windows/{}", window["id"]);
+
+        let (status, patched) = send_json(
+            app,
+            "PATCH",
+            &uri,
+            Some(json!({
+                "weekday": 5,
+                "start_time": "08:15",
+                "end_time": "12:30:00",
+                "label": "Rhein",
+                "radius_m": 250.5,
+                "location": {"lon": 7.5944, "lat": 47.5667},
+            })),
+        )
+        .await;
+
+        assert_eq!(status, StatusCode::OK);
+        assert_eq!(patched["weekday"], 5);
+        assert_eq!(patched["start_time"], "08:15:00");
+        assert_eq!(patched["end_time"], "12:30:00");
+        assert_eq!(patched["label"], "Rhein");
+        assert_eq!(patched["radius_m"], 250.5);
+        assert_eq!(patched["location"]["lon"], 7.5944);
+        assert_eq!(patched["active"], true);
+    }
+
+    /// PATCH revalidates the *merged* state: changing one field can break a
+    /// rule against the stored others, and the window stays unchanged.
+    #[tokio::test]
+    async fn patch_revalidates_merged_state() {
+        let Some(app) = test_app().await else {
+            skip();
+            return;
+        };
+        let (device_id, payload) = registered_device_with_payload(&app).await;
+        let window = create_window_for(&app, device_id, payload).await;
+        let uri = format!("/api/v1/devices/{device_id}/windows/{}", window["id"]);
+
+        let rejects = vec![
+            json!({"end_time": "08:00"}),   // before stored start
+            json!({"start_time": "18:00"}), // after stored end
+            json!({"weekday": 7}),
+            json!({"radius_m": 0}),
+            json!({"location": {"lon": 999.0, "lat": 0.0}}),
+            json!({"start_time": "nope"}),
+        ];
+        for reject in rejects {
+            let (status, body) = send_json(app.clone(), "PATCH", &uri, Some(reject.clone())).await;
+            assert_eq!(
+                status,
+                StatusCode::UNPROCESSABLE_ENTITY,
+                "expected 422 for {reject}"
+            );
+            assert!(body["error"].is_string());
+        }
+
+        let (_, listed) = list_windows(&app, device_id).await;
+        assert_eq!(listed[0]["start_time"], "09:00:00", "untouched");
+        assert_eq!(listed[0]["end_time"], "17:00:00", "untouched");
+        assert_eq!(listed[0]["weekday"], 0, "untouched");
+    }
+
+    /// DELETE removes the window; deleting it again is 404.
+    #[tokio::test]
+    async fn delete_removes_window_then_404s() {
+        let Some(app) = test_app().await else {
+            skip();
+            return;
+        };
+        let (device_id, payload) = registered_device_with_payload(&app).await;
+        let window = create_window_for(&app, device_id, payload).await;
+        let uri = format!("/api/v1/devices/{device_id}/windows/{}", window["id"]);
+
+        let (status, body) = send_json(app.clone(), "DELETE", &uri, None).await;
+        assert_eq!(status, StatusCode::NO_CONTENT);
+        assert_eq!(body, Value::Null);
+
+        let (_, listed) = list_windows(&app, device_id).await;
+        assert_eq!(listed.as_array().expect("array").len(), 0);
+
+        let (status, _) = send_json(app, "DELETE", &uri, None).await;
+        assert_eq!(status, StatusCode::NOT_FOUND);
+    }
+
+    /// Anonymity guarantee: another device's windows are invisible and
+    /// untouchable – its list is empty, and PATCH/DELETE on a foreign
+    /// window return 404 without changing it.
+    #[tokio::test]
+    async fn other_devices_windows_are_invisible_and_untouchable() {
+        let Some(app) = test_app().await else {
+            skip();
+            return;
+        };
+        let (owner_id, payload) = registered_device_with_payload(&app).await;
+        let window = create_window_for(&app, owner_id, payload).await;
+
+        let intruder = new_device_id();
+        let (status, _) = send_json(
+            app.clone(),
+            "PUT",
+            &format!("/api/v1/devices/{intruder}"),
+            Some(json!({"is_helper": true})),
+        )
+        .await;
+        assert_eq!(status, StatusCode::OK);
+
+        // The intruder knows (or guesses) the window id and addresses it
+        // under *their own* device identity.
+        let foreign_uri = format!("/api/v1/devices/{intruder}/windows/{}", window["id"]);
+
+        let (status, listed) = list_windows(&app, intruder).await;
+        assert_eq!(status, StatusCode::OK);
+        assert_eq!(listed.as_array().expect("array").len(), 0, "foreign windows invisible");
+
+        let (status, _) = send_json(
+            app.clone(),
+            "PATCH",
+            &foreign_uri,
+            Some(json!({"active": false})),
+        )
+        .await;
+        assert_eq!(status, StatusCode::NOT_FOUND, "foreign PATCH rejected");
+
+        let (status, _) = send_json(app.clone(), "DELETE", &foreign_uri, None).await;
+        assert_eq!(status, StatusCode::NOT_FOUND, "foreign DELETE rejected");
+
+        // The owner's window survived both attempts untouched.
+        let (_, listed) = list_windows(&app, owner_id).await;
+        assert_eq!(listed[0]["active"], true, "foreign PATCH must not mutate");
     }
 }
