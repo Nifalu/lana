@@ -5,6 +5,6 @@ CREATE TABLE IF NOT EXISTS notes (
     text TEXT NOT NULL
 );
 
--- GIS work runs on PostGIS (bundled with the nix dev shell's postgresql).
+-- GIS work runs on PostGIS (the dev shell's postgresql ships it on Linux).
 -- Uncomment once the schema actually stores geometries:
 -- CREATE EXTENSION IF NOT EXISTS postgis;

@@ -33,13 +33,17 @@ mod tests {
     /// nix dev shell + `just db-start`). Skips silently otherwise.
     #[test]
     fn migrations_apply() {
-        let Ok(url) = std::env::var("DATABASE_URL") else {
+        if std::env::var("DATABASE_URL").is_err() {
             eprintln!("DATABASE_URL not set – skipping postgres test");
             return;
-        };
+        }
         tauri::async_runtime::block_on(async move {
-            let pool = PgPool::connect(&url).await.unwrap();
-            sqlx::migrate!("./migrations").run(&pool).await.unwrap();
+            let pool = init().await.expect("db::init failed");
+            let (one,): (i32,) = sqlx::query_as("SELECT 1")
+                .fetch_one(&pool)
+                .await
+                .expect("query failed");
+            assert_eq!(one, 1);
             pool.close().await;
         });
     }

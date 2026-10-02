@@ -85,7 +85,7 @@
             shellHook = ''
               echo "lana dev shell – rust $(rustc --version | cut -d' ' -f2), node $(node --version), postgres $(psql --version | awk '{print $3}')"
               echo "quick start: just db-init && just db-start && just db-createdb (once), then just dev"
-                        '';
+            '';
           };
         });
     };
