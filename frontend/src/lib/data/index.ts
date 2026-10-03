@@ -1,4 +1,4 @@
-import { isTauri } from '@tauri-apps/api/core';
+import { invoke, isTauri } from '@tauri-apps/api/core';
 import { FixtureRepository } from './fixture';
 import type { Repository } from './repository';
 import { TauriRepository } from './tauri';
@@ -66,3 +66,17 @@ class AutoRepository implements Repository {
 const forceFixture = import.meta.env.VITE_DATA === 'fixture';
 
 export const repository: Repository = forceFixture || !isTauri() ? fixture : new AutoRepository();
+
+/**
+ * Apply the build-time server URL (VITE_SERVER_URL) to the Tauri shell, which
+ * stores it in its cache settings. Run before the first sync.
+ */
+export async function applyServerUrl(): Promise<void> {
+  const url = import.meta.env.VITE_SERVER_URL;
+  if (!url || forceFixture || !isTauri()) return;
+  try {
+    await invoke('set_server_url', { url });
+  } catch (err) {
+    console.error(`setting the server URL to ${url} failed`, err);
+  }
+}

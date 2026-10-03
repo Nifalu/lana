@@ -1,4 +1,4 @@
-import { dataSource, repository } from './index';
+import { applyServerUrl, dataSource, repository } from './index';
 import type { Poi, Station } from './types';
 
 /**
@@ -91,6 +91,7 @@ export async function preload(): Promise<void> {
   }
   connection.lastSyncAt = data.lastSyncAt;
 
+  await applyServerUrl();
   void syncNow();
 
   setInterval(() => {

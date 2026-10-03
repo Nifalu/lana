@@ -8,6 +8,8 @@
 <dict>
   <key>NSLocationWhenInUseUsageDescription</key>
   <string>lana nutzt deinen Standort, um dir Trinkbrunnen, kühle Orte und Wege in deiner Nähe zu zeigen.</string>
+  <key>NSLocalNetworkUsageDescription</key>
+  <string>lana verbindet sich mit dem lana-Server in deinem Netzwerk, um aktuelle Temperaturen und Orte zu laden.</string>
   <key>NSLocationUsageDescription</key>
   <string>lana nutzt deinen Standort, um dir Trinkbrunnen, kühle Orte und Wege in deiner Nähe zu zeigen.</string>
 </dict>
