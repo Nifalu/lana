@@ -1,5 +1,5 @@
 # Rust build output
-/target
+/target/
 
 # Tauri codegen & generated project glue (tauri android init regenerates it)
 /src-tauri/gen/
