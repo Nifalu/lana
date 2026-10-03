@@ -14,7 +14,7 @@ use axum::Json;
 use chrono::NaiveTime;
 use serde::{Deserialize, Serialize};
 
-use super::error::ApiError;
+use super::error::{ApiError, ApiJson};
 use super::types::{self, wall_time, LonLat};
 use super::AppState;
 
@@ -115,7 +115,7 @@ fn validate_window(
 pub async fn create_window(
     State(state): State<AppState>,
     Path(device_id): Path<uuid::Uuid>,
-    Json(payload): Json<WindowCreate>,
+    ApiJson(payload): ApiJson<WindowCreate>,
 ) -> Result<(StatusCode, Json<Window>), ApiError> {
     validate_window(
         payload.weekday,
@@ -177,7 +177,7 @@ pub async fn list_windows(
 pub async fn patch_window(
     State(state): State<AppState>,
     Path((device_id, window_id)): Path<(uuid::Uuid, i64)>,
-    Json(patch): Json<WindowPatch>,
+    ApiJson(patch): ApiJson<WindowPatch>,
 ) -> Result<Json<Window>, ApiError> {
     // Load the owned row first: unknown and foreign windows are the same
     // 404, and the merged state is what gets validated.
@@ -257,7 +257,7 @@ pub async fn delete_window(
 
 #[cfg(test)]
 mod tests {
-    use super::super::test_support::{new_device_id, send_json, skip, test_app};
+    use super::super::test_support::{new_device_id, send_json, send_raw, skip, test_app};
     use axum::http::StatusCode;
     use serde_json::{json, Value};
 
@@ -369,6 +369,30 @@ mod tests {
 
         let (_, listed) = list_windows(&app, device_id).await;
         assert_eq!(listed.as_array().expect("array").len(), 0, "nothing stored");
+    }
+
+    /// A malformed JSON body on create is a validation failure in the
+    /// uniform error shape (422 `{"error": …}`), not plain text.
+    #[tokio::test]
+    async fn create_malformed_body_gets_uniform_json_error() {
+        let Some(app) = test_app().await else {
+            skip();
+            return;
+        };
+        let (device_id, _) = registered_device_with_payload(&app).await;
+
+        let (status, bytes) = send_raw(
+            app,
+            "POST",
+            &format!("/api/v1/devices/{device_id}/windows"),
+            "{not json",
+        )
+        .await;
+
+        assert_eq!(status, StatusCode::UNPROCESSABLE_ENTITY);
+        let body: Value =
+            serde_json::from_slice(&bytes).expect("rejection body is the uniform JSON shape");
+        assert!(body["error"].is_string(), "error body explains: {body}");
     }
 
     /// Windows cannot hang off a device that never registered.

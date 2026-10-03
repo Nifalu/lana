@@ -12,7 +12,7 @@ use axum::Json;
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
-use super::error::ApiError;
+use super::error::{ApiError, ApiJson};
 use super::types::LonLat;
 use super::AppState;
 
@@ -40,7 +40,7 @@ pub struct Device {
 pub async fn upsert_device(
     State(state): State<AppState>,
     Path(device_id): Path<uuid::Uuid>,
-    Json(payload): Json<DeviceUpsert>,
+    ApiJson(payload): ApiJson<DeviceUpsert>,
 ) -> Result<Json<Device>, ApiError> {
     if let Some(location) = &payload.location {
         ApiError::check(location.validate())?;
@@ -99,7 +99,7 @@ pub async fn upsert_device(
 #[cfg(test)]
 mod tests {
     use super::super::test_support::{
-        new_device_id, router_with_state, send_json, skip, test_app, test_state,
+        new_device_id, router_with_state, send_json, send_raw, skip, test_app, test_state,
     };
     use axum::http::StatusCode;
     use chrono::{DateTime, Utc};
@@ -276,6 +276,30 @@ mod tests {
                 .await
                 .expect("device row exists");
         assert!(location_cleared, "explicit null must clear the row too");
+    }
+
+    /// A malformed JSON body is a validation failure in the uniform error
+    /// shape (422 `{"error": …}`), not axum's plain-text rejection.
+    #[tokio::test]
+    async fn upsert_malformed_body_gets_uniform_json_error() {
+        let Some(app) = test_app().await else {
+            skip();
+            return;
+        };
+        let device_id = new_device_id();
+
+        let (status, bytes) = send_raw(
+            app,
+            "PUT",
+            &format!("/api/v1/devices/{device_id}"),
+            "{not json",
+        )
+        .await;
+
+        assert_eq!(status, StatusCode::UNPROCESSABLE_ENTITY);
+        let body: serde_json::Value =
+            serde_json::from_slice(&bytes).expect("rejection body is the uniform JSON shape");
+        assert!(body["error"].is_string(), "error body explains: {body}");
     }
 
     /// Out-of-range coordinates are rejected with 422 and a JSON error body.

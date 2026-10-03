@@ -221,6 +221,30 @@ pub async fn send_json(
     (status, json)
 }
 
+/// Sends a request with a raw string body (content-type application/json)
+/// and returns the status plus the raw response bytes – for rejections whose
+/// body shape is itself under test (e.g. malformed JSON must still produce
+/// the uniform JSON error, not plain text).
+pub async fn send_raw(
+    app: Router,
+    method: &str,
+    uri: &str,
+    body: &str,
+) -> (StatusCode, axum::body::Bytes) {
+    let request = Request::builder()
+        .method(method)
+        .uri(uri)
+        .header("content-type", "application/json")
+        .body(Body::from(body.to_string()))
+        .unwrap();
+    let response = app.oneshot(request).await.unwrap();
+    let status = response.status();
+    let bytes = axum::body::to_bytes(response.into_body(), usize::MAX)
+        .await
+        .unwrap();
+    (status, bytes)
+}
+
 /// Sends a request and returns only its status, ignoring the body (use when
 /// the rejection body is not JSON, e.g. axum's plain-text query rejections).
 pub async fn send_status(app: Router, method: &str, uri: &str) -> StatusCode {
