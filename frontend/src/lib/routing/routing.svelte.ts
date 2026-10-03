@@ -1,5 +1,5 @@
 import { showToast } from '../hud/toasts.svelte';
-import { location, mapActions } from '../state/app.svelte';
+import { location, mapActions, type LngLat } from '../state/app.svelte';
 import type { Selection } from '../state/selection.svelte';
 import { route, type Route } from './route';
 
@@ -19,17 +19,24 @@ export const routing = $state({
 // Only one request is ever in flight; a new one or `endRoute` aborts it.
 let inflight: AbortController | null = null;
 
-/** Route from the user's position to `target`, locating first if needed. */
-export async function startRoute(target: Selection): Promise<void> {
+/** Abort whatever is running, mark a new request as loading and return its signal. */
+export function beginRequest(): AbortSignal {
   inflight?.abort();
   const controller = new AbortController();
   inflight = controller;
-  const { signal } = controller;
   routing.status = 'loading';
+  return controller.signal;
+}
 
+/**
+ * The user's position, locating first if there is none yet. Null (with a
+ * toast, and `routing.status` back to idle) when it stays unknown or the
+ * request was superseded meanwhile.
+ */
+export async function requireOrigin(signal: AbortSignal): Promise<LngLat | null> {
   if (!location.coords) {
     await mapActions.locate();
-    if (signal.aborted) return;
+    if (signal.aborted) return null;
   }
   const origin = location.coords;
   if (!origin) {
@@ -37,8 +44,15 @@ export async function startRoute(target: Selection): Promise<void> {
     showToast('Zuerst Standort bestimmen', {
       action: { label: 'Auf Karte wählen', run: () => (location.picking = true) },
     });
-    return;
   }
+  return origin;
+}
+
+/** Route from the user's position to `target`, locating first if needed. */
+export async function startRoute(target: Selection): Promise<void> {
+  const signal = beginRequest();
+  const origin = await requireOrigin(signal);
+  if (!origin) return;
 
   try {
     const result = await route(origin, target.coords, signal);
