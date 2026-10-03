@@ -10,7 +10,7 @@
    * The stroke uses `currentColor`, so set `color` on the parent to tint it.
    * The SVG fills its container; size it from the outside.
    */
-  export type LogoVariant = 'original' | 'loop' | 'once' | 'static';
+  export type LogoVariant = 'original' | 'loop' | 'once' | 'static' | 'draw';
 
   let { variant = 'static' }: { variant?: LogoVariant } = $props();
 </script>
@@ -20,6 +20,7 @@
     class:outline-loop={variant === 'loop'}
     class:outline-original={variant === 'original'}
     class:outline-once={variant === 'once'}
+    class:outline-draw={variant === 'draw'}
     d="M107 30H133Q140 31 141 38L177 269Q178 287 162 292Q120 303 78 292Q62 287 63 269L99 38Q100 31 107 30Z"
     pathLength="100"
     fill="none"
@@ -53,6 +54,21 @@
   .outline-once {
     stroke-dasharray: 100 100;
     animation: outline-reveal 3.6s ease-in-out both;
+  }
+
+  /* Splash intro: the outline draws itself once and stays complete. */
+  .outline-draw {
+    stroke-dasharray: 100 100;
+    animation: outline-draw 1.2s ease-in-out both;
+  }
+
+  @keyframes outline-draw {
+    from {
+      stroke-dashoffset: 100;
+    }
+    to {
+      stroke-dashoffset: 0;
+    }
   }
 
   @keyframes outline-breathe {
@@ -96,7 +112,8 @@
   @media (prefers-reduced-motion: reduce) {
     .outline-original,
     .outline-loop,
-    .outline-once {
+    .outline-once,
+    .outline-draw {
       animation: none;
       stroke-dasharray: none;
     }
