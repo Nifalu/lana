@@ -5,9 +5,13 @@ import (`import` mode, ticket 02) + background live-measurement poller
 (ticket 03). Rust, axum, sqlx against PostgreSQL with PostGIS.
 
 ```sh
-just db-start && just db-createdb   # once
+just db-init && just db-start && just db-createdb   # once (local dev Postgres)
 just serve                          # migrations run on startup
 ```
+
+The same stack runs as a docker-compose deployment (postgis image + this
+server, API on 8080, data in a named volume) – see the root README,
+"Deployment".
 
 The server applies the SQL migrations in `migrations/` on startup (tracked
 in `_sqlx_server_migrations` so it can share a dev database with the Tauri
@@ -151,7 +155,8 @@ observe status transitions.
   whose weekday/time-of-day (Europe/Zurich) contains now and whose window
   point lies within the radius. Matched helpers receive `help_request_new`.
 - `GET /api/v1/help-requests?status=open&near=7.59,47.56&radius_m=500` –
-  list for the helper map; all filters optional.
+  list for the helper map; all filters optional. Response is a JSON **array**
+  of help-request documents (possibly empty).
 - `POST /api/v1/help-requests/{request_id}/respond` – payload
   `{ "device_id": "…" }`. First responder wins → `responded`; the same
   responder repeating is idempotent (`200`); a different device gets `409`.
