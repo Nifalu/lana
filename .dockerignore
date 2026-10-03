@@ -1,0 +1,21 @@
+# Keep the build context small: the server image build needs only the
+# workspace manifests and the server crate's sources.
+.git/
+.bare/
+.scratch/
+
+# Dev-environment leftovers
+.pgdata/
+.pgdata.log
+target/
+node_modules/
+result
+result-*
+
+# Everything the server image does not need
+docs/
+frontend/
+src-tauri/
+!src-tauri/Cargo.toml
+server/testdata/
+README.md
