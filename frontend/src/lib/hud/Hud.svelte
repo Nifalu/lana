@@ -2,6 +2,7 @@
   import HudButton from './HudButton.svelte';
   import Toast from './Toast.svelte';
   import ConnectionIndicator from './ConnectionIndicator.svelte';
+  import CoolButton from './CoolButton.svelte';
   import SelectionSheet from './SelectionSheet.svelte';
   import TemperatureLegend from './TemperatureLegend.svelte';
   import { filters, location, mapActions, view } from '../state/app.svelte';
@@ -83,6 +84,7 @@
       <!-- TODO: replace with the water icon SVG -->
       W
     </HudButton>
+    <CoolButton />
     <HudButton
       label={sos.active ? 'Hilfe angefordert' : 'Hilfe anfordern'}
       variant="alert"
@@ -157,5 +159,12 @@
     pointer-events: auto;
     font-size: 11px;
     font-weight: 600;
+  }
+
+  /* Five buttons plus the cool-spot filter tab must fit a 320 px screen. */
+  @media (max-width: 400px) {
+    .bar {
+      gap: 8px;
+    }
   }
 </style>
