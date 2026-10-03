@@ -168,10 +168,12 @@ function finishOwn(message?: string): void {
 }
 
 function buzz(): void {
+  // Browsers refuse (and log an error) before the first tap on the page.
+  if (navigator.userActivation && !navigator.userActivation.hasBeenActive) return;
   try {
     navigator.vibrate?.([200, 100, 200]);
   } catch {
-    // Not allowed without a user gesture on some platforms.
+    // Not supported here.
   }
 }
 

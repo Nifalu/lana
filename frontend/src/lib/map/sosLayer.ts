@@ -30,7 +30,7 @@ export function addSosLayer(map: Map): void {
       type: 'circle',
       source: SOURCE,
       paint: {
-        'circle-radius': 12,
+        'circle-radius': 16,
         'circle-color': RED,
         'circle-opacity': 0.35,
         'circle-pitch-alignment': 'viewport',
@@ -44,7 +44,7 @@ export function addSosLayer(map: Map): void {
       type: 'circle',
       source: SOURCE,
       paint: {
-        'circle-radius': 8,
+        'circle-radius': 10,
         'circle-color': RED,
         'circle-stroke-color': '#ffffff',
         'circle-stroke-width': 3,
@@ -79,7 +79,7 @@ function pulse(map: Map): void {
     try {
       if (current.features.length === 0 || !map.getLayer(HALO)) return;
       const t = (now % PULSE_MS) / PULSE_MS;
-      map.setPaintProperty(HALO, 'circle-radius', 10 + 16 * t);
+      map.setPaintProperty(HALO, 'circle-radius', 14 + 22 * t);
       map.setPaintProperty(HALO, 'circle-opacity', 0.45 * (1 - t));
     } catch {
       return; // The map was removed under us.
