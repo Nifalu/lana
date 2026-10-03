@@ -10,8 +10,9 @@
     view,
   } from '../state/app.svelte';
 
-  // Debug tools only exist in dev builds (`vite dev`), never in `vite build`.
-  const DEV = import.meta.env.DEV;
+  // Debug tools are on in every build, including the bundle Tauri loads.
+  // Release builds turn them off with VITE_RELEASE=true.
+  const DEBUG_TOOLS = import.meta.env.VITE_RELEASE !== 'true';
 
   function toggleBasemap() {
     view.basemap = view.basemap === 'standard' ? 'imagery' : 'standard';
@@ -34,7 +35,7 @@
       SAT
     </HudButton>
 
-    {#if DEV}
+    {#if DEBUG_TOOLS}
       <HudButton
         label={location.picking ? 'Cancel setting location' : 'Debug: set my location by tapping the map'}
         active={location.picking}
