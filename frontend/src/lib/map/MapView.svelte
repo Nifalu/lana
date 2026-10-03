@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { Map, AttributionControl, Marker, type MapMouseEvent } from 'maplibre-gl';
+  import { Map, AttributionControl, Marker } from 'maplibre-gl';
   import 'maplibre-gl/dist/maplibre-gl.css';
   import './worker';
   import { BASEL, INITIAL_ZOOM, filters, location, mapActions, view } from '../state/app.svelte';
@@ -10,6 +10,11 @@
   import { useOverlays } from './overlays.svelte';
   import { loadStyle, type Basemap } from './basemap';
   import { addLocationLayer, updateLocationLayer } from './locationLayer';
+  import { addRouteLayer, fitRoute, updateRouteLayer } from './routeLayer';
+  import { addSelectionLayer, updateSelectionLayer } from './selectionLayer';
+  import { bindInteraction } from './interaction';
+  import { selection } from '../state/selection.svelte';
+  import { routing, type Route } from '../routing';
 
   // Lets the parent (and later your layer modules) get the map instance
   // once it exists. Optional for now, but it is the hand-off point.
@@ -51,17 +56,17 @@
     instance.on('style.load', () => {
       addAppLayers(instance);
       addLocationLayer(instance);
+      // Route below the selection ring, both above our overlays.
+      addRouteLayer(instance);
+      addSelectionLayer(instance);
       applyFilters(instance);
     });
 
-    // Debug: while `location.picking`, the next tap sets the position.
-    instance.on('click', (e: MapMouseEvent) => {
-      if (!location.picking) return;
-      location.coords = [e.lngLat.lng, e.lngLat.lat];
-      location.accuracyM = null;
-      location.source = 'manual';
-      location.picking = false;
-    });
+    // Tap to select, hover cursor (and the debug position pick).
+    bindInteraction(instance);
+
+    // Dev only: lets tests project feature coordinates to screen pixels.
+    if (import.meta.env.DEV) (window as unknown as { __lanaMap: Map }).__lanaMap = instance;
 
     instance.once('load', () => {
       mapActions.locate = () => locate(instance);
@@ -111,6 +116,23 @@
   $effect(() => {
     if (!map) return;
     map.getCanvas().style.cursor = location.picking ? 'crosshair' : '';
+  });
+
+  // Ring around the selected feature.
+  $effect(() => {
+    const coords = selection.current?.coords ?? null;
+    if (!map) return;
+    updateSelectionLayer(map, coords);
+  });
+
+  // The route line, framed once when a new route arrives.
+  let framedRoute: Route | null = null;
+  $effect(() => {
+    const current = routing.current;
+    if (!map) return;
+    updateRouteLayer(map, current);
+    if (current && current !== framedRoute) fitRoute(map, current);
+    framedRoute = current;
   });
 
   // Accuracy circle follows the position (GPS fixes only).

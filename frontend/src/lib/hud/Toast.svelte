@@ -27,8 +27,9 @@
   .toast {
     position: absolute;
     left: 50%;
-    /* Sits just above the bottom tool bar. */
-    bottom: calc(env(safe-area-inset-bottom) + 92px);
+    /* Just above the bottom tool bar, or above the sheet when one is open
+       on a phone (the HUD sets --toast-lift). */
+    bottom: calc(env(safe-area-inset-bottom) + 92px + var(--toast-lift, 0px));
     transform: translateX(-50%);
     display: flex;
     align-items: center;

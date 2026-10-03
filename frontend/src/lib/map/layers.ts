@@ -71,6 +71,9 @@ export function poiCollection(): FeatureCollection {
         geometry: poi.geometry,
         properties: {
           ...poi.properties,
+          // Representative point; a swim area's geometry is a polygon.
+          lon: poi.lon,
+          lat: poi.lat,
           id: poi.id,
           kind: poi.kind,
           name: poi.name,

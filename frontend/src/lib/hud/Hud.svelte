@@ -2,19 +2,26 @@
   import HudButton from './HudButton.svelte';
   import Toast from './Toast.svelte';
   import ConnectionIndicator from './ConnectionIndicator.svelte';
+  import SelectionSheet from './SelectionSheet.svelte';
   import { filters, location, mapActions, view } from '../state/app.svelte';
   import { sos, triggerSos } from '../sos';
+  import { selection } from '../state/selection.svelte';
+  import { routing } from '../routing';
 
   // Debug tools are on in every build, including the bundle Tauri loads.
   // Release builds turn them off with VITE_RELEASE=true.
   const DEBUG_TOOLS = import.meta.env.VITE_RELEASE !== 'true';
+
+  // Height of the selection sheet. On phones the toast is lifted above it.
+  let sheetHeight = $state(0);
+  const sheetOpen = $derived(selection.current !== null || routing.current !== null);
 
   function toggleBasemap() {
     view.basemap = view.basemap === 'standard' ? 'imagery' : 'standard';
   }
 </script>
 
-<div class="hud">
+<div class="hud" class:sheet-open={sheetOpen} style:--sheet-h="{sheetHeight}px">
   <ConnectionIndicator />
 
   <div class="tools">
@@ -41,6 +48,8 @@
   {#if location.picking}
     <p class="hint" role="status">Tap the map to set your location</p>
   {/if}
+
+  <SelectionSheet bind:height={sheetHeight} />
 
   <Toast />
 
@@ -86,6 +95,15 @@
     position: absolute;
     inset: 0;
     pointer-events: none;
+    /* Extra bottom offset for the toast, read in Toast.svelte. */
+    --toast-lift: 0px;
+  }
+
+  /* On phones the sheet sits above the bar; the toast goes above the sheet. */
+  @media (max-width: 767px) {
+    .hud.sheet-open {
+      --toast-lift: calc(var(--sheet-h) + 8px);
+    }
   }
 
   /* Map-level tools (basemap switch, debug) top-right,
