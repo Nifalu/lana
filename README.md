@@ -1,47 +1,91 @@
-# Svelte + TS + Vite
+# lana
 
-This template should help get you started developing with Svelte and TypeScript in Vite.
+lana is a heat-relief map and anonymous help platform for Basel
+([Hack am Rhein](https://hackamrhein.ch) 2026, challenge #3): public drinking
+fountains, Rhine swim areas, cool places, and live temperatures (air, Rhine
+water, pools) on a map — plus a way to ask people nearby for help when the
+heat gets to you. No account, no identity, no live location feed; the app
+keeps working offline.
 
-## Recommended IDE Setup
+## Architecture
 
-[VS Code](https://code.visualstudio.com/) + [Svelte](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode).
+Client/server split: one central backend owns all shared state; the Tauri
+app is a client with an embedded SQLite cache.
 
-## Need an official Svelte framework?
-
-Check out [SvelteKit](https://github.com/sveltejs/kit#readme), which is also powered by Vite. Deploy anywhere with its serverless-first approach and adapt to various platforms, with out of the box support for TypeScript, SCSS, and Less, and easily-added support for mdsvex, GraphQL, PostCSS, Tailwind CSS, and more.
-
-## Technical considerations
-
-**Why use this over SvelteKit?**
-
-- It brings its own routing solution which might not be preferable for some users.
-- It is first and foremost a framework that just happens to use Vite under the hood, not a Vite app.
-
-This template contains as little as possible to get started with Vite + TypeScript + Svelte, while taking into account the developer experience with regards to HMR and intellisense. It demonstrates capabilities on par with the other `create-vite` templates and is a good starting point for beginners dipping their toes into a Vite + Svelte project.
-
-Should you later need the extended capabilities and extensibility provided by SvelteKit, the template has been structured similarly to SvelteKit so that it is easy to migrate.
-
-**Why `global.d.ts` instead of `compilerOptions.types` inside `jsconfig.json` or `tsconfig.json`?**
-
-Setting `compilerOptions.types` shuts out all other types not explicitly listed in the configuration. Using triple-slash references keeps the default TypeScript setting of accepting type information from the entire workspace, while also adding `svelte` and `vite/client` type information.
-
-**Why include `.vscode/extensions.json`?**
-
-Other templates indirectly recommend extensions via the README, but this file allows VS Code to prompt the user to install the recommended extension upon opening the project.
-
-**Why enable `allowJs` in the TS template?**
-
-While `allowJs: false` would indeed prevent the use of `.js` files in the project, it does not prevent the use of JavaScript syntax in `.svelte` files. In addition, it would force `checkJs: false`, bringing the worst of both worlds: not being able to guarantee the entire codebase is TypeScript, and also having worse typechecking for the existing JavaScript. In addition, there are valid use cases in which a mixed codebase may be relevant.
-
-**Why is HMR not preserving my local component state?**
-
-HMR state preservation comes with a number of gotchas! It has been disabled by default in both `svelte-hmr` and `@sveltejs/vite-plugin-svelte` due to its often surprising behavior. You can read the details [here](https://github.com/rixo/svelte-hmr#svelte-hmr).
-
-If you have state that's important to retain within a component, consider creating an external store which would not be replaced by HMR.
-
-```ts
-// store.ts
-// An extremely simple external store
-import { writable } from 'svelte/store'
-export default writable(0)
 ```
+┌────────────────────┐              ┌─────────────────────────────┐
+│ Tauri app          │     REST     │ lana-server (Rust, axum)    │
+│                    │─────────────►│ • REST API under /api/v1    │
+│ SQLite cache       │◄─────────────│ • SSE events per device     │
+│ (works offline)    │     SSE      │ • background poller         │
+└────────────────────┘              └──────────────┬──────────────┘
+                                                   │
+                                    ┌──────────────▼──────────────┐
+                                    │    PostgreSQL + PostGIS     │
+                                    └─────────────────────────────┘
+```
+
+- The server imports Basel open data (data.bs.ch) and keeps temperatures
+  live; only the server calls external APIs.
+- Helper notifications arrive over Server-Sent Events; devices are
+  anonymous client-generated UUIDs — no accounts, no identity.
+
+## Getting started
+
+Prerequisites: [Nix](https://nixos.org/download) with flakes enabled
+(`experimental-features = nix-command flakes`). No Nix? Install Rust, Node,
+the [Tauri prerequisites](https://v2.tauri.app/start/prerequisites/), and
+PostgreSQL with PostGIS yourself.
+
+```sh
+nix develop                                        # dev shell: rust, cargo-tauri, node, postgres+postgis, just
+just db-init && just db-start && just db-createdb  # once: local dev Postgres
+just serve                                         # backend API on http://127.0.0.1:8080 (terminal 1)
+just dev                                           # the Tauri app (terminal 2)
+```
+
+The app defaults to `http://127.0.0.1:8080` and caches a full snapshot in
+SQLite — after one sync it keeps working offline and shows how stale its
+data is. The dev shell exports `DATABASE_URL`
+(`postgres://lana:lana@127.0.0.1:5432/lana`); inspect it with
+`psql "$DATABASE_URL"`.
+
+## Deployment
+
+The backend is a two-service docker compose stack (PostGIS + server) — the
+same files on a laptop and on the team's Proxmox host:
+
+```sh
+docker compose up -d --build
+curl -s http://localhost:8080/api/v1/snapshot | head -c 300; echo
+docker compose run --rm server import   # load the static datasets (one-shot)
+```
+
+Migrations run on server startup; data survives restarts in the `pgdata`
+volume (`docker compose down -v` deletes it). For phones, point a
+[Cloudflare tunnel](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/)
+at port 8080 and set the tunnel URL in the app.
+
+## Development
+
+| Command                                   | What it does                                        |
+| ----------------------------------------- | --------------------------------------------------- |
+| `just serve`                              | backend API (needs the dev database)                |
+| `just dev`                                | Tauri app in dev mode                               |
+| `just check` / `just lint` / `just fmt`   | type-check / clippy `-D warnings` / format          |
+| `just test`                               | workspace tests (backend tests need the database)   |
+| `just db-init` / `db-start` / `db-stop`   | local dev Postgres lifecycle                        |
+
+The server is one binary with three modes: `serve` (API + SSE + background
+poller, applies migrations on startup), `import` (idempotent refresh of the
+static datasets), and `poll` (one manual poll cycle for demos/tests).
+Environment: `DATABASE_URL` (required), `LANA_BIND_ADDR` (default
+`0.0.0.0:8080`), `LANA_POLL_INTERVAL_SECS` (default 600).
+
+Schema changes are plain SQL files in `server/migrations/`, applied in
+filename order at server startup — never edit an applied migration.
+
+## Documentation
+
+- [server/README.md](server/README.md) — API reference, import/poll
+  internals, test conventions

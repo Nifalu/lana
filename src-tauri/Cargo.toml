@@ -1,0 +1,40 @@
+[package]
+name = "lana"
+version = "0.1.0"
+description = "lana – Hack am Rhein challenge #3"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+name = "lana_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+anyhow.workspace = true
+chrono = { version = "0.4", features = ["serde"] }
+reqwest = { version = "0.12", default-features = false, features = [
+    "json",
+    "rustls-tls",
+    "gzip",
+    "http2",
+    "charset",
+] }
+serde.workspace = true
+serde_json.workspace = true
+# SQLite only – the app is a client with an embedded cache (ADR 0002) and
+# must not link any Postgres code (it has to run on Android).
+sqlx = { workspace = true, features = ["sqlite", "chrono"] }
+tauri = { version = "2", features = [] }
+uuid = { version = "1", features = ["v4"] }
+
+[dev-dependencies]
+# The sync tests spawn the real server router against the dev Postgres
+# (DB-gated, skips without DATABASE_URL) on an ephemeral port.
+axum = "0.8"
+lana-server = { path = "../server" }
+tempfile = "3"
+tokio = { version = "1", features = ["rt-multi-thread", "macros"] }

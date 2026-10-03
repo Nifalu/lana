@@ -1,0 +1,12 @@
+[workspace]
+resolver = "2"
+members = ["src-tauri", "server"]
+
+[workspace.dependencies]
+anyhow = "1"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+# Common base (async runtime + TLS); crates add their own database feature
+# (`postgres` for the server, `sqlite` for the app) so the app binary never
+# links Postgres code.
+sqlx = { version = "0.9", features = ["runtime-tokio", "tls-rustls"] }

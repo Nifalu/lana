@@ -1,0 +1,55 @@
+{
+ "total_count": 440158,
+ "results": [
+  {
+   "startzeitpunkt": "2026-10-02T14:45:00+00:00",
+   "start_text": "02.10.2026 16:45:00",
+   "endezeitpunkt": "2026-10-02T15:00:00+00:00",
+   "ende_text": "02.10.2026 17:00:00",
+   "rus_w_o_s3_lf": 361.4,
+   "rus_w_o_s3_o2": 8.83,
+   "rus_w_o_s3_ph": 7.93,
+   "rus_w_o_s3_te": 20.72
+  },
+  {
+   "startzeitpunkt": "2026-10-02T14:30:00+00:00",
+   "start_text": "02.10.2026 16:30:00",
+   "endezeitpunkt": "2026-10-02T14:45:00+00:00",
+   "ende_text": "02.10.2026 16:45:00",
+   "rus_w_o_s3_lf": 360.1,
+   "rus_w_o_s3_o2": 8.82,
+   "rus_w_o_s3_ph": 7.94,
+   "rus_w_o_s3_te": 20.71
+  },
+  {
+   "startzeitpunkt": "2026-10-02T14:15:00+00:00",
+   "start_text": "02.10.2026 16:15:00",
+   "endezeitpunkt": "2026-10-02T14:30:00+00:00",
+   "ende_text": "02.10.2026 16:30:00",
+   "rus_w_o_s3_lf": 358.8,
+   "rus_w_o_s3_o2": 8.83,
+   "rus_w_o_s3_ph": 7.95,
+   "rus_w_o_s3_te": 20.71
+  },
+  {
+   "startzeitpunkt": "2026-10-02T14:00:00+00:00",
+   "start_text": "02.10.2026 16:00:00",
+   "endezeitpunkt": "2026-10-02T14:15:00+00:00",
+   "ende_text": "02.10.2026 16:15:00",
+   "rus_w_o_s3_lf": 359.6,
+   "rus_w_o_s3_o2": 8.85,
+   "rus_w_o_s3_ph": 7.95,
+   "rus_w_o_s3_te": 20.7
+  },
+  {
+   "startzeitpunkt": "2026-10-02T13:45:00+00:00",
+   "start_text": "02.10.2026 15:45:00",
+   "endezeitpunkt": "2026-10-02T14:00:00+00:00",
+   "ende_text": "02.10.2026 16:00:00",
+   "rus_w_o_s3_lf": 359.6,
+   "rus_w_o_s3_o2": 8.82,
+   "rus_w_o_s3_ph": 7.95,
+   "rus_w_o_s3_te": 20.69
+  }
+ ]
+}
