@@ -14,6 +14,8 @@ use tauri::{Manager, State};
 /// Shared application state managed by Tauri.
 pub struct AppState {
     pub pool: sqlx::sqlite::SqlitePool,
+    /// The one HTTP client every sync reuses (connection pooling, timeout).
+    pub http: reqwest::Client,
 }
 
 /// Returns the persistent device id (UUID v4), generating it once and
@@ -49,7 +51,7 @@ async fn sync_now(state: State<'_, AppState>) -> Result<sync::SyncReport, String
     let base_url = cache::get_server_url(&state.pool)
         .await
         .map_err(|e| e.to_string())?;
-    sync::sync_now(&state.pool, &base_url)
+    sync::sync_now(&state.pool, &state.http, &base_url)
         .await
         .map_err(|e| e.to_string())
 }
@@ -97,7 +99,11 @@ pub fn run() {
                     format!("failed to open the offline cache: {err:#}").into()
                 },
             )?;
-            app.manage(AppState { pool });
+            let http = sync::http_client()
+                .map_err(|err| -> Box<dyn std::error::Error> {
+                    format!("failed to build the HTTP client: {err:#}").into()
+                })?;
+            app.manage(AppState { pool, http });
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![

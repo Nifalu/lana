@@ -24,11 +24,25 @@ pub struct SyncReport {
     pub generated_at: DateTime<Utc>,
 }
 
+/// Builds the one HTTP client every sync reuses: built once per app run
+/// (the `AppState` constructor) instead of per sync, with the snapshot
+/// fetch timeout baked in.
+pub fn http_client() -> anyhow::Result<reqwest::Client> {
+    reqwest::Client::builder()
+        .timeout(FETCH_TIMEOUT)
+        .build()
+        .context("failed to build the HTTP client")
+}
+
 /// Pulls the full snapshot from `{base_url}/api/v1/snapshot` and replaces the
 /// cache in one transaction. On any failure the previous cache content stays
 /// untouched.
-pub async fn sync_now(pool: &SqlitePool, base_url: &str) -> anyhow::Result<SyncReport> {
-    let snapshot = fetch_snapshot(base_url).await?;
+pub async fn sync_now(
+    pool: &SqlitePool,
+    http: &reqwest::Client,
+    base_url: &str,
+) -> anyhow::Result<SyncReport> {
+    let snapshot = fetch_snapshot(http, base_url).await?;
     let (poi_count, station_count) = cache::replace_snapshot(pool, &snapshot).await?;
     Ok(SyncReport {
         poi_count,
@@ -38,13 +52,9 @@ pub async fn sync_now(pool: &SqlitePool, base_url: &str) -> anyhow::Result<SyncR
 }
 
 /// Fetches and parses the snapshot document from the server.
-async fn fetch_snapshot(base_url: &str) -> anyhow::Result<Snapshot> {
+async fn fetch_snapshot(http: &reqwest::Client, base_url: &str) -> anyhow::Result<Snapshot> {
     let url = format!("{base_url}/api/v1/snapshot");
-    let client = reqwest::Client::builder()
-        .timeout(FETCH_TIMEOUT)
-        .build()
-        .context("failed to build the HTTP client")?;
-    let response = client
+    let response = http
         .get(&url)
         .send()
         .await
@@ -195,7 +205,7 @@ mod tests {
         .await
         .unwrap();
 
-        let report = sync_now(&pool, &base_url)
+        let report = sync_now(&pool, &http_client().unwrap(), &base_url)
             .await
             .expect("sync_now against the local server");
 
@@ -277,7 +287,7 @@ mod tests {
             .await
             .unwrap();
 
-        let result = sync_now(&pool, &format!("http://{addr}")).await;
+        let result = sync_now(&pool, &http_client().unwrap(), &format!("http://{addr}")).await;
         assert!(result.is_err(), "a 500 snapshot must fail the sync");
 
         let info = cache::cache_info(&pool).await.unwrap();

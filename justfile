@@ -7,7 +7,7 @@ default:
 serve:
     cargo run -p lana-server -- serve
 
-# Run the Tauri app in dev mode (needs the dev database: just db-start)
+# Run the Tauri app in dev mode (embedded SQLite cache; only the server needs Postgres)
 dev: fe-build
     cargo tauri dev
 
