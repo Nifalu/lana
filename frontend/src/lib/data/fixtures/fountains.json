@@ -1,0 +1,5781 @@
+[
+ {
+  "id": 273223527,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/273223527",
+  "lon": 7.5925042,
+  "lat": 47.5725655,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5925042,
+    47.5725655
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 279852628,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/279852628",
+  "lon": 7.6217167,
+  "lat": 47.5658431,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6217167,
+    47.5658431
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 279852787,
+  "kind": "fountain",
+  "name": "Landauer-Brunnen",
+  "source": "osm",
+  "source_id": "node/279852787",
+  "lon": 7.6302005,
+  "lat": 47.5664036,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6302005,
+    47.5664036
+   ]
+  },
+  "properties": {
+   "access": "yes",
+   "fee": "no"
+  }
+ },
+ {
+  "id": 290725071,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/290725071",
+  "lon": 7.6103696,
+  "lat": 47.5742902,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6103696,
+    47.5742902
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 291142418,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/291142418",
+  "lon": 7.5973765,
+  "lat": 47.5545569,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5973765,
+    47.5545569
+   ]
+  },
+  "properties": {
+   "operator": "Schöneck-Brunnen",
+   "check_date": "2026-01-25"
+  }
+ },
+ {
+  "id": 325123880,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/325123880",
+  "lon": 7.6545702,
+  "lat": 47.5872383,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6545702,
+    47.5872383
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 325789835,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/325789835",
+  "lon": 7.6464363,
+  "lat": 47.5946145,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6464363,
+    47.5946145
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 325790184,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/325790184",
+  "lon": 7.6421524,
+  "lat": 47.5938451,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6421524,
+    47.5938451
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 332617907,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/332617907",
+  "lon": 7.6574772,
+  "lat": 47.5858659,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6574772,
+    47.5858659
+   ]
+  },
+  "properties": {
+   "check_date": "2023-01-06"
+  }
+ },
+ {
+  "id": 335990604,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/335990604",
+  "lon": 7.6519329,
+  "lat": 47.5855876,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6519329,
+    47.5855876
+   ]
+  },
+  "properties": {
+   "check_date": "2024-06-01"
+  }
+ },
+ {
+  "id": 336368506,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/336368506",
+  "lon": 7.6547331,
+  "lat": 47.5822222,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6547331,
+    47.5822222
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 343762844,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/343762844",
+  "lon": 7.6518964,
+  "lat": 47.569523,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6518964,
+    47.569523
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 575614798,
+  "kind": "fountain",
+  "name": "Ölberg-Brunnen",
+  "source": "osm",
+  "source_id": "node/575614798",
+  "lon": 7.5873847,
+  "lat": 47.555435,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5873847,
+    47.555435
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 583590302,
+  "kind": "fountain",
+  "name": "Augustiner-Brunnen",
+  "source": "osm",
+  "source_id": "node/583590302",
+  "lon": 7.5903491,
+  "lat": 47.5579731,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5903491,
+    47.5579731
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 585195407,
+  "kind": "fountain",
+  "name": "Schwarzadler-Brunnen",
+  "source": "osm",
+  "source_id": "node/585195407",
+  "lon": 7.5909007,
+  "lat": 47.5625542,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5909007,
+    47.5625542
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 589987364,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/589987364",
+  "lon": 7.592794,
+  "lat": 47.5595714,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.592794,
+    47.5595714
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 1087368730,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/1087368730",
+  "lon": 7.579822,
+  "lat": 47.5603352,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.579822,
+    47.5603352
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 1368004115,
+  "kind": "fountain",
+  "name": "Stachelschützenbrunnen",
+  "source": "osm",
+  "source_id": "node/1368004115",
+  "lon": 7.5826508,
+  "lat": 47.558513,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5826508,
+    47.558513
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 1377180473,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/1377180473",
+  "lon": 7.6503779,
+  "lat": 47.583225,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6503779,
+    47.583225
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 1435836670,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/1435836670",
+  "lon": 7.6547185,
+  "lat": 47.5852845,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6547185,
+    47.5852845
+   ]
+  },
+  "properties": {
+   "check_date": "2024-03-23"
+  }
+ },
+ {
+  "id": 1435838802,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/1435838802",
+  "lon": 7.6534069,
+  "lat": 47.5868248,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6534069,
+    47.5868248
+   ]
+  },
+  "properties": {
+   "fee": "no"
+  }
+ },
+ {
+  "id": 1455537012,
+  "kind": "fountain",
+  "name": "Birsstrasse-Brunnen \"Mädchen mit Katze\"",
+  "source": "osm",
+  "source_id": "node/1455537012",
+  "lon": 7.6224499,
+  "lat": 47.5474956,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6224499,
+    47.5474956
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 1598177035,
+  "kind": "fountain",
+  "name": "Hochstrasse-Brunnen",
+  "source": "osm",
+  "source_id": "node/1598177035",
+  "lon": 7.5925802,
+  "lat": 47.5453859,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5925802,
+    47.5453859
+   ]
+  },
+  "properties": {
+   "check_date": "2026-03-13"
+  }
+ },
+ {
+  "id": 1737520030,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/1737520030",
+  "lon": 7.5965814,
+  "lat": 47.5596889,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5965814,
+    47.5596889
+   ]
+  },
+  "properties": {
+   "access": "yes"
+  }
+ },
+ {
+  "id": 1758650372,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/1758650372",
+  "lon": 7.6016334,
+  "lat": 47.5714079,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6016334,
+    47.5714079
+   ]
+  },
+  "properties": {
+   "check_date": "2022-01-25"
+  }
+ },
+ {
+  "id": 1794707590,
+  "kind": "fountain",
+  "name": "Basiliskenbrunnen",
+  "source": "osm",
+  "source_id": "node/1794707590",
+  "lon": 7.5873985,
+  "lat": 47.5338196,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5873985,
+    47.5338196
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 1835035383,
+  "kind": "fountain",
+  "name": "Schindelhof-Brunnen",
+  "source": "osm",
+  "source_id": "node/1835035383",
+  "lon": 7.6032907,
+  "lat": 47.5540752,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6032907,
+    47.5540752
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 1999602818,
+  "kind": "fountain",
+  "name": "Basiliskenbrunnen",
+  "source": "osm",
+  "source_id": "node/1999602818",
+  "lon": 7.6085476,
+  "lat": 47.5741884,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6085476,
+    47.5741884
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 2135053541,
+  "kind": "fountain",
+  "name": "Mädchenbrunnen von Alexander Zschokke",
+  "source": "osm",
+  "source_id": "node/2135053541",
+  "lon": 7.5893077,
+  "lat": 47.5432764,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5893077,
+    47.5432764
+   ]
+  },
+  "properties": {
+   "check_date": "2024-12-23"
+  }
+ },
+ {
+  "id": 2135287308,
+  "kind": "fountain",
+  "name": "Steinbühlplatz-Brunnen",
+  "source": "osm",
+  "source_id": "node/2135287308",
+  "lon": 7.5591148,
+  "lat": 47.5485963,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5591148,
+    47.5485963
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 2369595667,
+  "kind": "fountain",
+  "name": "Basiliskenbrunnen",
+  "source": "osm",
+  "source_id": "node/2369595667",
+  "lon": 7.5970078,
+  "lat": 47.5332917,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5970078,
+    47.5332917
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 2406347946,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/2406347946",
+  "lon": 7.5949124,
+  "lat": 47.5708375,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5949124,
+    47.5708375
+   ]
+  },
+  "properties": {
+   "check_date": "2021-08-08"
+  }
+ },
+ {
+  "id": 2431312954,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/2431312954",
+  "lon": 7.6532659,
+  "lat": 47.5759961,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6532659,
+    47.5759961
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 2485665421,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/2485665421",
+  "lon": 7.5746027,
+  "lat": 47.5531613,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5746027,
+    47.5531613
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 2502582505,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/2502582505",
+  "lon": 7.6088596,
+  "lat": 47.5558891,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6088596,
+    47.5558891
+   ]
+  },
+  "properties": {
+   "fee": "no"
+  }
+ },
+ {
+  "id": 2513404254,
+  "kind": "fountain",
+  "name": "Basiliskenbrunnen",
+  "source": "osm",
+  "source_id": "node/2513404254",
+  "lon": 7.586501,
+  "lat": 47.5672391,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.586501,
+    47.5672391
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 2560135624,
+  "kind": "fountain",
+  "name": "Pisonibrunnen",
+  "source": "osm",
+  "source_id": "node/2560135624",
+  "lon": 7.5916798,
+  "lat": 47.5565926,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5916798,
+    47.5565926
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 2706129172,
+  "kind": "fountain",
+  "name": "Basiliskenbrunnen",
+  "source": "osm",
+  "source_id": "node/2706129172",
+  "lon": 7.6068379,
+  "lat": 47.5464064,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6068379,
+    47.5464064
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 3070146086,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/3070146086",
+  "lon": 7.6015883,
+  "lat": 47.5390071,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6015883,
+    47.5390071
+   ]
+  },
+  "properties": {
+   "check_date": "2024-12-23"
+  }
+ },
+ {
+  "id": 3070146087,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/3070146087",
+  "lon": 7.6030408,
+  "lat": 47.5391187,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6030408,
+    47.5391187
+   ]
+  },
+  "properties": {
+   "check_date": "2023-03-14"
+  }
+ },
+ {
+  "id": 3106212292,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/3106212292",
+  "lon": 7.5647805,
+  "lat": 47.5469387,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5647805,
+    47.5469387
+   ]
+  },
+  "properties": {
+   "access": "yes",
+   "fee": "no",
+   "operator": "IWB"
+  }
+ },
+ {
+  "id": 3187595030,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/3187595030",
+  "lon": 7.5816141,
+  "lat": 47.5679828,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5816141,
+    47.5679828
+   ]
+  },
+  "properties": {
+   "check_date": "2022-02-23"
+  }
+ },
+ {
+  "id": 3561457802,
+  "kind": "fountain",
+  "name": "Spalenbrunnen",
+  "source": "osm",
+  "source_id": "node/3561457802",
+  "lon": 7.582834,
+  "lat": 47.5572588,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.582834,
+    47.5572588
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 3712266856,
+  "kind": "fountain",
+  "name": "Elisabethen-Brunnen",
+  "source": "osm",
+  "source_id": "node/3712266856",
+  "lon": 7.5910035,
+  "lat": 47.5519932,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5910035,
+    47.5519932
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 3716992040,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/3716992040",
+  "lon": 7.5831645,
+  "lat": 47.5512777,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5831645,
+    47.5512777
+   ]
+  },
+  "properties": {
+   "check_date": "2022-06-09"
+  }
+ },
+ {
+  "id": 3801889400,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/3801889400",
+  "lon": 7.5823176,
+  "lat": 47.5490788,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5823176,
+    47.5490788
+   ]
+  },
+  "properties": {
+   "check_date": "2024-07-08"
+  }
+ },
+ {
+  "id": 3801917817,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/3801917817",
+  "lon": 7.5857177,
+  "lat": 47.5512587,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5857177,
+    47.5512587
+   ]
+  },
+  "properties": {
+   "check_date": "2024-06-05"
+  }
+ },
+ {
+  "id": 3802309508,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/3802309508",
+  "lon": 7.5866371,
+  "lat": 47.5549551,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5866371,
+    47.5549551
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 3802309509,
+  "kind": "fountain",
+  "name": "Basiliskenbrunnen",
+  "source": "osm",
+  "source_id": "node/3802309509",
+  "lon": 7.5800193,
+  "lat": 47.5509045,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5800193,
+    47.5509045
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 3811616605,
+  "kind": "fountain",
+  "name": "Schmiedenhof-Brunnen",
+  "source": "osm",
+  "source_id": "node/3811616605",
+  "lon": 7.5877646,
+  "lat": 47.5568593,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5877646,
+    47.5568593
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 3828356884,
+  "kind": "fountain",
+  "name": "Fischmarktbrunnen",
+  "source": "osm",
+  "source_id": "node/3828356884",
+  "lon": 7.5869741,
+  "lat": 47.5592324,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5869741,
+    47.5592324
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 4172906225,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/4172906225",
+  "lon": 7.5831983,
+  "lat": 47.574849,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5831983,
+    47.574849
+   ]
+  },
+  "properties": {
+   "check_date": "2026-03-26"
+  }
+ },
+ {
+  "id": 4196575491,
+  "kind": "fountain",
+  "name": "Basiliskenbrunnen",
+  "source": "osm",
+  "source_id": "node/4196575491",
+  "lon": 7.5988206,
+  "lat": 47.5478503,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5988206,
+    47.5478503
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 4226606541,
+  "kind": "fountain",
+  "name": "Allschwilerplatz-Brunnen",
+  "source": "osm",
+  "source_id": "node/4226606541",
+  "lon": 7.569377,
+  "lat": 47.5574789,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.569377,
+    47.5574789
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 4272963824,
+  "kind": "fountain",
+  "name": "Basiliskenbrunnen",
+  "source": "osm",
+  "source_id": "node/4272963824",
+  "lon": 7.593184,
+  "lat": 47.5588958,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.593184,
+    47.5588958
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 4278223227,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/4278223227",
+  "lon": 7.5762482,
+  "lat": 47.5631373,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5762482,
+    47.5631373
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 4278278391,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/4278278391",
+  "lon": 7.5834844,
+  "lat": 47.5712668,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5834844,
+    47.5712668
+   ]
+  },
+  "properties": {
+   "check_date": "2026-02-17"
+  }
+ },
+ {
+  "id": 4437874912,
+  "kind": "fountain",
+  "name": "Dreizack-Brunnen",
+  "source": "osm",
+  "source_id": "node/4437874912",
+  "lon": 7.5910098,
+  "lat": 47.5552154,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5910098,
+    47.5552154
+   ]
+  },
+  "properties": {
+   "check_date": "2024-06-05"
+  }
+ },
+ {
+  "id": 4442446809,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/4442446809",
+  "lon": 7.5831608,
+  "lat": 47.5749006,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5831608,
+    47.5749006
+   ]
+  },
+  "properties": {
+   "fee": "no"
+  }
+ },
+ {
+  "id": 4855825432,
+  "kind": "fountain",
+  "name": "Basiliskenbrunnen",
+  "source": "osm",
+  "source_id": "node/4855825432",
+  "lon": 7.606522,
+  "lat": 47.5495636,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.606522,
+    47.5495636
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 4865735321,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/4865735321",
+  "lon": 7.604101,
+  "lat": 47.5599496,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.604101,
+    47.5599496
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 4865824521,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/4865824521",
+  "lon": 7.5983017,
+  "lat": 47.564896,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5983017,
+    47.564896
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 4865827621,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/4865827621",
+  "lon": 7.5991516,
+  "lat": 47.5635503,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5991516,
+    47.5635503
+   ]
+  },
+  "properties": {
+   "check_date": "2021-08-18"
+  }
+ },
+ {
+  "id": 4866565222,
+  "kind": "fountain",
+  "name": "Schifflände-Brunnen",
+  "source": "osm",
+  "source_id": "node/4866565222",
+  "lon": 7.5881313,
+  "lat": 47.5600495,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5881313,
+    47.5600495
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 5029136745,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/5029136745",
+  "lon": 7.6501439,
+  "lat": 47.5857118,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6501439,
+    47.5857118
+   ]
+  },
+  "properties": {
+   "check_date": "2024-06-01"
+  }
+ },
+ {
+  "id": 5067468421,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/5067468421",
+  "lon": 7.6024739,
+  "lat": 47.558684,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6024739,
+    47.558684
+   ]
+  },
+  "properties": {
+   "access": "yes"
+  }
+ },
+ {
+  "id": 5108309523,
+  "kind": "fountain",
+  "name": "Birskopf-Brunnen",
+  "source": "osm",
+  "source_id": "node/5108309523",
+  "lon": 7.6155241,
+  "lat": 47.5573563,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6155241,
+    47.5573563
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 5129943423,
+  "kind": "fountain",
+  "name": "Samson und Delila-Brunnen",
+  "source": "osm",
+  "source_id": "node/5129943423",
+  "lon": 7.5895401,
+  "lat": 47.5549422,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5895401,
+    47.5549422
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 5129965922,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/5129965922",
+  "lon": 7.588042,
+  "lat": 47.5579749,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.588042,
+    47.5579749
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 5171837777,
+  "kind": "fountain",
+  "name": "Wasserturm-Brunnen",
+  "source": "osm",
+  "source_id": "node/5171837777",
+  "lon": 7.5925398,
+  "lat": 47.5283338,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5925398,
+    47.5283338
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 5377793924,
+  "kind": "fountain",
+  "name": "Basiliskenbrunnen",
+  "source": "osm",
+  "source_id": "node/5377793924",
+  "lon": 7.5826242,
+  "lat": 47.5542646,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5826242,
+    47.5542646
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 5561455868,
+  "kind": "fountain",
+  "name": "Helvetiaplatz-Brunnen",
+  "source": "osm",
+  "source_id": "node/5561455868",
+  "lon": 7.5672058,
+  "lat": 47.559969,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5672058,
+    47.559969
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 5650144758,
+  "kind": "fountain",
+  "name": "Basiliskbrunnen",
+  "source": "osm",
+  "source_id": "node/5650144758",
+  "lon": 7.6011213,
+  "lat": 47.5750126,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6011213,
+    47.5750126
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 5651470921,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/5651470921",
+  "lon": 7.578144,
+  "lat": 47.5474089,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.578144,
+    47.5474089
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 5654715008,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/5654715008",
+  "lon": 7.6046156,
+  "lat": 47.5744131,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6046156,
+    47.5744131
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 5677241054,
+  "kind": "fountain",
+  "name": "Johannes der Täufer-Nischenbrunnen",
+  "source": "osm",
+  "source_id": "node/5677241054",
+  "lon": 7.5844762,
+  "lat": 47.5568988,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5844762,
+    47.5568988
+   ]
+  },
+  "properties": {
+   "access": "yes"
+  }
+ },
+ {
+  "id": 5700864085,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/5700864085",
+  "lon": 7.5776352,
+  "lat": 47.5539038,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5776352,
+    47.5539038
+   ]
+  },
+  "properties": {
+   "indoor": "no"
+  }
+ },
+ {
+  "id": 5744244897,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/5744244897",
+  "lon": 7.600201,
+  "lat": 47.5539655,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.600201,
+    47.5539655
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 5746263878,
+  "kind": "fountain",
+  "name": "Basiliskenbrunnen",
+  "source": "osm",
+  "source_id": "node/5746263878",
+  "lon": 7.5717191,
+  "lat": 47.5604471,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5717191,
+    47.5604471
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 5851112514,
+  "kind": "fountain",
+  "name": "Nischen-Brunnen",
+  "source": "osm",
+  "source_id": "node/5851112514",
+  "lon": 7.5855835,
+  "lat": 47.5575962,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5855835,
+    47.5575962
+   ]
+  },
+  "properties": {
+   "access": "yes"
+  }
+ },
+ {
+  "id": 5888758456,
+  "kind": "fountain",
+  "name": "Jakobus-Brunnen",
+  "source": "osm",
+  "source_id": "node/5888758456",
+  "lon": 7.5923716,
+  "lat": 47.5503875,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5923716,
+    47.5503875
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6277153000,
+  "kind": "fountain",
+  "name": "Glasmännlein",
+  "source": "osm",
+  "source_id": "node/6277153000",
+  "lon": 7.6092362,
+  "lat": 47.5617121,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6092362,
+    47.5617121
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6295780086,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6295780086",
+  "lon": 7.6009224,
+  "lat": 47.554735,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6009224,
+    47.554735
+   ]
+  },
+  "properties": {
+   "access": "yes",
+   "operator": "Albankloster-Brunnen"
+  }
+ },
+ {
+  "id": 6295848585,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6295848585",
+  "lon": 7.6093177,
+  "lat": 47.5582342,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6093177,
+    47.5582342
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6297452486,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6297452486",
+  "lon": 7.6495672,
+  "lat": 47.5840893,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6495672,
+    47.5840893
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6297475390,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6297475390",
+  "lon": 7.649317,
+  "lat": 47.5839966,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.649317,
+    47.5839966
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6299759786,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6299759786",
+  "lon": 7.5982406,
+  "lat": 47.5539627,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5982406,
+    47.5539627
+   ]
+  },
+  "properties": {
+   "operator": "St. Brigitta-Brunnen"
+  }
+ },
+ {
+  "id": 6301613106,
+  "kind": "fountain",
+  "name": "Kohleberg-Brunnen",
+  "source": "osm",
+  "source_id": "node/6301613106",
+  "lon": 7.5879754,
+  "lat": 47.553984,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5879754,
+    47.553984
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6301613107,
+  "kind": "fountain",
+  "name": "Trambahnhof-Brunnen",
+  "source": "osm",
+  "source_id": "node/6301613107",
+  "lon": 7.5962429,
+  "lat": 47.5516794,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5962429,
+    47.5516794
+   ]
+  },
+  "properties": {
+   "check_date": "2026-03-01"
+  }
+ },
+ {
+  "id": 6301613109,
+  "kind": "fountain",
+  "name": "Broncefigur-Brunnen",
+  "source": "osm",
+  "source_id": "node/6301613109",
+  "lon": 7.5881666,
+  "lat": 47.5534434,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5881666,
+    47.5534434
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6301613111,
+  "kind": "fountain",
+  "name": "Schlangen-Brunnen",
+  "source": "osm",
+  "source_id": "node/6301613111",
+  "lon": 7.5965824,
+  "lat": 47.5546802,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5965824,
+    47.5546802
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6301613112,
+  "kind": "fountain",
+  "name": "Vier Vögel-Brunnen",
+  "source": "osm",
+  "source_id": "node/6301613112",
+  "lon": 7.5875105,
+  "lat": 47.5533878,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5875105,
+    47.5533878
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6301613113,
+  "kind": "fountain",
+  "name": "Neptun-Brunnen",
+  "source": "osm",
+  "source_id": "node/6301613113",
+  "lon": 7.5907609,
+  "lat": 47.5542075,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5907609,
+    47.5542075
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6301613114,
+  "kind": "fountain",
+  "name": "Stock-Brunnen",
+  "source": "osm",
+  "source_id": "node/6301613114",
+  "lon": 7.5914303,
+  "lat": 47.5519267,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5914303,
+    47.5519267
+   ]
+  },
+  "properties": {
+   "access": "customers",
+   "operator": "Historisches Museum Basel"
+  }
+ },
+ {
+  "id": 6372419796,
+  "kind": "fountain",
+  "name": "Friedrich-Nietzsche-Brunnen",
+  "source": "osm",
+  "source_id": "node/6372419796",
+  "lon": 7.5808591,
+  "lat": 47.5573831,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5808591,
+    47.5573831
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6537956955,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6537956955",
+  "lon": 7.5905157,
+  "lat": 47.5570394,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5905157,
+    47.5570394
+   ]
+  },
+  "properties": {
+   "operator": "Kulturenplatz-Brunnen",
+   "check_date": "2024-07-30"
+  }
+ },
+ {
+  "id": 6537956956,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6537956956",
+  "lon": 7.5905744,
+  "lat": 47.5572522,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5905744,
+    47.5572522
+   ]
+  },
+  "properties": {
+   "operator": "Rollerhof-Brunnen"
+  }
+ },
+ {
+  "id": 6537956958,
+  "kind": "fountain",
+  "name": "Sevogelbrunnen",
+  "source": "osm",
+  "source_id": "node/6537956958",
+  "lon": 7.5887705,
+  "lat": 47.5586943,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5887705,
+    47.5586943
+   ]
+  },
+  "properties": {
+   "access": "yes",
+   "operator": "IWB"
+  }
+ },
+ {
+  "id": 6541480227,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6541480227",
+  "lon": 7.594352,
+  "lat": 47.5540148,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.594352,
+    47.5540148
+   ]
+  },
+  "properties": {
+   "operator": "Schlangenbrunnen"
+  }
+ },
+ {
+  "id": 6549853771,
+  "kind": "fountain",
+  "name": "Offenburgerhof-Brunnen",
+  "source": "osm",
+  "source_id": "node/6549853771",
+  "lon": 7.5861069,
+  "lat": 47.5597722,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5861069,
+    47.5597722
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6549853772,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6549853772",
+  "lon": 7.586412,
+  "lat": 47.5600088,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.586412,
+    47.5600088
+   ]
+  },
+  "properties": {
+   "operator": "Spiegelhof-Brunnen"
+  }
+ },
+ {
+  "id": 6549853775,
+  "kind": "fountain",
+  "name": "Storchenbrunnen",
+  "source": "osm",
+  "source_id": "node/6549853775",
+  "lon": 7.5849981,
+  "lat": 47.5590593,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5849981,
+    47.5590593
+   ]
+  },
+  "properties": {
+   "indoor": "no"
+  }
+ },
+ {
+  "id": 6549853783,
+  "kind": "fountain",
+  "name": "Vor Sonnenaufgang-Brunnen",
+  "source": "osm",
+  "source_id": "node/6549853783",
+  "lon": 7.5854922,
+  "lat": 47.5589153,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5854922,
+    47.5589153
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6549853784,
+  "kind": "fountain",
+  "name": "Wand-Brunnen",
+  "source": "osm",
+  "source_id": "node/6549853784",
+  "lon": 7.5852316,
+  "lat": 47.5586122,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5852316,
+    47.5586122
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6549886085,
+  "kind": "fountain",
+  "name": "Mädchen mit Vase-Brunnen",
+  "source": "osm",
+  "source_id": "node/6549886085",
+  "lon": 7.5853254,
+  "lat": 47.5585439,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5853254,
+    47.5585439
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6549886086,
+  "kind": "fountain",
+  "name": "Hof-Brunnen",
+  "source": "osm",
+  "source_id": "node/6549886086",
+  "lon": 7.5852127,
+  "lat": 47.5583787,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5852127,
+    47.5583787
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6549886096,
+  "kind": "fountain",
+  "name": "Muschel-Brunnen",
+  "source": "osm",
+  "source_id": "node/6549886096",
+  "lon": 7.5850087,
+  "lat": 47.5582373,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5850087,
+    47.5582373
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6550684834,
+  "kind": "fountain",
+  "name": "Hof-Brunnen",
+  "source": "osm",
+  "source_id": "node/6550684834",
+  "lon": 7.5863481,
+  "lat": 47.5560322,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5863481,
+    47.5560322
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6550684835,
+  "kind": "fountain",
+  "name": "Basiliskenbrunnen",
+  "source": "osm",
+  "source_id": "node/6550684835",
+  "lon": 7.5886175,
+  "lat": 47.5565576,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5886175,
+    47.5565576
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6550684836,
+  "kind": "fountain",
+  "name": "Gerber-Brunnen",
+  "source": "osm",
+  "source_id": "node/6550684836",
+  "lon": 7.5884136,
+  "lat": 47.5559549,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5884136,
+    47.5559549
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6550684838,
+  "kind": "fountain",
+  "name": "Aeschengraben-Brunnen",
+  "source": "osm",
+  "source_id": "node/6550684838",
+  "lon": 7.5933273,
+  "lat": 47.5504364,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5933273,
+    47.5504364
+   ]
+  },
+  "properties": {
+   "check_date": "2026-01-08"
+  }
+ },
+ {
+  "id": 6550684839,
+  "kind": "fountain",
+  "name": "Männli-Brunnen",
+  "source": "osm",
+  "source_id": "node/6550684839",
+  "lon": 7.5918424,
+  "lat": 47.5500528,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5918424,
+    47.5500528
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6550684841,
+  "kind": "fountain",
+  "name": "Krähe-Brunnen",
+  "source": "osm",
+  "source_id": "node/6550684841",
+  "lon": 7.5944781,
+  "lat": 47.5511842,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5944781,
+    47.5511842
+   ]
+  },
+  "properties": {
+   "access": "yes"
+  }
+ },
+ {
+  "id": 6550684842,
+  "kind": "fountain",
+  "name": "Basler Trinkbrünneli",
+  "source": "osm",
+  "source_id": "node/6550684842",
+  "lon": 7.5946486,
+  "lat": 47.5513194,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5946486,
+    47.5513194
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6603647485,
+  "kind": "fountain",
+  "name": "Basiliskenbrunnen",
+  "source": "osm",
+  "source_id": "node/6603647485",
+  "lon": 7.5690335,
+  "lat": 47.5644423,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5690335,
+    47.5644423
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6660580882,
+  "kind": "fountain",
+  "name": "Basiliskenbrunnen",
+  "source": "osm",
+  "source_id": "node/6660580882",
+  "lon": 7.5884576,
+  "lat": 47.5631712,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5884576,
+    47.5631712
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6660580883,
+  "kind": "fountain",
+  "name": "Basiliskenbrunnen",
+  "source": "osm",
+  "source_id": "node/6660580883",
+  "lon": 7.6021216,
+  "lat": 47.5570179,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6021216,
+    47.5570179
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6685653657,
+  "kind": "fountain",
+  "name": "Basiliskbrunnen",
+  "source": "osm",
+  "source_id": "node/6685653657",
+  "lon": 7.5830575,
+  "lat": 47.5674652,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5830575,
+    47.5674652
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6751326331,
+  "kind": "fountain",
+  "name": "Basiliskenbrunnen",
+  "source": "osm",
+  "source_id": "node/6751326331",
+  "lon": 7.5927499,
+  "lat": 47.566677,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5927499,
+    47.566677
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6751326332,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6751326332",
+  "lon": 7.5912864,
+  "lat": 47.5639644,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5912864,
+    47.5639644
+   ]
+  },
+  "properties": {
+   "check_date": "2024-07-11"
+  }
+ },
+ {
+  "id": 6764846014,
+  "kind": "fountain",
+  "name": "Basiliskbrunnen",
+  "source": "osm",
+  "source_id": "node/6764846014",
+  "lon": 7.6101392,
+  "lat": 47.5601749,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6101392,
+    47.5601749
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6765022137,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6765022137",
+  "lon": 7.5578565,
+  "lat": 47.5635894,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5578565,
+    47.5635894
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6778626380,
+  "kind": "fountain",
+  "name": "Schnecken-Brunnen",
+  "source": "osm",
+  "source_id": "node/6778626380",
+  "lon": 7.6110821,
+  "lat": 47.5544172,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6110821,
+    47.5544172
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6778626492,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6778626492",
+  "lon": 7.6055248,
+  "lat": 47.5525848,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6055248,
+    47.5525848
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6778626493,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6778626493",
+  "lon": 7.6088739,
+  "lat": 47.5518811,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6088739,
+    47.5518811
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6778626525,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6778626525",
+  "lon": 7.6040775,
+  "lat": 47.5507905,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6040775,
+    47.5507905
+   ]
+  },
+  "properties": {
+   "check_date": "2026-03-01"
+  }
+ },
+ {
+  "id": 6778924627,
+  "kind": "fountain",
+  "name": "Äänisbreetli-Brunnen",
+  "source": "osm",
+  "source_id": "node/6778924627",
+  "lon": 7.6294696,
+  "lat": 47.5629028,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6294696,
+    47.5629028
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6778932057,
+  "kind": "fountain",
+  "name": "Heugumpervogel-Brunnen",
+  "source": "osm",
+  "source_id": "node/6778932057",
+  "lon": 7.6012644,
+  "lat": 47.5323148,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6012644,
+    47.5323148
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6779994843,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6779994843",
+  "lon": 7.5843917,
+  "lat": 47.5567569,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5843917,
+    47.5567569
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6780001631,
+  "kind": "fountain",
+  "name": "Dorfplatz-Brunnen",
+  "source": "osm",
+  "source_id": "node/6780001631",
+  "lon": 7.6009813,
+  "lat": 47.5299877,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6009813,
+    47.5299877
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6780016265,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6780016265",
+  "lon": 7.5783879,
+  "lat": 47.5567338,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5783879,
+    47.5567338
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6780027497,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6780027497",
+  "lon": 7.5792545,
+  "lat": 47.5591359,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5792545,
+    47.5591359
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6780028494,
+  "kind": "fountain",
+  "name": "Engel mit Delphin-Brunnen",
+  "source": "osm",
+  "source_id": "node/6780028494",
+  "lon": 7.6183686,
+  "lat": 47.5519362,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6183686,
+    47.5519362
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6780081303,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6780081303",
+  "lon": 7.6246091,
+  "lat": 47.5784817,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6246091,
+    47.5784817
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6780108260,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6780108260",
+  "lon": 7.5613389,
+  "lat": 47.5622864,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5613389,
+    47.5622864
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6780275817,
+  "kind": "fountain",
+  "name": "Verbindungsschacht-Brunnen",
+  "source": "osm",
+  "source_id": "node/6780275817",
+  "lon": 7.5989795,
+  "lat": 47.5324833,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5989795,
+    47.5324833
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6780308411,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6780308411",
+  "lon": 7.5978538,
+  "lat": 47.5583064,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5978538,
+    47.5583064
+   ]
+  },
+  "properties": {
+   "check_date": "2026-03-22"
+  }
+ },
+ {
+  "id": 6780308475,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6780308475",
+  "lon": 7.5974342,
+  "lat": 47.5571206,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5974342,
+    47.5571206
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6782051258,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6782051258",
+  "lon": 7.5682,
+  "lat": 47.5538803,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5682,
+    47.5538803
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6782076401,
+  "kind": "fountain",
+  "name": "Basiliskenbrunnen",
+  "source": "osm",
+  "source_id": "node/6782076401",
+  "lon": 7.5749238,
+  "lat": 47.5517785,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5749238,
+    47.5517785
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6782260906,
+  "kind": "fountain",
+  "name": "Knabe mit Gans-Brunnen",
+  "source": "osm",
+  "source_id": "node/6782260906",
+  "lon": 7.590436,
+  "lat": 47.5493687,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.590436,
+    47.5493687
+   ]
+  },
+  "properties": {
+   "check_date": "2024-07-25"
+  }
+ },
+ {
+  "id": 6784798776,
+  "kind": "fountain",
+  "name": "Basiliskbrunnen",
+  "source": "osm",
+  "source_id": "node/6784798776",
+  "lon": 7.5612716,
+  "lat": 47.5684062,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5612716,
+    47.5684062
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6784964160,
+  "kind": "fountain",
+  "name": "Basiliskbrunnen",
+  "source": "osm",
+  "source_id": "node/6784964160",
+  "lon": 7.5916198,
+  "lat": 47.5768802,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5916198,
+    47.5768802
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6800087745,
+  "kind": "fountain",
+  "name": "Basiliskenbrunnen",
+  "source": "osm",
+  "source_id": "node/6800087745",
+  "lon": 7.5856312,
+  "lat": 47.5619403,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5856312,
+    47.5619403
+   ]
+  },
+  "properties": {
+   "check_date": "2024-07-16"
+  }
+ },
+ {
+  "id": 6800320230,
+  "kind": "fountain",
+  "name": "Basiliskbrunnen",
+  "source": "osm",
+  "source_id": "node/6800320230",
+  "lon": 7.5888609,
+  "lat": 47.5757402,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5888609,
+    47.5757402
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6800369644,
+  "kind": "fountain",
+  "name": "Basiliskbrunnen",
+  "source": "osm",
+  "source_id": "node/6800369644",
+  "lon": 7.5947681,
+  "lat": 47.5686674,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5947681,
+    47.5686674
+   ]
+  },
+  "properties": {
+   "check_date": "2026-02-17"
+  }
+ },
+ {
+  "id": 6800398664,
+  "kind": "fountain",
+  "name": "Basiliskenbrunnen",
+  "source": "osm",
+  "source_id": "node/6800398664",
+  "lon": 7.592297,
+  "lat": 47.5632276,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.592297,
+    47.5632276
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6800442509,
+  "kind": "fountain",
+  "name": "Basiliskenbrunnen",
+  "source": "osm",
+  "source_id": "node/6800442509",
+  "lon": 7.5972696,
+  "lat": 47.5619958,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5972696,
+    47.5619958
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6800668221,
+  "kind": "fountain",
+  "name": "Affen-Brunnen",
+  "source": "osm",
+  "source_id": "node/6800668221",
+  "lon": 7.5864168,
+  "lat": 47.5581685,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5864168,
+    47.5581685
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6800716202,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6800716202",
+  "lon": 7.5963564,
+  "lat": 47.5499081,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5963564,
+    47.5499081
+   ]
+  },
+  "properties": {
+   "check_date": "2024-08-09"
+  }
+ },
+ {
+  "id": 6801960962,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6801960962",
+  "lon": 7.5655543,
+  "lat": 47.5570578,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5655543,
+    47.5570578
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6802038704,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6802038704",
+  "lon": 7.5822372,
+  "lat": 47.565691,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5822372,
+    47.565691
+   ]
+  },
+  "properties": {
+   "check_date": "2024-07-16"
+  }
+ },
+ {
+  "id": 6802038718,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6802038718",
+  "lon": 7.5813986,
+  "lat": 47.5667199,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5813986,
+    47.5667199
+   ]
+  },
+  "properties": {
+   "check_date": "2024-07-16"
+  }
+ },
+ {
+  "id": 6802229511,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6802229511",
+  "lon": 7.5931739,
+  "lat": 47.5600163,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5931739,
+    47.5600163
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6802248818,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6802248818",
+  "lon": 7.6031706,
+  "lat": 47.5471574,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6031706,
+    47.5471574
+   ]
+  },
+  "properties": {
+   "check_date": "2026-03-14"
+  }
+ },
+ {
+  "id": 6802962380,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6802962380",
+  "lon": 7.604121,
+  "lat": 47.5805209,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.604121,
+    47.5805209
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6803086781,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6803086781",
+  "lon": 7.6040977,
+  "lat": 47.5365821,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6040977,
+    47.5365821
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6804168204,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6804168204",
+  "lon": 7.5918947,
+  "lat": 47.5838987,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5918947,
+    47.5838987
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6804233819,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6804233819",
+  "lon": 7.5946091,
+  "lat": 47.542908,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5946091,
+    47.542908
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6804252631,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6804252631",
+  "lon": 7.5911105,
+  "lat": 47.5562107,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5911105,
+    47.5562107
+   ]
+  },
+  "properties": {
+   "check_date": "2024-08-12"
+  }
+ },
+ {
+  "id": 6804276146,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6804276146",
+  "lon": 7.5901261,
+  "lat": 47.5398734,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5901261,
+    47.5398734
+   ]
+  },
+  "properties": {
+   "check_date": "2026-03-03"
+  }
+ },
+ {
+  "id": 6804292705,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6804292705",
+  "lon": 7.6158187,
+  "lat": 47.5740483,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6158187,
+    47.5740483
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6814713555,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6814713555",
+  "lon": 7.5884572,
+  "lat": 47.5787248,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5884572,
+    47.5787248
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6814791709,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6814791709",
+  "lon": 7.6065249,
+  "lat": 47.5746966,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6065249,
+    47.5746966
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6814832548,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6814832548",
+  "lon": 7.5948267,
+  "lat": 47.5635653,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5948267,
+    47.5635653
+   ]
+  },
+  "properties": {
+   "check_date": "2026-02-25"
+  }
+ },
+ {
+  "id": 6814870480,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6814870480",
+  "lon": 7.598164,
+  "lat": 47.5418605,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.598164,
+    47.5418605
+   ]
+  },
+  "properties": {
+   "check_date": "2024-08-09"
+  }
+ },
+ {
+  "id": 6814907988,
+  "kind": "fountain",
+  "name": "Märchen-Brunnen",
+  "source": "osm",
+  "source_id": "node/6814907988",
+  "lon": 7.6144129,
+  "lat": 47.5505181,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6144129,
+    47.5505181
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6814926853,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6814926853",
+  "lon": 7.5573655,
+  "lat": 47.5456679,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5573655,
+    47.5456679
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6814939388,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6814939388",
+  "lon": 7.5740568,
+  "lat": 47.5621349,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5740568,
+    47.5621349
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6814965691,
+  "kind": "fountain",
+  "name": "Kannenfeldplatz-Brunnen",
+  "source": "osm",
+  "source_id": "node/6814965691",
+  "lon": 7.5735601,
+  "lat": 47.5654816,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5735601,
+    47.5654816
+   ]
+  },
+  "properties": {
+   "indoor": "no",
+   "check_date": "2024-07-18"
+  }
+ },
+ {
+  "id": 6814972795,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6814972795",
+  "lon": 7.5783752,
+  "lat": 47.5491125,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5783752,
+    47.5491125
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6814992792,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6814992792",
+  "lon": 7.5955803,
+  "lat": 47.5399056,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5955803,
+    47.5399056
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6815046208,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6815046208",
+  "lon": 7.5651906,
+  "lat": 47.5532517,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5651906,
+    47.5532517
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6815323150,
+  "kind": "fountain",
+  "name": "Faule-Magd-Brunnen",
+  "source": "osm",
+  "source_id": "node/6815323150",
+  "lon": 7.5845548,
+  "lat": 47.5635955,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5845548,
+    47.5635955
+   ]
+  },
+  "properties": {
+   "check_date": "2024-07-16"
+  }
+ },
+ {
+  "id": 6815494756,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6815494756",
+  "lon": 7.598126,
+  "lat": 47.5411709,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.598126,
+    47.5411709
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6815500137,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6815500137",
+  "lon": 7.617595,
+  "lat": 47.5416972,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.617595,
+    47.5416972
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6815503256,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6815503256",
+  "lon": 7.6175755,
+  "lat": 47.5652685,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6175755,
+    47.5652685
+   ]
+  },
+  "properties": {
+   "check_date": "2025-10-30"
+  }
+ },
+ {
+  "id": 6815505812,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6815505812",
+  "lon": 7.5691215,
+  "lat": 47.5473961,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5691215,
+    47.5473961
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6815538615,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6815538615",
+  "lon": 7.5877107,
+  "lat": 47.5584001,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5877107,
+    47.5584001
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6815552184,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6815552184",
+  "lon": 7.5601872,
+  "lat": 47.5655229,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5601872,
+    47.5655229
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6815566098,
+  "kind": "fountain",
+  "name": "Muul Halte-Brunnen",
+  "source": "osm",
+  "source_id": "node/6815566098",
+  "lon": 7.6144858,
+  "lat": 47.5499056,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6144858,
+    47.5499056
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6815583942,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6815583942",
+  "lon": 7.5853491,
+  "lat": 47.5324186,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5853491,
+    47.5324186
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6815625620,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6815625620",
+  "lon": 7.5954051,
+  "lat": 47.5653211,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5954051,
+    47.5653211
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6815680936,
+  "kind": "fountain",
+  "name": "Breite-Brunnen",
+  "source": "osm",
+  "source_id": "node/6815680936",
+  "lon": 7.6144094,
+  "lat": 47.5552751,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6144094,
+    47.5552751
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6815690329,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6815690329",
+  "lon": 7.5964763,
+  "lat": 47.5701245,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5964763,
+    47.5701245
+   ]
+  },
+  "properties": {
+   "check_date": "2025-10-17"
+  }
+ },
+ {
+  "id": 6815736985,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6815736985",
+  "lon": 7.5978247,
+  "lat": 47.5394323,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5978247,
+    47.5394323
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6815743512,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6815743512",
+  "lon": 7.5950982,
+  "lat": 47.5600166,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5950982,
+    47.5600166
+   ]
+  },
+  "properties": {
+   "indoor": "no"
+  }
+ },
+ {
+  "id": 6815764892,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6815764892",
+  "lon": 7.5977483,
+  "lat": 47.5545057,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5977483,
+    47.5545057
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6815864166,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6815864166",
+  "lon": 7.5956198,
+  "lat": 47.5578412,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5956198,
+    47.5578412
+   ]
+  },
+  "properties": {
+   "check_date": "2026-02-25"
+  }
+ },
+ {
+  "id": 6815947914,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6815947914",
+  "lon": 7.5955761,
+  "lat": 47.5591281,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5955761,
+    47.5591281
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6815983627,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6815983627",
+  "lon": 7.5967091,
+  "lat": 47.5579658,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5967091,
+    47.5579658
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6815983634,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6815983634",
+  "lon": 7.5964393,
+  "lat": 47.5584736,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5964393,
+    47.5584736
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6816015648,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6816015648",
+  "lon": 7.5820106,
+  "lat": 47.5641722,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5820106,
+    47.5641722
+   ]
+  },
+  "properties": {
+   "check_date": "2025-10-08"
+  }
+ },
+ {
+  "id": 6816040831,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6816040831",
+  "lon": 7.6123719,
+  "lat": 47.5698045,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6123719,
+    47.5698045
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6816067500,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6816067500",
+  "lon": 7.6031764,
+  "lat": 47.5638945,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6031764,
+    47.5638945
+   ]
+  },
+  "properties": {
+   "access": "yes",
+   "fee": "no",
+   "indoor": "no",
+   "check_date": "2025-05-17"
+  }
+ },
+ {
+  "id": 6816073383,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6816073383",
+  "lon": 7.6149633,
+  "lat": 47.5741035,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6149633,
+    47.5741035
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6816074740,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6816074740",
+  "lon": 7.5787608,
+  "lat": 47.5644872,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5787608,
+    47.5644872
+   ]
+  },
+  "properties": {
+   "check_date": "2026-04-09"
+  }
+ },
+ {
+  "id": 6816086925,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6816086925",
+  "lon": 7.6139123,
+  "lat": 47.5529159,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6139123,
+    47.5529159
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6816108882,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6816108882",
+  "lon": 7.5899965,
+  "lat": 47.5579341,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5899965,
+    47.5579341
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6816121121,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6816121121",
+  "lon": 7.5975924,
+  "lat": 47.5762841,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5975924,
+    47.5762841
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6816129018,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6816129018",
+  "lon": 7.5752006,
+  "lat": 47.5610531,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5752006,
+    47.5610531
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6816152120,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6816152120",
+  "lon": 7.5944455,
+  "lat": 47.5614578,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5944455,
+    47.5614578
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6816155815,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6816155815",
+  "lon": 7.5970057,
+  "lat": 47.5591191,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5970057,
+    47.5591191
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6816265523,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6816265523",
+  "lon": 7.5613422,
+  "lat": 47.5623351,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5613422,
+    47.5623351
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6816265811,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6816265811",
+  "lon": 7.5935874,
+  "lat": 47.5606232,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5935874,
+    47.5606232
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6816280266,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6816280266",
+  "lon": 7.590811,
+  "lat": 47.5566071,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.590811,
+    47.5566071
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6816280640,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6816280640",
+  "lon": 7.5678844,
+  "lat": 47.5544913,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5678844,
+    47.5544913
+   ]
+  },
+  "properties": {
+   "check_date": "2024-05-28"
+  }
+ },
+ {
+  "id": 6816282823,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6816282823",
+  "lon": 7.5926978,
+  "lat": 47.5554266,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5926978,
+    47.5554266
+   ]
+  },
+  "properties": {
+   "check_date": "2024-08-12"
+  }
+ },
+ {
+  "id": 6816301616,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6816301616",
+  "lon": 7.6058078,
+  "lat": 47.5648346,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6058078,
+    47.5648346
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6816301722,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6816301722",
+  "lon": 7.586563,
+  "lat": 47.5432166,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.586563,
+    47.5432166
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6816305860,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6816305860",
+  "lon": 7.5908551,
+  "lat": 47.556558,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5908551,
+    47.556558
+   ]
+  },
+  "properties": {
+   "check_date": "2024-08-12"
+  }
+ },
+ {
+  "id": 6820889549,
+  "kind": "fountain",
+  "name": "Basiliskbrunnen",
+  "source": "osm",
+  "source_id": "node/6820889549",
+  "lon": 7.5764453,
+  "lat": 47.5726902,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5764453,
+    47.5726902
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6838722395,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6838722395",
+  "lon": 7.6243327,
+  "lat": 47.5781565,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6243327,
+    47.5781565
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6840681760,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6840681760",
+  "lon": 7.5955277,
+  "lat": 47.5413364,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5955277,
+    47.5413364
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6866975058,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6866975058",
+  "lon": 7.5735665,
+  "lat": 47.548397,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5735665,
+    47.548397
+   ]
+  },
+  "properties": {
+   "access": "yes",
+   "fee": "no"
+  }
+ },
+ {
+  "id": 6964240683,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6964240683",
+  "lon": 7.597541,
+  "lat": 47.5577254,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.597541,
+    47.5577254
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6964400058,
+  "kind": "fountain",
+  "name": "Basiliskenbrunnen",
+  "source": "osm",
+  "source_id": "node/6964400058",
+  "lon": 7.5971104,
+  "lat": 47.5581596,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5971104,
+    47.5581596
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6964521778,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6964521778",
+  "lon": 7.5964185,
+  "lat": 47.5582139,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5964185,
+    47.5582139
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6969765453,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6969765453",
+  "lon": 7.5920736,
+  "lat": 47.5554056,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5920736,
+    47.5554056
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 6969811498,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/6969811498",
+  "lon": 7.5910156,
+  "lat": 47.5563803,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5910156,
+    47.5563803
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 7388329921,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/7388329921",
+  "lon": 7.5916211,
+  "lat": 47.564407,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5916211,
+    47.564407
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 7540243142,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/7540243142",
+  "lon": 7.5812984,
+  "lat": 47.5589479,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5812984,
+    47.5589479
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 7692462728,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/7692462728",
+  "lon": 7.5930138,
+  "lat": 47.5390754,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5930138,
+    47.5390754
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 7775211638,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/7775211638",
+  "lon": 7.5790641,
+  "lat": 47.5716171,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5790641,
+    47.5716171
+   ]
+  },
+  "properties": {
+   "access": "yes"
+  }
+ },
+ {
+  "id": 7817435777,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/7817435777",
+  "lon": 7.6417781,
+  "lat": 47.5674608,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6417781,
+    47.5674608
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 7817468789,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/7817468789",
+  "lon": 7.6395867,
+  "lat": 47.5675488,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6395867,
+    47.5675488
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 7817468802,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/7817468802",
+  "lon": 7.6388786,
+  "lat": 47.567976,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6388786,
+    47.567976
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 7817468803,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/7817468803",
+  "lon": 7.6384502,
+  "lat": 47.5679935,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6384502,
+    47.5679935
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 7817468804,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/7817468804",
+  "lon": 7.6388547,
+  "lat": 47.5676877,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6388547,
+    47.5676877
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 7817468807,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/7817468807",
+  "lon": 7.6383125,
+  "lat": 47.5674818,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6383125,
+    47.5674818
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 7817468813,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/7817468813",
+  "lon": 7.6371396,
+  "lat": 47.5663706,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6371396,
+    47.5663706
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 7817468816,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/7817468816",
+  "lon": 7.6371015,
+  "lat": 47.5675316,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6371015,
+    47.5675316
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 7817468823,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/7817468823",
+  "lon": 7.637307,
+  "lat": 47.5677483,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.637307,
+    47.5677483
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 7817468824,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/7817468824",
+  "lon": 7.6373315,
+  "lat": 47.568038,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6373315,
+    47.568038
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 7817468825,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/7817468825",
+  "lon": 7.6385479,
+  "lat": 47.5684203,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6385479,
+    47.5684203
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 7817468829,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/7817468829",
+  "lon": 7.6370607,
+  "lat": 47.5654697,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6370607,
+    47.5654697
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 7817468837,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/7817468837",
+  "lon": 7.6387062,
+  "lat": 47.5653446,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6387062,
+    47.5653446
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 7817468839,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/7817468839",
+  "lon": 7.6379914,
+  "lat": 47.5654317,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6379914,
+    47.5654317
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 7817468840,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/7817468840",
+  "lon": 7.6377804,
+  "lat": 47.5653784,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6377804,
+    47.5653784
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 7817468843,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/7817468843",
+  "lon": 7.6378213,
+  "lat": 47.5645822,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6378213,
+    47.5645822
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 7817468845,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/7817468845",
+  "lon": 7.6378209,
+  "lat": 47.5646911,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6378209,
+    47.5646911
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 7817468846,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/7817468846",
+  "lon": 7.6377382,
+  "lat": 47.5636315,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6377382,
+    47.5636315
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 7817468849,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/7817468849",
+  "lon": 7.6389896,
+  "lat": 47.5640592,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6389896,
+    47.5640592
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 7817480818,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/7817480818",
+  "lon": 7.6438355,
+  "lat": 47.5686423,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6438355,
+    47.5686423
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 7817480821,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/7817480821",
+  "lon": 7.6425195,
+  "lat": 47.5686579,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6425195,
+    47.5686579
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 7817480837,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/7817480837",
+  "lon": 7.6413819,
+  "lat": 47.5659947,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6413819,
+    47.5659947
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 7817480843,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/7817480843",
+  "lon": 7.6418934,
+  "lat": 47.5654247,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6418934,
+    47.5654247
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 7817480844,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/7817480844",
+  "lon": 7.6413318,
+  "lat": 47.565445,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6413318,
+    47.565445
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 7817480845,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/7817480845",
+  "lon": 7.640984,
+  "lat": 47.5654611,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.640984,
+    47.5654611
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 7817480847,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/7817480847",
+  "lon": 7.641031,
+  "lat": 47.5660079,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.641031,
+    47.5660079
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 7817480850,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/7817480850",
+  "lon": 7.6408817,
+  "lat": 47.5639816,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6408817,
+    47.5639816
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 7817496297,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/7817496297",
+  "lon": 7.6380674,
+  "lat": 47.5663383,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6380674,
+    47.5663383
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 7817496302,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/7817496302",
+  "lon": 7.6387848,
+  "lat": 47.5662485,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6387848,
+    47.5662485
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 7817526803,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/7817526803",
+  "lon": 7.6424548,
+  "lat": 47.565404,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6424548,
+    47.565404
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 7817526808,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/7817526808",
+  "lon": 7.643017,
+  "lat": 47.5653789,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.643017,
+    47.5653789
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 7817526827,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/7817526827",
+  "lon": 7.6425027,
+  "lat": 47.5659501,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6425027,
+    47.5659501
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 7817526828,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/7817526828",
+  "lon": 7.641942,
+  "lat": 47.5659724,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.641942,
+    47.5659724
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 7817569352,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/7817569352",
+  "lon": 7.6378582,
+  "lat": 47.566286,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6378582,
+    47.566286
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 7817569367,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/7817569367",
+  "lon": 7.6390092,
+  "lat": 47.5674523,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6390092,
+    47.5674523
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 7817673044,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/7817673044",
+  "lon": 7.6430655,
+  "lat": 47.5659255,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6430655,
+    47.5659255
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 7817676491,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/7817676491",
+  "lon": 7.6425532,
+  "lat": 47.5662181,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6425532,
+    47.5662181
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 7817676492,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/7817676492",
+  "lon": 7.641943,
+  "lat": 47.5662786,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.641943,
+    47.5662786
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 7817676517,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/7817676517",
+  "lon": 7.6436577,
+  "lat": 47.5661833,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6436577,
+    47.5661833
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 7817676557,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/7817676557",
+  "lon": 7.6438407,
+  "lat": 47.5680176,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6438407,
+    47.5680176
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 7817676623,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/7817676623",
+  "lon": 7.64335,
+  "lat": 47.5680954,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.64335,
+    47.5680954
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 7817757855,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/7817757855",
+  "lon": 7.6089281,
+  "lat": 47.5408141,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6089281,
+    47.5408141
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 7817757856,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/7817757856",
+  "lon": 7.608238,
+  "lat": 47.5406894,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.608238,
+    47.5406894
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 7817757879,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/7817757879",
+  "lon": 7.6079798,
+  "lat": 47.5403434,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6079798,
+    47.5403434
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 7817772258,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/7817772258",
+  "lon": 7.6439551,
+  "lat": 47.565429,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6439551,
+    47.565429
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 7817831203,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/7817831203",
+  "lon": 7.6430235,
+  "lat": 47.5676366,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6430235,
+    47.5676366
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 7817831219,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/7817831219",
+  "lon": 7.6426181,
+  "lat": 47.5668211,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6426181,
+    47.5668211
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 7817831232,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/7817831232",
+  "lon": 7.6427249,
+  "lat": 47.5680301,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6427249,
+    47.5680301
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 7817838101,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/7817838101",
+  "lon": 7.6404632,
+  "lat": 47.5671495,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6404632,
+    47.5671495
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 7817838103,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/7817838103",
+  "lon": 7.6405279,
+  "lat": 47.5678747,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6405279,
+    47.5678747
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 7817838108,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/7817838108",
+  "lon": 7.6400743,
+  "lat": 47.5679053,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6400743,
+    47.5679053
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 7817838109,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/7817838109",
+  "lon": 7.639718,
+  "lat": 47.5679855,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.639718,
+    47.5679855
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 7817838112,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/7817838112",
+  "lon": 7.6400087,
+  "lat": 47.5671528,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6400087,
+    47.5671528
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 7817843263,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/7817843263",
+  "lon": 7.6377645,
+  "lat": 47.5680154,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6377645,
+    47.5680154
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 7817899488,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/7817899488",
+  "lon": 7.6086018,
+  "lat": 47.5401723,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6086018,
+    47.5401723
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 8041247493,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/8041247493",
+  "lon": 7.5954892,
+  "lat": 47.5310004,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5954892,
+    47.5310004
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 8041247503,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/8041247503",
+  "lon": 7.596315,
+  "lat": 47.5316136,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.596315,
+    47.5316136
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 8041247504,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/8041247504",
+  "lon": 7.5967187,
+  "lat": 47.531811,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5967187,
+    47.531811
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 8059811312,
+  "kind": "fountain",
+  "name": "Breite Bad-Brunnen",
+  "source": "osm",
+  "source_id": "node/8059811312",
+  "lon": 7.6104764,
+  "lat": 47.5560987,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6104764,
+    47.5560987
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 8210807349,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/8210807349",
+  "lon": 7.649097,
+  "lat": 47.572231,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.649097,
+    47.572231
+   ]
+  },
+  "properties": {
+   "access": "yes",
+   "fee": "no",
+   "operator": "IWB Basel"
+  }
+ },
+ {
+  "id": 8212818950,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/8212818950",
+  "lon": 7.6512918,
+  "lat": 47.5749003,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6512918,
+    47.5749003
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 8219700604,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/8219700604",
+  "lon": 7.6426166,
+  "lat": 47.5854642,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6426166,
+    47.5854642
+   ]
+  },
+  "properties": {
+   "access": "yes",
+   "fee": "no",
+   "operator": "IWB Basel"
+  }
+ },
+ {
+  "id": 8260073206,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/8260073206",
+  "lon": 7.6628694,
+  "lat": 47.5717382,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6628694,
+    47.5717382
+   ]
+  },
+  "properties": {
+   "access": "yes",
+   "fee": "no"
+  }
+ },
+ {
+  "id": 8264509866,
+  "kind": "fountain",
+  "name": "Wasserschmecker-Brunnen",
+  "source": "osm",
+  "source_id": "node/8264509866",
+  "lon": 7.6462192,
+  "lat": 47.5748703,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6462192,
+    47.5748703
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 8370565472,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/8370565472",
+  "lon": 7.6487869,
+  "lat": 47.5853663,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6487869,
+    47.5853663
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 8625388398,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/8625388398",
+  "lon": 7.606874,
+  "lat": 47.564009,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.606874,
+    47.564009
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 8714730024,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/8714730024",
+  "lon": 7.6447648,
+  "lat": 47.5936762,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6447648,
+    47.5936762
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 8738506710,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/8738506710",
+  "lon": 7.644238,
+  "lat": 47.5739627,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.644238,
+    47.5739627
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 8746996362,
+  "kind": "fountain",
+  "name": "Drachenbuebli - Brunnen",
+  "source": "osm",
+  "source_id": "node/8746996362",
+  "lon": 7.6293561,
+  "lat": 47.5727739,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6293561,
+    47.5727739
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 8753110634,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/8753110634",
+  "lon": 7.6390976,
+  "lat": 47.572612,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6390976,
+    47.572612
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 9155722959,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/9155722959",
+  "lon": 7.6032564,
+  "lat": 47.5768163,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6032564,
+    47.5768163
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 9510864002,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/9510864002",
+  "lon": 7.589393,
+  "lat": 47.5518172,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.589393,
+    47.5518172
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 9964125834,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/9964125834",
+  "lon": 7.5760171,
+  "lat": 47.5649833,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5760171,
+    47.5649833
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 10024145515,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/10024145515",
+  "lon": 7.6523137,
+  "lat": 47.5833169,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6523137,
+    47.5833169
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 10088742471,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/10088742471",
+  "lon": 7.598229,
+  "lat": 47.5699779,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.598229,
+    47.5699779
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 10536689893,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/10536689893",
+  "lon": 7.575612,
+  "lat": 47.5491538,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.575612,
+    47.5491538
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 10735220728,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/10735220728",
+  "lon": 7.5877285,
+  "lat": 47.5461133,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5877285,
+    47.5461133
+   ]
+  },
+  "properties": {
+   "access": "yes",
+   "operator": "Stadt Basel"
+  }
+ },
+ {
+  "id": 10853041928,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/10853041928",
+  "lon": 7.6039309,
+  "lat": 47.5531428,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6039309,
+    47.5531428
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 11148233565,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/11148233565",
+  "lon": 7.5883527,
+  "lat": 47.5583026,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5883527,
+    47.5583026
+   ]
+  },
+  "properties": {
+   "indoor": "no"
+  }
+ },
+ {
+  "id": 11611499959,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/11611499959",
+  "lon": 7.6661696,
+  "lat": 47.5714947,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6661696,
+    47.5714947
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 11991991726,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/11991991726",
+  "lon": 7.6070273,
+  "lat": 47.540486,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6070273,
+    47.540486
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 11991991727,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/11991991727",
+  "lon": 7.6077978,
+  "lat": 47.5400401,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6077978,
+    47.5400401
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 11991991728,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/11991991728",
+  "lon": 7.6087069,
+  "lat": 47.5404786,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6087069,
+    47.5404786
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 11991991746,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/11991991746",
+  "lon": 7.6102177,
+  "lat": 47.540311,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6102177,
+    47.540311
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 11991991747,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/11991991747",
+  "lon": 7.6100493,
+  "lat": 47.540023,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6100493,
+    47.540023
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 11991991748,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/11991991748",
+  "lon": 7.6068536,
+  "lat": 47.5412065,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6068536,
+    47.5412065
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 12334591025,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/12334591025",
+  "lon": 7.5891525,
+  "lat": 47.5570268,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5891525,
+    47.5570268
+   ]
+  },
+  "properties": {
+   "access": "yes"
+  }
+ },
+ {
+  "id": 13111830808,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/13111830808",
+  "lon": 7.5820764,
+  "lat": 47.5738134,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5820764,
+    47.5738134
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 13111830809,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/13111830809",
+  "lon": 7.5816708,
+  "lat": 47.5737017,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5816708,
+    47.5737017
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 13128033627,
+  "kind": "fountain",
+  "name": "Rümelins-Brunnen",
+  "source": "osm",
+  "source_id": "node/13128033627",
+  "lon": 7.5871236,
+  "lat": 47.5569234,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5871236,
+    47.5569234
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 13128033628,
+  "kind": "fountain",
+  "name": "Gems-Brunnen",
+  "source": "osm",
+  "source_id": "node/13128033628",
+  "lon": 7.5864062,
+  "lat": 47.5564566,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5864062,
+    47.5564566
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 13143308473,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/13143308473",
+  "lon": 7.6051525,
+  "lat": 47.5598208,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6051525,
+    47.5598208
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 13259744393,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/13259744393",
+  "lon": 7.5866885,
+  "lat": 47.5537549,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5866885,
+    47.5537549
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 13624944667,
+  "kind": "fountain",
+  "name": "Basiliskenbrunnen",
+  "source": "osm",
+  "source_id": "node/13624944667",
+  "lon": 7.5739765,
+  "lat": 47.56797,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5739765,
+    47.56797
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 13647695881,
+  "kind": "fountain",
+  "name": "Basiliskenbrunnen",
+  "source": "osm",
+  "source_id": "node/13647695881",
+  "lon": 7.5977253,
+  "lat": 47.5605476,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5977253,
+    47.5605476
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 13658517101,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/13658517101",
+  "lon": 7.5910382,
+  "lat": 47.5540633,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5910382,
+    47.5540633
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 13674225746,
+  "kind": "fountain",
+  "name": "Basiliskenbrunnen",
+  "source": "osm",
+  "source_id": "node/13674225746",
+  "lon": 7.5962228,
+  "lat": 47.5521771,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5962228,
+    47.5521771
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 13754189301,
+  "kind": "fountain",
+  "name": "Kostenlos",
+  "source": "osm",
+  "source_id": "node/13754189301",
+  "lon": 7.5727591,
+  "lat": 47.5709411,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5727591,
+    47.5709411
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 13764179556,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "node/13764179556",
+  "lon": 7.570222,
+  "lat": 47.565872,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.570222,
+    47.565872
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 172717846,
+  "kind": "fountain",
+  "name": "Wettsteinbrunnen",
+  "source": "osm",
+  "source_id": "way/172717846",
+  "lon": 7.5975216,
+  "lat": 47.5584971,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5975216,
+    47.5584971
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 533670779,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "way/533670779",
+  "lon": 7.5925517,
+  "lat": 47.5828601,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5925517,
+    47.5828601
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 655312689,
+  "kind": "fountain",
+  "name": "Lohnhof-Brunnen",
+  "source": "osm",
+  "source_id": "way/655312689",
+  "lon": 7.588368,
+  "lat": 47.5548905,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.588368,
+    47.5548905
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 722822729,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "way/722822729",
+  "lon": 7.6116895,
+  "lat": 47.5599553,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6116895,
+    47.5599553
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 722830756,
+  "kind": "fountain",
+  "name": "Webern-Brunnen",
+  "source": "osm",
+  "source_id": "way/722830756",
+  "lon": 7.5888953,
+  "lat": 47.5531493,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5888953,
+    47.5531493
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 723045063,
+  "kind": "fountain",
+  "name": "Trinkwasser",
+  "source": "osm",
+  "source_id": "way/723045063",
+  "lon": 7.5680852,
+  "lat": 47.5549889,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5680852,
+    47.5549889
+   ]
+  },
+  "properties": {}
+ },
+ {
+  "id": 748831664,
+  "kind": "fountain",
+  "name": "St. Urban-Brunnen",
+  "source": "osm",
+  "source_id": "way/748831664",
+  "lon": 7.5869465,
+  "lat": 47.5611018,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5869465,
+    47.5611018
+   ]
+  },
+  "properties": {}
+ }
+]

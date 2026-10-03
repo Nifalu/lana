@@ -1,0 +1,422 @@
+[
+ {
+  "id": -1001,
+  "kind": "cool_place",
+  "name": "Kunstmuseum Basel Hauptbau",
+  "source": "seed-cool-places",
+  "source_id": "Kunstmuseum Basel Hauptbau",
+  "lon": 7.5944513,
+  "lat": 47.5539294,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5944513,
+    47.5539294
+   ]
+  },
+  "properties": {
+   "address": "St. Alban-Graben 8, 4010 Basel",
+   "note": "Ticket-free zones (foyer, Hofumgang, Eventfoyer) stay below 25 °C on hot days",
+   "url": "https://kunstmuseumbasel.ch"
+  }
+ },
+ {
+  "id": -1002,
+  "kind": "cool_place",
+  "name": "Novartis Pavillon",
+  "source": "seed-cool-places",
+  "source_id": "Novartis Pavillon",
+  "lon": 7.5828195,
+  "lat": 47.5715702,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5828195,
+    47.5715702
+   ]
+  },
+  "properties": {
+   "address": "St. Johanns-Hafen-Weg 5, 4056 Basel",
+   "note": "Open foyer with coffee corner (no purchase obligation) and free SchoolHub; Tue–Fri 08–18, Sat/Sun 10–18",
+   "url": "https://www.campus.novartis.com/de/novartis-pavillon"
+  }
+ },
+ {
+  "id": -1003,
+  "kind": "cool_place",
+  "name": "Öffentliche Plaza im k Haus",
+  "source": "seed-cool-places",
+  "source_id": "Öffentliche Plaza im k Haus",
+  "lon": 7.589041,
+  "lat": 47.563107,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.589041,
+    47.563107
+   ]
+  },
+  "properties": {
+   "address": "Kasernenhof 9, 4058 Basel",
+   "note": "Public plaza open daily 09:00–21:00, no purchase obligation",
+   "url": "https://www.khaus.ch/de/mitgestalten/die-oeffentliche-plaza"
+  }
+ },
+ {
+  "id": -1004,
+  "kind": "cool_place",
+  "name": "Foyer Public, Theater Basel",
+  "source": "seed-cool-places",
+  "source_id": "Foyer Public, Theater Basel",
+  "lon": 7.5901477,
+  "lat": 47.5527393,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5901477,
+    47.5527393
+   ]
+  },
+  "properties": {
+   "address": "Theaterstrasse 9, 4051 Basel",
+   "note": "Public theatre foyer Tue–Sun 11:00–18:00, no purchase obligation (seasonal closures possible)",
+   "url": "https://www.theater-basel.ch/de/foyerpublic"
+  }
+ },
+ {
+  "id": -1005,
+  "kind": "cool_place",
+  "name": "Unternehmen Mitte",
+  "source": "seed-cool-places",
+  "source_id": "Unternehmen Mitte",
+  "lon": 7.5883607,
+  "lat": 47.5565748,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5883607,
+    47.5565748
+   ]
+  },
+  "properties": {
+   "address": "Gerbergasse 30, 4001 Basel",
+   "note": "Café/work space without purchase obligation, drinking water station",
+   "url": "https://mitte.ch/kaffeehaus/kaffeehaus-mitte/"
+  }
+ },
+ {
+  "id": -1006,
+  "kind": "cool_place",
+  "name": "Markthalle «Wohnzimmer»",
+  "source": "seed-cool-places",
+  "source_id": "Markthalle «Wohnzimmer»",
+  "lon": 7.5871811,
+  "lat": 47.5492683,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5871811,
+    47.5492683
+   ]
+  },
+  "properties": {
+   "address": "Steinentorberg 20, 4051 Basel",
+   "note": "450 m² 'living room' with sofas and tables, no purchase obligation; late opening hours",
+   "url": ""
+  }
+ },
+ {
+  "id": -1007,
+  "kind": "cool_place",
+  "name": "Park im Claraspital",
+  "source": "seed-cool-places",
+  "source_id": "Park im Claraspital",
+  "lon": 7.614011,
+  "lat": 47.5664068,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.614011,
+    47.5664068
+   ]
+  },
+  "properties": {
+   "address": "Kleinriehenstrasse 30, 4058 Basel",
+   "note": "Shady hospital park with deck chairs, benches and a barefoot path, open to the public",
+   "url": "https://www.claraspital.ch/de/aufenthalt-und-besuch/aufenthalt/erholung-im-park"
+  }
+ },
+ {
+  "id": -1008,
+  "kind": "cool_place",
+  "name": "Matthäuskirche",
+  "source": "seed-cool-places",
+  "source_id": "Matthäuskirche",
+  "lon": 7.5880538,
+  "lat": 47.5656153,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5880538,
+    47.5656153
+   ]
+  },
+  "properties": {
+   "address": "Feldbergstrasse 81, 4057 Basel",
+   "note": "Sonntagszimmer: free soup/coffee Sundays in the naturally cool basement; open church Tue afternoons",
+   "url": ""
+  }
+ },
+ {
+  "id": -1009,
+  "kind": "cool_place",
+  "name": "Theodorskirche",
+  "source": "seed-cool-places",
+  "source_id": "Theodorskirche",
+  "lon": 7.5975899,
+  "lat": 47.5588315,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5975899,
+    47.5588315
+   ]
+  },
+  "properties": {
+   "address": "Theodorskirchplatz 5, 4058 Basel",
+   "note": "TheoBar open meeting Wed 12:00–18:00 in the pleasantly cool church, free quarter lunch table",
+   "url": ""
+  }
+ },
+ {
+  "id": -1010,
+  "kind": "cool_place",
+  "name": "GGG Stadtbibliothek Schmiedenhof",
+  "source": "seed-cool-places",
+  "source_id": "GGG Stadtbibliothek Schmiedenhof",
+  "lon": 7.5875794,
+  "lat": 47.5568148,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5875794,
+    47.5568148
+   ]
+  },
+  "properties": {
+   "address": "Im Schmiedenhof 10, 4001 Basel",
+   "note": "City-centre library; officially recommended as relatively cool (lower floors), no purchase obligation",
+   "url": "https://www.stadtbibliothekbasel.ch/de/standorte.html"
+  }
+ },
+ {
+  "id": -1011,
+  "kind": "cool_place",
+  "name": "GGG Stadtbibliothek St. Johann JUKIBU",
+  "source": "seed-cool-places",
+  "source_id": "GGG Stadtbibliothek St. Johann JUKIBU",
+  "lon": 7.5748159,
+  "lat": 47.5714343,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5748159,
+    47.5714343
+   ]
+  },
+  "properties": {
+   "address": "Lothringerplatz 1, 4056 Basel",
+   "note": "Library in St. Johann; officially recommended as one of the relatively cool branches",
+   "url": "https://www.stadtbibliothekbasel.ch/de/standorte.html"
+  }
+ },
+ {
+  "id": -1012,
+  "kind": "cool_place",
+  "name": "GGG Stadtbibliothek Breite",
+  "source": "seed-cool-places",
+  "source_id": "GGG Stadtbibliothek Breite",
+  "lon": 7.6142331,
+  "lat": 47.5558616,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6142331,
+    47.5558616
+   ]
+  },
+  "properties": {
+   "address": "Zürcherstrasse 149, 4052 Basel",
+   "note": "Library in Breite; officially recommended as one of the relatively cool branches",
+   "url": "https://www.stadtbibliothekbasel.ch/de/standorte.html"
+  }
+ },
+ {
+  "id": -1013,
+  "kind": "cool_place",
+  "name": "Universitätsbibliothek Basel",
+  "source": "seed-cool-places",
+  "source_id": "Universitätsbibliothek Basel",
+  "lon": 7.58125,
+  "lat": 47.559456,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.58125,
+    47.559456
+   ]
+  },
+  "properties": {
+   "address": "Bernoullistrasse 30, 4056 Basel",
+   "note": "Public university library with reading rooms, open to everyone",
+   "url": "https://ub.unibas.ch"
+  }
+ },
+ {
+  "id": -1014,
+  "kind": "cool_place",
+  "name": "Basler Münster",
+  "source": "seed-cool-places",
+  "source_id": "Basler Münster",
+  "lon": 7.5922413,
+  "lat": 47.5564238,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5922413,
+    47.5564238
+   ]
+  },
+  "properties": {
+   "address": "Münsterplatz 9, 4051 Basel",
+   "note": "Romanesque/Gothic cathedral, naturally cool thick sandstone, free entry",
+   "url": "https://baslermuenster.ch"
+  }
+ },
+ {
+  "id": -1015,
+  "kind": "cool_place",
+  "name": "Elisabethenkirche",
+  "source": "seed-cool-places",
+  "source_id": "Elisabethenkirche",
+  "lon": 7.5909843,
+  "lat": 47.5527658,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5909843,
+    47.5527658
+   ]
+  },
+  "properties": {
+   "address": "Elisabethenstrasse 14, 4010 Basel",
+   "note": "Open city church next to the theatre, cool interior, community café at times",
+   "url": ""
+  }
+ },
+ {
+  "id": -1016,
+  "kind": "cool_place",
+  "name": "Museum Tinguely",
+  "source": "seed-cool-places",
+  "source_id": "Museum Tinguely",
+  "lon": 7.6123033,
+  "lat": 47.5592236,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6123033,
+    47.5592236
+   ]
+  },
+  "properties": {
+   "address": "Am Rheinweg 1, 4058 Basel",
+   "note": "Air-conditioned museum on the Rhine (ticket required for exhibitions)",
+   "url": "https://www.tinguely.ch"
+  }
+ },
+ {
+  "id": -1017,
+  "kind": "cool_place",
+  "name": "Naturhistorisches Museum Basel",
+  "source": "seed-cool-places",
+  "source_id": "Naturhistorisches Museum Basel",
+  "lon": 7.5904639,
+  "lat": 47.5575895,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5904639,
+    47.5575895
+   ]
+  },
+  "properties": {
+   "address": "Augustinergasse 2, 4051 Basel",
+   "note": "Natural history museum in a thick-walled 19th-century building, cool interior (ticket)",
+   "url": ""
+  }
+ },
+ {
+  "id": -1018,
+  "kind": "cool_place",
+  "name": "Museum der Kulturen Basel",
+  "source": "seed-cool-places",
+  "source_id": "Museum der Kulturen Basel",
+  "lon": 7.5902805,
+  "lat": 47.5571966,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5902805,
+    47.5571966
+   ]
+  },
+  "properties": {
+   "address": "Münsterplatz 20, 4051 Basel",
+   "note": "Museum on the Münster hill, cool interior (ticket)",
+   "url": "https://www.mkb.ch"
+  }
+ },
+ {
+  "id": -1019,
+  "kind": "cool_place",
+  "name": "Antikenmuseum Basel",
+  "source": "seed-cool-places",
+  "source_id": "Antikenmuseum Basel",
+  "lon": 7.593141,
+  "lat": 47.5543563,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.593141,
+    47.5543563
+   ]
+  },
+  "properties": {
+   "address": "St. Alban-Graben 5, 4010 Basel",
+   "note": "Antiquity museum in the shade of St. Alban, cool interior (ticket)",
+   "url": "https://www.antikenmuseumbasel.ch"
+  }
+ },
+ {
+  "id": -1020,
+  "kind": "cool_place",
+  "name": "Historisches Museum Barfüsserkirche",
+  "source": "seed-cool-places",
+  "source_id": "Historisches Museum Barfüsserkirche",
+  "lon": 7.590009,
+  "lat": 47.55467,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.590009,
+    47.55467
+   ]
+  },
+  "properties": {
+   "address": "Barfüsserplatz 7, 4051 Basel",
+   "note": "History museum inside a former Gothic church, naturally cool stone interior (ticket)",
+   "url": "https://www.hmb.ch"
+  }
+ }
+]

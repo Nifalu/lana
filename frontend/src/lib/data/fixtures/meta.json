@@ -1,0 +1,30 @@
+{
+ "generated_at": "2026-10-03T12:46:48.383Z",
+ "counts": {
+  "fountains": 330,
+  "swim_areas": 4,
+  "cool_places": 20,
+  "stations": 92
+ },
+ "sources": {
+  "fountains": {
+   "origin": "https://raw.githubusercontent.com/MarkusCouch/MunchiesMaps/main/resources/geojson/switzerland/basel-stadt/drinking_water.geojson",
+   "attribution": "© OpenStreetMap contributors",
+   "licence": "ODbL 1.0 (https://www.openstreetmap.org/copyright)"
+  },
+  "swim_areas": {
+   "origin": "https://data.bs.ch/api/explore/v2.1/catalog/datasets/100270",
+   "attribution": "Daten: Kanton Basel-Stadt (data.bs.ch)",
+   "licence": "CC BY 4.0"
+  },
+  "cool_places": {
+   "origin": "server/seed/cool-places.geojson",
+   "note": "Curated list from bs.ch heat prevention; addresses geocoded once with Nominatim (© OpenStreetMap contributors)."
+  },
+  "stations": {
+   "origin": "https://data.bs.ch/api/explore/v2.1/catalog/datasets/100009 + 100082",
+   "attribution": "Daten: Kanton Basel-Stadt (data.bs.ch)",
+   "licence": "CC BY 4.0"
+  }
+ }
+}
