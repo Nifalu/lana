@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import { Map, AttributionControl, Marker, type MapMouseEvent } from 'maplibre-gl';
   import 'maplibre-gl/dist/maplibre-gl.css';
+  import './worker';
   import { BASEL, INITIAL_ZOOM, filters, location, mapActions, view } from '../state/app.svelte';
   import { LAYER, addAppLayers, setLayerVisible } from './layers';
   import { loadStyle, type Basemap } from './basemap';

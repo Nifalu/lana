@@ -7,4 +7,8 @@ export default defineConfig({
   optimizeDeps: {
     exclude: ['maplibre-gl'],
   },
+  // MapLibre starts its worker as an ES module (see src/lib/map/worker.ts).
+  worker: {
+    format: 'es',
+  },
 })
