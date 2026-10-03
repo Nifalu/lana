@@ -11,6 +11,7 @@ pub mod cli;
 pub mod config;
 pub mod db;
 pub mod geojson;
+pub mod helper_api;
 pub mod import;
 pub mod ods;
 pub mod poller;

@@ -59,6 +59,10 @@ fetched; failures are logged and retried on the next tick.
 Environment: `LANA_POLL_INTERVAL_SECS` (seconds, > 0, default 600),
 `LANA_ODS_BASE_URL` (data.bs.ch override for local experiments).
 
+Other `serve` settings: `LANA_BIND_ADDR` (default `0.0.0.0:8080`) and
+`LANA_HELPER_API_URL` (base URL of the helper API; unset/empty =
+disabled, see "Helper matching and the helper API").
+
 ## API
 
 Base path `/api/v1`. GeoJSON coordinate order is `[lon, lat]` everywhere;
@@ -69,16 +73,19 @@ prototype.
 
 There are no accounts or secrets: a device generates a UUID v4 once,
 stores it locally, and sends it as `device_id` in the request path. The
-path's device_id **is** the caller – every devices/windows handler scopes
+path's device_id **is** the caller – every devices handler scopes
 its SQL to that id, so a device can only ever read or change its own rows.
 Unknown and foreign resources are both reported as `404` (no probing).
 
 ### Devices
 
 `PUT /api/v1/devices/{device_id}` – upsert (first call creates the row).
-The payload is the device's current state; `location` null or omitted
-means "not sharing a live location" (a previously shared location is
-cleared on update).
+The payload is the device's current state: `is_helper` is the app's
+"Ich kann helfen" opt-in (the app sends it with its location every
+5 minutes while on, and `{ "is_helper": false, "location": null }` when
+off); `location` null or omitted means "not sharing a live location" (a
+previously shared location is cleared on update). When the helper API is
+configured (below), a shared location is also forwarded to it.
 
 ```json
 { "is_helper": true, "location": { "lon": 7.5886, "lat": 47.5596 } }
@@ -93,39 +100,6 @@ Response `200`:
   "location": { "lon": 7.5886, "lat": 47.5596 },
   "created_at": "2026-10-02T12:00:00Z",
   "last_seen_at": "2026-10-02T12:34:56Z"
-}
-```
-
-### Helper windows
-
-Recurring weekly availability, scoped to the calling device. Times are
-Europe/Zurich local wall times (`"HH:MM"` or `"HH:MM:SS"`; always
-`"HH:MM:SS"` in responses); `weekday` is `0=Monday..6=Sunday`; `radius_m`
-is in meters and must be > 0; `end_time` must be strictly after
-`start_time`; `location` must be within WGS84 bounds. Matching evaluates
-the windows server-side (ticket 05).
-
-- `POST /api/v1/devices/{device_id}/windows` – create, `201` (the
-  referenced device must exist; `active` defaults to `true`)
-- `GET /api/v1/devices/{device_id}/windows` – list the device's own windows
-- `PATCH /api/v1/devices/{device_id}/windows/{window_id}` – partial update
-  (absent fields keep their value; the merged state is revalidated;
-  `active` is the vacation toggle and switches without deleting)
-- `DELETE /api/v1/devices/{device_id}/windows/{window_id}` – `204`
-
-Window document:
-
-```json
-{
-  "id": 1,
-  "device_id": "…",
-  "active": true,
-  "weekday": 0,
-  "start_time": "09:00:00",
-  "end_time": "17:00:00",
-  "location": { "lon": 7.5886, "lat": 47.5596 },
-  "radius_m": 500.0,
-  "label": "Büro"
 }
 ```
 
@@ -150,10 +124,8 @@ observe status transitions.
   `{ "device_id": "…", "location": {"lon": …, "lat": …}, "note": "…", "radius_m": 500 }`
   (`note` optional, ≤ 500 chars; `radius_m` optional, default 500). The
   requester device is auto-registered when unknown; status starts `open`.
-  At creation the server matches helpers: devices sharing a live location
-  within the radius and seen in the last 15 minutes, or with an **active** window
-  whose weekday/time-of-day (Europe/Zurich) contains now and whose window
-  point lies within the radius. Matched helpers receive `help_request_new`.
+  At creation the server matches helpers (see "Helper matching" below);
+  matched helpers receive `help_request_new`.
 - `GET /api/v1/help-requests?status=open&near=7.59,47.56&radius_m=500&exclude_device_id=…` –
   list for the helper map; all filters optional. `exclude_device_id` leaves
   out requests that device created itself. Response is a JSON **array**
@@ -180,6 +152,41 @@ Help-request document (also the SSE event data):
   "updated_at": "2026-10-02T12:00:00Z"
 }
 ```
+
+### Helper matching and the helper API
+
+Everyone can help – there are no availability windows. A device is a
+helper candidate when it opted in (`is_helper`) and shares a location. The
+requester is never matched against their own SOS.
+
+A separate service (the "helper API", FastAPI, owned by a teammate) owns
+live device locations and the closest-helpers query. It is optional and
+enabled by `LANA_HELPER_API_URL` (e.g. `https://lana.heitzli.ch`; unset or
+empty = disabled, trailing slash tolerated):
+
+- **Forwarding.** After `PUT /api/v1/devices/{device_id}` has written the
+  database, a shared location is sent to `POST {url}/location?device_id=<uuid>`
+  with body `{"longitude": …, "latitude": …}` from a spawned task. The PUT
+  never waits for it and never fails because of it (failures are logged).
+  A null location forwards nothing – the API has no delete, so opted-out
+  devices are filtered at match time.
+- **Matching with the helper API.** Before the SOS transaction opens,
+  `POST {url}/get_closest_helpers` with the SOS location returns the
+  devices with a location updated in the last 15 minutes within 500 m,
+  nearest first (`[{ "id": "<device id>", "distance_m": …, … }]`; only `id`
+  is read, ids that are not UUIDs are skipped). Inside the transaction only
+  candidates that are `is_helper`, still have a stored location and are not
+  the requester are recorded as notified and sent `help_request_new`. The
+  API's radius (500 m) decides; the request's `radius_m` is still stored and
+  returned but not used for the match.
+- **Local matching** (no helper API configured, or the call failed – error,
+  timeout, non-2xx or an unparseable body, logged as a warning): `is_helper`
+  devices other than the requester with a stored location seen within the
+  last 15 minutes (`last_seen_at`) and within `radius_m` of the SOS.
+
+HTTP timeouts to the helper API are 2 s to connect and 3 s per request.
+The SOS lifecycle (create, respond, resolve, cancel, SSE fan-out) is
+always handled by this server.
 
 ### Events (SSE)
 

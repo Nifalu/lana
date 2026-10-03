@@ -18,9 +18,9 @@ use tokio::io::{AsyncBufReadExt, BufReader};
 use tokio::net::tcp::OwnedReadHalf;
 use tower::ServiceExt;
 
-use super::events::Hub;
 use super::types::LonLat;
 use super::AppState;
+use crate::helper_api::HelperApi;
 
 static DB_LOCK: Mutex<()> = Mutex::new(());
 
@@ -48,10 +48,15 @@ pub async fn test_state() -> Option<AppState> {
     let pool = crate::db::init_with_url(&url)
         .await
         .expect("db init failed");
-    Some(AppState {
-        pool,
-        hub: Hub::new(),
-    })
+    Some(AppState::new(pool))
+}
+
+/// Like [`test_state`], with the helper API pointed at `helper_api_url`.
+pub async fn test_state_with_helper_api(helper_api_url: &str) -> Option<AppState> {
+    let helper_api = HelperApi::new(helper_api_url).expect("helper API client builds");
+    test_state()
+        .await
+        .map(|state| state.with_helper_api(Some(helper_api)))
 }
 
 /// Builds a router sharing `state`'s pool and hub.
@@ -182,6 +187,139 @@ impl SseStream {
             }
         };
         tokio::time::timeout(timeout, read).await.ok()
+    }
+}
+
+/// One `POST /location` call as the mock helper API recorded it.
+#[derive(Debug, Clone)]
+pub struct LocationCall {
+    /// The `device_id` query parameter.
+    pub device_id: String,
+    /// The JSON body (`{longitude, latitude}`).
+    pub body: Value,
+}
+
+#[derive(Default)]
+struct MockState {
+    locations: Vec<LocationCall>,
+    closest_calls: Vec<Value>,
+    closest_ids: Vec<String>,
+    failing: bool,
+}
+
+/// A stand-in for the live-location / closest-helpers API: a tiny axum
+/// server on an ephemeral port that records `POST /location` calls and
+/// answers `POST /get_closest_helpers` with a configurable id list – or with
+/// 500 on both endpoints in failing mode.
+pub struct MockHelperApi {
+    addr: SocketAddr,
+    state: std::sync::Arc<Mutex<MockState>>,
+}
+
+impl MockHelperApi {
+    pub async fn spawn() -> Self {
+        use axum::extract::{Query, State};
+        use axum::routing::post;
+        use axum::Json;
+        use std::collections::HashMap;
+        use std::sync::Arc;
+
+        type Shared = Arc<Mutex<MockState>>;
+
+        async fn location(
+            State(state): State<Shared>,
+            Query(query): Query<HashMap<String, String>>,
+            Json(body): Json<Value>,
+        ) -> StatusCode {
+            let mut state = state.lock().unwrap();
+            state.locations.push(LocationCall {
+                device_id: query.get("device_id").cloned().unwrap_or_default(),
+                body,
+            });
+            if state.failing {
+                StatusCode::INTERNAL_SERVER_ERROR
+            } else {
+                StatusCode::OK
+            }
+        }
+
+        async fn closest(
+            State(state): State<Shared>,
+            Json(body): Json<Value>,
+        ) -> Result<Json<Value>, StatusCode> {
+            let mut state = state.lock().unwrap();
+            state.closest_calls.push(body);
+            if state.failing {
+                return Err(StatusCode::INTERNAL_SERVER_ERROR);
+            }
+            let rows: Vec<Value> = state
+                .closest_ids
+                .iter()
+                .enumerate()
+                .map(|(i, id)| {
+                    serde_json::json!({
+                        "id": id,
+                        "distance_m": 10.0 * (i + 1) as f64,
+                        "location_updated_at": "2026-10-03T12:00:00Z",
+                        "location_age": "PT1M",
+                    })
+                })
+                .collect();
+            Ok(Json(Value::Array(rows)))
+        }
+
+        let state: Shared = Arc::default();
+        let app = Router::new()
+            .route("/location", post(location))
+            .route("/get_closest_helpers", post(closest))
+            .with_state(state.clone());
+        let addr = spawn_server(app).await;
+        Self { addr, state }
+    }
+
+    /// Base URL of the mock (no trailing slash).
+    pub fn url(&self) -> String {
+        format!("http://{}", self.addr)
+    }
+
+    /// A base URL nothing listens on: the port was just free, then released.
+    pub fn unreachable_url() -> String {
+        let listener = std::net::TcpListener::bind("127.0.0.1:0").expect("ephemeral bind works");
+        let addr = listener.local_addr().unwrap();
+        drop(listener);
+        format!("http://{addr}")
+    }
+
+    /// The ids `POST /get_closest_helpers` answers with, nearest first.
+    pub fn set_closest(&self, ids: Vec<String>) {
+        self.state.lock().unwrap().closest_ids = ids;
+    }
+
+    /// Switches the 500 mode on or off for both endpoints.
+    pub fn set_failing(&self, failing: bool) {
+        self.state.lock().unwrap().failing = failing;
+    }
+
+    pub fn location_calls(&self) -> Vec<LocationCall> {
+        self.state.lock().unwrap().locations.clone()
+    }
+
+    /// The request bodies `POST /get_closest_helpers` received.
+    pub fn closest_calls(&self) -> Vec<Value> {
+        self.state.lock().unwrap().closest_calls.clone()
+    }
+
+    /// Waits (polling) until at least `count` location calls arrived – the
+    /// middleware forwards from a spawned task – and returns all of them.
+    pub async fn wait_for_location_calls(&self, count: usize) -> Vec<LocationCall> {
+        for _ in 0..100 {
+            let calls = self.location_calls();
+            if calls.len() >= count {
+                return calls;
+            }
+            tokio::time::sleep(Duration::from_millis(50)).await;
+        }
+        self.location_calls()
     }
 }
 

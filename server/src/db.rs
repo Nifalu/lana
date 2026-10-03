@@ -69,7 +69,6 @@ mod tests {
             "stations",
             "measurements",
             "devices",
-            "helper_windows",
             "help_requests",
             "help_request_notified",
         ] {
@@ -110,19 +109,23 @@ mod tests {
         .expect("information_schema query failed");
         assert_eq!(source_col.as_deref(), Some("source"));
 
-        // Device and window positions use the same geography convention.
-        for (table, column) in [("devices", "last_location"), ("helper_windows", "location")] {
-            let (srid,): (i32,) = sqlx::query_as(
-                "SELECT srid FROM geography_columns \
-                 WHERE f_table_name = $1 AND f_geography_column = $2",
-            )
-            .bind(table)
-            .bind(column)
-            .fetch_one(&pool)
-            .await
-            .expect("geography column should exist");
-            assert_eq!(srid, 4326, "{table}.{column} should be SRID 4326");
-        }
+        // Device positions use the same geography convention.
+        let (srid,): (i32,) = sqlx::query_as(
+            "SELECT srid FROM geography_columns \
+             WHERE f_table_name = 'devices' AND f_geography_column = 'last_location'",
+        )
+        .fetch_one(&pool)
+        .await
+        .expect("devices.last_location should be a geography column");
+        assert_eq!(srid, 4326);
+
+        // Migration 0005 dropped the helper availability windows.
+        let (windows,): (Option<String>,) =
+            sqlx::query_as("SELECT to_regclass('helper_windows')::text")
+                .fetch_one(&pool)
+                .await
+                .expect("to_regclass query failed");
+        assert_eq!(windows, None, "helper_windows must be gone");
 
         pool.close().await;
     }

@@ -29,6 +29,10 @@ services:
     build: .
     environment:
       DATABASE_URL: postgres://lana:lana@db:5432/lana
+      # Base URL of the live-location / closest-helpers API. Empty (the
+      # default) disables it, so a local stack never writes to a shared
+      # deployment; set it in the environment or a .env file to enable.
+      LANA_HELPER_API_URL: ${LANA_HELPER_API_URL:-}
       # Optional overrides (uncomment to set):
       # LANA_BIND_ADDR: 0.0.0.0:8080
       # LANA_POLL_INTERVAL_SECS: 600

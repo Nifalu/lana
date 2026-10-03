@@ -28,7 +28,11 @@ app is a client with an embedded SQLite cache.
 - The server imports Basel open data (data.bs.ch) and keeps temperatures
   live; only the server calls external APIs.
 - Helper notifications arrive over Server-Sent Events; devices are
-  anonymous client-generated UUIDs — no accounts, no identity.
+  anonymous client-generated UUIDs — no accounts, no identity. Anyone can
+  opt in as a helper ("Ich kann helfen").
+- Optionally the server forwards helper locations to a separate
+  live-location API and asks it for the helpers closest to an SOS (see
+  `LANA_HELPER_API_URL` and server/README.md).
 
 ## Getting started
 
@@ -80,7 +84,10 @@ The server is one binary with three modes: `serve` (API + SSE + background
 poller, applies migrations on startup), `import` (idempotent refresh of the
 static datasets), and `poll` (one manual poll cycle for demos/tests).
 Environment: `DATABASE_URL` (required), `LANA_BIND_ADDR` (default
-`0.0.0.0:8080`), `LANA_POLL_INTERVAL_SECS` (default 600).
+`0.0.0.0:8080`), `LANA_POLL_INTERVAL_SECS` (default 600),
+`LANA_HELPER_API_URL` (optional base URL of the live-location /
+closest-helpers API, e.g. `https://lana.heitzli.ch`; unset or empty =
+disabled: SOS helpers are then matched from the server's own database).
 
 Schema changes are plain SQL files in `server/migrations/`, applied in
 filename order at server startup — never edit an applied migration.

@@ -41,6 +41,20 @@ fn resolve_poll_interval(env_override: Option<String>) -> anyhow::Result<Duratio
     }
 }
 
+/// Resolves the live-location / closest-helpers API base URL:
+/// `LANA_HELPER_API_URL` if set to a non-blank value, else `None` (feature
+/// off: locations are not forwarded and SOS matching stays local). A trailing
+/// slash is dropped so paths can be appended uniformly.
+pub fn helper_api_url() -> Option<String> {
+    resolve_helper_api_url(std::env::var("LANA_HELPER_API_URL").ok())
+}
+
+fn resolve_helper_api_url(env_override: Option<String>) -> Option<String> {
+    let raw = env_override?;
+    let url = raw.trim().trim_end_matches('/');
+    (!url.is_empty()).then(|| url.to_string())
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -79,5 +93,32 @@ mod tests {
         );
         assert!(resolve_poll_interval(Some("0".to_string())).is_err());
         assert!(resolve_poll_interval(Some("soon".to_string())).is_err());
+    }
+
+    /// The helper API is off unless `LANA_HELPER_API_URL` names it; an unset
+    /// or empty (e.g. `${LANA_HELPER_API_URL:-}` in compose) value disables it.
+    #[test]
+    fn helper_api_is_disabled_when_unset_or_blank() {
+        assert_eq!(resolve_helper_api_url(None), None);
+        assert_eq!(resolve_helper_api_url(Some(String::new())), None);
+        assert_eq!(resolve_helper_api_url(Some("  ".to_string())), None);
+    }
+
+    /// The configured URL is used as given, minus whitespace and trailing
+    /// slashes.
+    #[test]
+    fn helper_api_url_tolerates_trailing_slash() {
+        assert_eq!(
+            resolve_helper_api_url(Some("https://lana.heitzli.ch".to_string())),
+            Some("https://lana.heitzli.ch".to_string())
+        );
+        assert_eq!(
+            resolve_helper_api_url(Some(" https://lana.heitzli.ch/ ".to_string())),
+            Some("https://lana.heitzli.ch".to_string())
+        );
+        assert_eq!(
+            resolve_helper_api_url(Some("http://127.0.0.1:9000//".to_string())),
+            Some("http://127.0.0.1:9000".to_string())
+        );
     }
 }
