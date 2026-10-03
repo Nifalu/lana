@@ -1,7 +1,7 @@
-//! `PUT /api/v1/devices/{device_id}` – anonymous device upsert (ADR 0004).
+//! `PUT /api/v1/devices/{device_id}` - anonymous device upsert (ADR 0004).
 //!
 //! The client-generated UUID in the path is the device's whole identity: no
-//! accounts, no secrets. The payload is the device's current state – helper
+//! accounts, no secrets. The payload is the device's current state - helper
 //! flag and, optionally, the live location it shares (null or omitted =
 //! not sharing). The first call creates the row; later calls update it and
 //! refresh `last_seen_at`. The response is only ever served to the device
@@ -209,7 +209,7 @@ mod tests {
         );
     }
 
-    /// A device that stops sharing – update with `location` omitted – has
+    /// A device that stops sharing - update with `location` omitted - has
     /// its stored point cleared. The devices API has no read endpoint, so
     /// the row is observed through the pool; the alternative (matching)
     /// could not distinguish a cleared point from a stale-but-fresh one,

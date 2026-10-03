@@ -3,7 +3,7 @@
 //! The app is a client of the lana server and owns no Postgres: it embeds a
 //! SQLite database in the platform app-data directory as its offline cache.
 //! Schema changes are plain SQL files in `migrations/`, applied in filename
-//! order at startup by sqlx. Never edit an already-applied migration – add a
+//! order at startup by sqlx. Never edit an already-applied migration - add a
 //! new numbered file instead.
 
 use std::path::Path;

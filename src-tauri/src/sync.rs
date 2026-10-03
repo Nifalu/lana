@@ -69,7 +69,7 @@ async fn fetch_snapshot(http: &reqwest::Client, base_url: &str) -> anyhow::Resul
 }
 
 /// Serializes DB-gated sync tests: they share one per-ticket database
-/// (without truncating other tests' rows – seeds are uuid-tagged and cleaned
+/// (without truncating other tests' rows - seeds are uuid-tagged and cleaned
 /// up per test).
 #[cfg(test)]
 static DB_LOCK: std::sync::Mutex<()> = std::sync::Mutex::new(());
@@ -87,7 +87,7 @@ mod tests {
         (dir, pool)
     }
 
-    /// Serves `app` on an ephemeral port (127.0.0.1:0 – never a fixed port,
+    /// Serves `app` on an ephemeral port (127.0.0.1:0 - never a fixed port,
     /// the port space is shared with other agents) and returns its address.
     async fn spawn(app: axum::Router) -> std::net::SocketAddr {
         let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
@@ -102,7 +102,7 @@ mod tests {
         addr
     }
 
-    /// A migrated Postgres pool against `DATABASE_URL`, or `None` (skip) –
+    /// A migrated Postgres pool against `DATABASE_URL`, or `None` (skip) -
     /// the repo's DB-gated convention.
     async fn pg_pool() -> Option<sqlx::PgPool> {
         match std::env::var("DATABASE_URL") {
@@ -112,7 +112,7 @@ mod tests {
                     .expect("server db init failed"),
             ),
             Err(_) => {
-                eprintln!("DATABASE_URL not set – skipping postgres test");
+                eprintln!("DATABASE_URL not set - skipping postgres test");
                 None
             }
         }
@@ -182,7 +182,7 @@ mod tests {
 
     /// The primary seam, end to end: sync_now pulls the real server's
     /// snapshot over HTTP (router spawned on an ephemeral port, backed by
-    /// the per-ticket Postgres) and the cache serves the data afterwards –
+    /// the per-ticket Postgres) and the cache serves the data afterwards -
     /// even with the server gone (offline reads).
     #[tokio::test]
     async fn sync_now_pulls_full_snapshot_and_cache_works_offline_afterwards() {
@@ -260,7 +260,7 @@ mod tests {
     }
 
     /// A failing snapshot pull (server error) leaves the previous cache
-    /// content and sync metadata untouched – the app keeps its last good
+    /// content and sync metadata untouched - the app keeps its last good
     /// data. Uses a local 500-router, no database needed.
     #[tokio::test]
     async fn sync_failure_keeps_previous_cache() {

@@ -8,7 +8,7 @@ WORKDIR /build
 
 # Copy the manifests first so the dependency layers stay cached while server
 # code changes. The workspace root manifest lists both members, so cargo needs
-# both member manifests to load the workspace – but only the server is built.
+# both member manifests to load the workspace - but only the server is built.
 COPY Cargo.toml Cargo.lock ./
 COPY src-tauri/Cargo.toml src-tauri/Cargo.toml
 COPY server/Cargo.toml server/Cargo.toml

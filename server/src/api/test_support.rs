@@ -1,7 +1,7 @@
 //! Shared helpers for HTTP-seam tests.
 //!
 //! Tests drive the axum router in-process through `tower::ServiceExt::oneshot`
-//! – no sockets, no fixed ports (the port space is shared). Tests that need
+//! - no sockets, no fixed ports (the port space is shared). Tests that need
 //! Postgres are DB-gated: they skip silently when `DATABASE_URL` is unset,
 //! following the repo convention (see `db.rs`).
 
@@ -59,7 +59,7 @@ pub fn router_with_state(state: &AppState) -> Router {
     super::router_with_state(state.clone())
 }
 
-/// Serves `app` on an ephemeral port (127.0.0.1:0 – never a fixed port, the
+/// Serves `app` on an ephemeral port (127.0.0.1:0 - never a fixed port, the
 /// port space is shared) for tests that need a real streaming connection
 /// (SSE). Returns the bound address.
 pub async fn spawn_server(app: Router) -> SocketAddr {
@@ -143,7 +143,7 @@ impl SseStream {
     }
 
     /// Reads the next `event:`/`data:` pair, skipping keep-alive comments.
-    /// Panics when the event does not arrive within `timeout` – use
+    /// Panics when the event does not arrive within `timeout` - use
     /// [`try_read_event`] for negative assertions.
     pub async fn read_event(&mut self, timeout: Duration) -> (String, Value) {
         self.try_read_event(timeout)
@@ -222,7 +222,7 @@ pub async fn send_json(
 }
 
 /// Sends a request with a raw string body (content-type application/json)
-/// and returns the status plus the raw response bytes – for rejections whose
+/// and returns the status plus the raw response bytes - for rejections whose
 /// body shape is itself under test (e.g. malformed JSON must still produce
 /// the uniform JSON error, not plain text).
 pub async fn send_raw(
@@ -279,7 +279,7 @@ pub fn scenario_point() -> LonLat {
 }
 
 /// A point `north_m` meters north and `east_m` meters east of `base`
-/// (good to a few percent at Basel's latitude – enough for radius tests that
+/// (good to a few percent at Basel's latitude - enough for radius tests that
 /// stay far away from any boundary).
 pub fn offset(base: LonLat, north_m: f64, east_m: f64) -> LonLat {
     let meters_per_degree_lat = 111_320.0;

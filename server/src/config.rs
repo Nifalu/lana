@@ -23,7 +23,7 @@ fn resolve_bind_addr(env_override: Option<String>) -> String {
 }
 
 /// Resolves the poller interval: `LANA_POLL_INTERVAL_SECS` (in seconds) if
-/// set, else 10 minutes. Zero or non-numeric values are errors – the interval
+/// set, else 10 minutes. Zero or non-numeric values are errors - the interval
 /// must be positive or the poll loop would spin on the API.
 pub fn poll_interval() -> anyhow::Result<Duration> {
     resolve_poll_interval(std::env::var("LANA_POLL_INTERVAL_SECS").ok())

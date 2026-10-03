@@ -66,7 +66,7 @@ impl FeatureCollection {
 mod tests {
     use super::*;
 
-    /// Positions always serialize as `[lon, lat]` – longitude first.
+    /// Positions always serialize as `[lon, lat]` - longitude first.
     #[test]
     fn position_serializes_lon_before_lat() {
         let json = serde_json::to_value(Position(7.5886, 47.5596)).unwrap();

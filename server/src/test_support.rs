@@ -27,7 +27,7 @@ pub async fn db_pool() -> Option<PgPool> {
     let url = match std::env::var("DATABASE_URL") {
         Ok(url) => url,
         Err(_) => {
-            eprintln!("DATABASE_URL not set – skipping postgres test");
+            eprintln!("DATABASE_URL not set - skipping postgres test");
             return None;
         }
     };
@@ -42,7 +42,7 @@ pub async fn reset_db(pool: &PgPool) {
         .expect("truncate failed");
 }
 
-/// DatasetSource backed by the committed fixture files in `testdata/` – the
+/// DatasetSource backed by the committed fixture files in `testdata/` - the
 /// same bodies the real Opendatasoft client would deliver, minus the network.
 /// Implements both the import source and the poller's [`MeasurementSource`],
 /// so tests drive one fixture set end to end. Individual fields are public

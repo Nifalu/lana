@@ -3,14 +3,14 @@
 //! A device opens `GET /api/v1/events?device_id=<uuid>` and receives the
 //! notifications addressed to it as server-sent events:
 //!
-//! - `help_request_new` – a new SOS the device was matched for (ADR 0004);
-//! - `help_request_updated` – a status change of a request the device is a
+//! - `help_request_new` - a new SOS the device was matched for (ADR 0004);
+//! - `help_request_updated` - a status change of a request the device is a
 //!   party to (requester/responder) or was originally notified about.
 //!
 //! Event data is the anonymous public help-request document (ADR 0004:
 //! no requester/responder identity on the wire). The hub is in-memory and
 //! per-process: notifications reach only devices whose stream is open when
-//! the event is published – right for the prototype (SSE only, no push).
+//! the event is published - right for the prototype (SSE only, no push).
 
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
@@ -113,9 +113,9 @@ pub struct EventsQuery {
     pub device_id: uuid::Uuid,
 }
 
-/// `GET /api/v1/events?device_id=<uuid>` – the device's notification stream.
+/// `GET /api/v1/events?device_id=<uuid>` - the device's notification stream.
 ///
-/// Identity note (ADR 0004): the query's device_id is the caller – whoever
+/// Identity note (ADR 0004): the query's device_id is the caller - whoever
 /// knows the UUID receives that device's notifications, exactly like every
 /// other endpoint scopes by the path's device_id.
 pub async fn events(
@@ -124,7 +124,7 @@ pub async fn events(
 ) -> Sse<impl tokio_stream::Stream<Item = Result<Event, std::convert::Infallible>>> {
     let receiver = state.hub.subscribe(query.device_id);
     let stream = UnboundedReceiverStream::new(receiver).map(|notification| {
-        // Usually the sole reference – unwrap; else clone (same content).
+        // Usually the sole reference - unwrap; else clone (same content).
         let notification =
             Arc::try_unwrap(notification).unwrap_or_else(|notification| (*notification).clone());
         Ok(notification.into_sse_event())

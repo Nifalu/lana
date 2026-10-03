@@ -6,7 +6,7 @@
 //! - Smart Climate air temperature (dataset 100009), paged newest-first
 //!   until consecutive pages stop discovering new stations (bounded by a
 //!   page cap); stations join via `name_original` (ticket 02 imported them);
-//! - Rhine water temperature (dataset 100046) – one fixed station, the
+//! - Rhine water temperature (dataset 100046) - one fixed station, the
 //!   Rheinüberwachungsstation Weil am Rhein (RUES, "Strang S3"); the dataset
 //!   carries no ids or coordinates, so the station row is owned here;
 //! - Gartenbäder pool temperatures (dataset 100384), one row per pool per
@@ -19,7 +19,7 @@
 //!
 //! **Manual trigger:** run one poll cycle on demand with the `poll` CLI mode
 //! (`lana-server poll`) or call [`run`] directly from a test with a fixture
-//! [`MeasurementSource`] – no waiting for the timer, no network in tests.
+//! [`MeasurementSource`] - no waiting for the timer, no network in tests.
 //!
 //! Split like [`crate::import`]: pure parsing functions are tested against
 //! the committed fixtures in `testdata/`; storage goes through idempotent
@@ -43,13 +43,13 @@ pub const SOURCE_RHINE: &str = "ods-100046";
 pub const SOURCE_POOLS: &str = "ods-100384";
 
 /// The one Rhine station (dataset 100046: Rheinüberwachungsstation Weil am
-/// Rhein, sensor strand "Strang S3" – the dataset has no id field).
+/// Rhein, sensor strand "Strang S3" - the dataset has no id field).
 pub const RHINE_STATION_ID: &str = "rues-s3";
 
 /// The fixed Rhine station row. Position: Swiss LV03 (EPSG:21781)
 /// 611740 / 272310 from the dataset's field description, transformed once
 /// to WGS84 with PostGIS `ST_Transform` and cross-checked against the
-/// swisstopo approximation formulas (see README) – never converted at
+/// swisstopo approximation formulas (see README) - never converted at
 /// runtime.
 pub const RHINE_STATION_LON: f64 = 7.5947299;
 pub const RHINE_STATION_LAT: f64 = 47.6013689;
@@ -148,7 +148,7 @@ pub fn parse_air_page(raw: &str) -> anyhow::Result<Vec<AirSample>> {
 /// Parses one newest-first Rhine record page (dataset 100046): every row
 /// belongs to the fixed RUES station; the newest row's `rus_w_o_s3_te` is
 /// the current water temperature (`startzeitpunkt` its timestamp). Fields
-/// may be null when a sensor is offline – tolerated as null values. Returns
+/// may be null when a sensor is offline - tolerated as null values. Returns
 /// `None` when the page has no rows.
 pub fn parse_rhine(raw: &str) -> anyhow::Result<Option<MeasurementInsert>> {
     let Some(record) = record_page(raw, "rhine")?.into_iter().next() else {
@@ -166,7 +166,7 @@ pub fn rhine_station() -> StationInsert {
     StationInsert {
         id: RHINE_STATION_ID.to_string(),
         kind: KIND_WATER,
-        name: "Rhein – RUES Weil am Rhein".to_string(),
+        name: "Rhein - RUES Weil am Rhein".to_string(),
         lon: RHINE_STATION_LON,
         lat: RHINE_STATION_LAT,
         source: SOURCE_RHINE,
@@ -289,7 +289,7 @@ pub async fn upsert_measurements(pool: &PgPool, rows: &[MeasurementInsert]) -> a
     Ok(())
 }
 
-/// One manual poll cycle – the trigger the serve loop, the `poll` CLI mode
+/// One manual poll cycle - the trigger the serve loop, the `poll` CLI mode
 /// and the tests call. Fetches all three live datasets from `source`,
 /// ensures the station rows (Rhine/pool stations are owned here; air
 /// stations are re-ensured from the measurement rows so `serve` works
@@ -333,7 +333,7 @@ pub(crate) async fn run(
 }
 
 /// The serve-mode poll loop: one poll immediately, then every `interval`.
-/// Failures are logged and retried on the next tick – they never take the
+/// Failures are logged and retried on the next tick - they never take the
 /// API down. Runs until the task is aborted (server shutdown).
 pub(crate) async fn run_loop(
     pool: PgPool,
@@ -343,7 +343,7 @@ pub(crate) async fn run_loop(
     loop {
         match run(&pool, &source).await {
             Ok(summary) => println!("{summary}"),
-            Err(err) => eprintln!("poll failed: {err:#} – retrying next tick"),
+            Err(err) => eprintln!("poll failed: {err:#} - retrying next tick"),
         }
         tokio::time::sleep(interval).await;
     }
@@ -508,13 +508,13 @@ mod tests {
 
         // The fixed station row: water kind, its own source, position
         // transformed once from LV03 611740/272310 (EPSG:21781) to WGS84
-        // via PostGIS ST_Transform – verified against the swisstopo
+        // via PostGIS ST_Transform - verified against the swisstopo
         // approximation formulas (see README).
         let station = rhine_station();
         assert_eq!(station.id, "rues-s3");
         assert_eq!(station.kind, KIND_WATER);
         assert_eq!(station.source, SOURCE_RHINE);
-        assert_eq!(station.name, "Rhein – RUES Weil am Rhein");
+        assert_eq!(station.name, "Rhein - RUES Weil am Rhein");
         assert!((station.lon - 7.5947299).abs() < 1e-6);
         assert!((station.lat - 47.6013689).abs() < 1e-6);
     }
@@ -708,7 +708,7 @@ mod tests {
                     air_row("A", 240, 17.0),
                     air_row("B", 250, 18.0),
                 ]),
-                // page 5 would offer G – must never be fetched
+                // page 5 would offer G - must never be fetched
                 page_of(vec![air_row("G", 0, 30.0)]),
             ],
             fetched: std::cell::Cell::new(0),
@@ -765,7 +765,7 @@ mod tests {
 
     /// One manual poll cycle (`run` is the trigger tests and the `poll` CLI
     /// mode call): inserts the latest value per station, creates the Rhine
-    /// and pool stations it owns, and is idempotent – a second identical
+    /// and pool stations it owns, and is idempotent - a second identical
     /// poll changes nothing (conflicts on station+timestamp are ignored).
     #[tokio::test]
     async fn manual_poll_inserts_measurements_and_is_idempotent() {
@@ -776,7 +776,7 @@ mod tests {
         crate::test_support::reset_db(&pool).await;
 
         // Ticket-02 import fills the air stations (10 in the fixture);
-        // Rhine and pool stations do not exist yet – the poller owns them.
+        // Rhine and pool stations do not exist yet - the poller owns them.
         crate::import::run(&pool, &crate::test_support::FixtureSource::default())
             .await
             .unwrap();

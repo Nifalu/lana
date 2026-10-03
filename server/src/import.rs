@@ -3,7 +3,7 @@
 //! Split in two halves:
 //! - **Pure parsing**: dataset exports (GeoJSON) and record pages (JSON) are
 //!   turned into insert-ready rows by pure functions. These are tested against
-//!   the committed fixture files in `testdata/` – no network involved.
+//!   the committed fixture files in `testdata/` - no network involved.
 //! - **Storage**: `upsert_pois` / `upsert_stations` write rows with upsert
 //!   semantics keyed on `(source, source_id)` (stations: `id`), so re-running
 //!   the import never duplicates rows; changed data updates in place.
@@ -41,7 +41,7 @@ pub const SOURCE_COOL_PLACES: &str = "seed-cool-places";
 pub const SOURCE_AIR_STATIONS: &str = "ods-100082";
 
 /// The committed cool-places seed, embedded in the binary. Addresses were
-/// geocoded once with Nominatim when the seed was authored – never at runtime
+/// geocoded once with Nominatim when the seed was authored - never at runtime
 /// (see `seed/README.md`).
 pub const COOL_PLACES_SEED: &str = include_str!("../seed/cool-places.geojson");
 
@@ -123,7 +123,7 @@ struct RawFeature {
 }
 
 /// Parses the fountains GeoJSON export (dataset 100008). All fountains are
-/// `kind = fountain` – the dataset has no machine-readable type field; media
+/// `kind = fountain` - the dataset has no machine-readable type field; media
 /// blobs (`gx_media_links`, `picture_link`) are discarded.
 pub fn parse_fountains(raw: &str) -> anyhow::Result<Vec<PoiInsert>> {
     let fc: RawFeatureCollection =
@@ -141,7 +141,7 @@ fn fountain_poi(feature: RawFeature) -> anyhow::Result<PoiInsert> {
         properties.insert("desc".to_string(), serde_json::Value::String(desc));
     }
 
-    // Ids must not collide for equal names – mix in the position.
+    // Ids must not collide for equal names - mix in the position.
     let source_id = stable_id(&format!("100008|{name}|{}|{}", position.0, position.1));
 
     Ok(PoiInsert {

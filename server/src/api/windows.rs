@@ -3,7 +3,7 @@
 //! A window is recurring weekly availability: `weekday` 0=Monday..6=Sunday,
 //! `start_time`/`end_time` as Europe/Zurich local wall times, a location
 //! point with its own radius in meters, a label, and the `active` vacation
-//! toggle (an inactive window stays stored but never matches – ticket 05).
+//! toggle (an inactive window stays stored but never matches - ticket 05).
 //! Every query filters on the `device_id` from the path, so a device can
 //! never see or touch another device's windows; unknown and foreign windows
 //! are both reported as 404.
@@ -96,7 +96,7 @@ fn is_device_fk_violation(err: &sqlx::Error) -> bool {
     )
 }
 
-/// Validates a full window state: weekday 0–6, end strictly after start,
+/// Validates a full window state: weekday 0-6, end strictly after start,
 /// WGS84 location, radius > 0.
 fn validate_window(
     weekday: i16,
@@ -558,7 +558,7 @@ mod tests {
     }
 
     /// Anonymity guarantee: another device's windows are invisible and
-    /// untouchable – its list is empty, and PATCH/DELETE on a foreign
+    /// untouchable - its list is empty, and PATCH/DELETE on a foreign
     /// window return 404 without changing it.
     #[tokio::test]
     async fn other_devices_windows_are_invisible_and_untouchable() {

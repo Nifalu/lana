@@ -1,4 +1,4 @@
-//! `GET /api/v1/snapshot` – full offline-sync snapshot.
+//! `GET /api/v1/snapshot` - full offline-sync snapshot.
 //!
 //! The snapshot is the app's whole world: every POI and every station as
 //! GeoJSON, replaced wholesale into the on-device cache. POI features carry
@@ -294,7 +294,7 @@ mod tests {
     }
 
     /// Ticket 03: station features carry their latest measurement as
-    /// `temperature_c` + `measured_at` properties – null while the station
+    /// `temperature_c` + `measured_at` properties - null while the station
     /// has never reported, filled once the poller upserts a value (the
     /// fixed Rhine and pool stations the poller owns appear alongside the
     /// imported air stations).

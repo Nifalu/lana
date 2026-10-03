@@ -471,7 +471,7 @@ mod tests {
         assert_eq!(get_server_url(&pool).await.unwrap(), "http://example.com");
     }
 
-    /// Only http(s) URLs are accepted – typos should fail loudly at save
+    /// Only http(s) URLs are accepted - typos should fail loudly at save
     /// time, not as a confusing sync error later.
     #[tokio::test]
     async fn server_url_rejects_non_http_values() {

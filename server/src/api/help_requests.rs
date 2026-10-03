@@ -94,7 +94,7 @@ pub struct HelpRequestCreate {
 pub struct HelpRequestListQuery {
     /// One of `open|responded|resolved|cancelled`.
     pub status: Option<String>,
-    /// `lon,lat` – keep requests within `radius_m` of this point.
+    /// `lon,lat` - keep requests within `radius_m` of this point.
     pub near: Option<String>,
     /// Radius for the `near` filter in meters (default [`DEFAULT_RADIUS_M`]).
     pub radius_m: Option<f64>,
@@ -102,7 +102,7 @@ pub struct HelpRequestListQuery {
 
 /// A help request as served on the wire.
 ///
-/// Anonymity (ADR 0004): the shape carries NO requester or responder fields –
+/// Anonymity (ADR 0004): the shape carries NO requester or responder fields -
 /// only the opaque request `id` and its status transitions are public.
 #[derive(Debug, Clone, Serialize)]
 pub struct HelpRequest {
@@ -127,7 +127,7 @@ type HelpRequestRow = (
     DateTime<Utc>,
 );
 
-/// The public column list, in [`HelpRequestRow`] order – shared by every
+/// The public column list, in [`HelpRequestRow`] order - shared by every
 /// SELECT/RETURNING clause in this module. A macro (not a `const`) so the
 /// statements splice it into `&'static str` literals, as sqlx requires.
 macro_rules! columns {
@@ -359,7 +359,7 @@ pub async fn list_help_requests(
     Ok(Json(rows.into_iter().map(HelpRequest::from_row).collect()))
 }
 
-/// Action payload for respond/resolve/cancel: the acting device (ADR 0004 –
+/// Action payload for respond/resolve/cancel: the acting device (ADR 0004 -
 /// the device UUID is the whole identity).
 #[derive(Debug, Deserialize)]
 pub struct HelpRequestAction {
@@ -1214,7 +1214,7 @@ mod tests {
     }
 
     /// Status changes fan out as `help_request_updated` to the requester,
-    /// the responder and the ORIGINALLY notified helpers – the helper here
+    /// the responder and the ORIGINALLY notified helpers - the helper here
     /// moves away after matching and must still hear the fan-out (ADR 0004).
     /// Helpers that never matched hear nothing.
     #[tokio::test]
@@ -1251,7 +1251,7 @@ mod tests {
             .await
             .is_none());
 
-        // The helper moves away AFTER matching – fan-out still reaches it.
+        // The helper moves away AFTER matching - fan-out still reaches it.
         put_device(&app, helper, true, Some(offset(sos_point, 2_000.0, 0.0))).await;
 
         let (status, responded) = send_json(

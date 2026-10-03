@@ -3,7 +3,7 @@
 //! The connection string comes from `DATABASE_URL` (the nix dev shell exports
 //! a default pointing at the local dev cluster). Schema changes are plain SQL
 //! files in `migrations/`, applied in filename order at server startup.
-//! Never edit an already-applied migration – add a new numbered file instead.
+//! Never edit an already-applied migration - add a new numbered file instead.
 //!
 //! The server keeps its own migration bookkeeping table
 //! (`_sqlx_server_migrations`) so the Tauri app and the server can share one
@@ -15,7 +15,7 @@ use sqlx::PgPool;
 /// Connects to Postgres (via `DATABASE_URL`) and applies pending migrations.
 pub async fn init() -> anyhow::Result<PgPool> {
     let url = std::env::var("DATABASE_URL").context(
-        "DATABASE_URL is not set – the nix dev shell exports a default; \
+        "DATABASE_URL is not set - the nix dev shell exports a default; \
          create the local cluster with `just db-init && just db-start && just db-createdb`",
     )?;
     init_with_url(&url).await
@@ -50,7 +50,7 @@ mod tests {
     #[tokio::test]
     async fn migrations_bootstrap_postgis_and_create_schema() {
         let Ok(url) = std::env::var("DATABASE_URL") else {
-            eprintln!("DATABASE_URL not set – skipping postgres test");
+            eprintln!("DATABASE_URL not set - skipping postgres test");
             return;
         };
         let pool = init_with_url(&url).await.expect("db init failed");

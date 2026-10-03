@@ -3,7 +3,7 @@
 lana is a heat-relief map and anonymous help platform for Basel
 ([Hack am Rhein](https://hackamrhein.ch) 2026, challenge #3): public drinking
 fountains, Rhine swim areas, cool places, and live temperatures (air, Rhine
-water, pools) on a map — plus a way to ask people nearby for help when the
+water, pools) on a map - plus a way to ask people nearby for help when the
 heat gets to you. No account, no identity, no live location feed; the app
 keeps working offline.
 
@@ -28,7 +28,7 @@ app is a client with an embedded SQLite cache.
 - The server imports Basel open data (data.bs.ch) and keeps temperatures
   live; only the server calls external APIs.
 - Helper notifications arrive over Server-Sent Events; devices are
-  anonymous client-generated UUIDs — no accounts, no identity.
+  anonymous client-generated UUIDs - no accounts, no identity.
 
 ## Getting started
 
@@ -45,14 +45,14 @@ just dev                                           # the Tauri app (terminal 2)
 ```
 
 The app defaults to `http://127.0.0.1:8080` and caches a full snapshot in
-SQLite — after one sync it keeps working offline and shows how stale its
+SQLite - after one sync it keeps working offline and shows how stale its
 data is. The dev shell exports `DATABASE_URL`
 (`postgres://lana:lana@127.0.0.1:5432/lana`); inspect it with
 `psql "$DATABASE_URL"`.
 
 ## Deployment
 
-The backend is a two-service docker compose stack (PostGIS + server) — the
+The backend is a two-service docker compose stack (PostGIS + server) - the
 same files on a laptop and on the team's Proxmox host:
 
 ```sh
@@ -83,9 +83,9 @@ Environment: `DATABASE_URL` (required), `LANA_BIND_ADDR` (default
 `0.0.0.0:8080`), `LANA_POLL_INTERVAL_SECS` (default 600).
 
 Schema changes are plain SQL files in `server/migrations/`, applied in
-filename order at server startup — never edit an applied migration.
+filename order at server startup - never edit an applied migration.
 
 ## Documentation
 
-- [server/README.md](server/README.md) — API reference, import/poll
+- [server/README.md](server/README.md) - API reference, import/poll
   internals, test conventions

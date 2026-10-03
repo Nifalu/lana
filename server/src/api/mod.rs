@@ -28,7 +28,7 @@ pub struct AppState {
 /// permissive for the prototype) with a fresh notification hub.
 ///
 /// Identity note: the `device_id` in a request path *is* the caller (ADR 0004
-/// – no accounts, no secrets). Every devices/windows handler scopes its SQL to
+/// - no accounts, no secrets). Every devices/windows handler scopes its SQL to
 /// that id, so a device can only ever read or change its own rows.
 pub fn router(pool: PgPool) -> Router {
     router_with_state(AppState {
@@ -111,7 +111,7 @@ mod tests {
     #[tokio::test]
     async fn snapshot_returns_empty_feature_collections_and_generated_at() {
         let Some(app) = test_support::test_app().await else {
-            eprintln!("DATABASE_URL not set – skipping postgres test");
+            eprintln!("DATABASE_URL not set - skipping postgres test");
             return;
         };
 
@@ -135,7 +135,7 @@ mod tests {
 
         // Structural assertions only: whether pois/stations are empty depends
         // on whether the import (ticket 02) has run against this shared,
-        // persistent per-ticket database – an emptiness claim can never hold
+        // persistent per-ticket database - an emptiness claim can never hold
         // there once it has.
         assert_eq!(json["pois"]["type"], "FeatureCollection");
         assert!(json["pois"]["features"].is_array());
