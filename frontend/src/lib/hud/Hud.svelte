@@ -4,9 +4,10 @@
   import ConnectionIndicator from './ConnectionIndicator.svelte';
   import CoolButton from './CoolButton.svelte';
   import SelectionSheet from './SelectionSheet.svelte';
+  import SosSheet from './SosSheet.svelte';
   import TemperatureLegend from './TemperatureLegend.svelte';
   import { filters, location, mapActions, view } from '../state/app.svelte';
-  import { sos, triggerSos } from '../sos';
+  import { helper, sos, sosSheetKind, toggleHelper, triggerSos } from '../sos';
   import { selection } from '../state/selection.svelte';
   import { routing } from '../routing';
 
@@ -16,14 +17,17 @@
 
   // Height of the selection sheet. On phones the toast is lifted above it.
   let sheetHeight = $state(0);
-  const sheetOpen = $derived(selection.current !== null || routing.current !== null);
+  let sosHeight = $state(0);
+  // An SOS sheet takes the place of the selection sheet.
+  const sosOpen = $derived(sosSheetKind() !== null);
+  const sheetOpen = $derived(sosOpen || selection.current !== null || routing.current !== null);
 
   function toggleBasemap() {
     view.basemap = view.basemap === 'standard' ? 'imagery' : 'standard';
   }
 </script>
 
-<div class="hud" class:sheet-open={sheetOpen} style:--sheet-h="{sheetHeight}px">
+<div class="hud" class:sheet-open={sheetOpen} style:--sheet-h="{sosOpen ? sosHeight : sheetHeight}px">
   <ConnectionIndicator />
 
   <div class="tools">
@@ -46,6 +50,11 @@
       </HudButton>
     {/if}
 
+    <HudButton label="Ich kann helfen" active={helper.on} onclick={toggleHelper}>
+      <!-- TODO: replace with the helper icon SVG -->
+      HILFE
+    </HudButton>
+
     {#if filters.heat}
       <TemperatureLegend />
     {/if}
@@ -55,7 +64,10 @@
     <p class="hint" role="status">Tap the map to set your location</p>
   {/if}
 
-  <SelectionSheet bind:height={sheetHeight} />
+  {#if !sosOpen}
+    <SelectionSheet bind:height={sheetHeight} />
+  {/if}
+  <SosSheet bind:height={sosHeight} />
 
   <Toast />
 

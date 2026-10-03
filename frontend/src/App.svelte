@@ -4,12 +4,14 @@
   import Splash from './lib/brand/Splash.svelte';
   import { onMount } from 'svelte';
   import { preload } from './lib/data/store.svelte';
+  import { startSos } from './lib/sos';
 
   let mapReady = $state(false);
 
   // Read cached data and start syncing right away, in parallel with the map.
   onMount(() => {
     void preload();
+    startSos();
   });
 </script>
 
