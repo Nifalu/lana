@@ -12,6 +12,8 @@
   import { addLocationLayer, updateLocationLayer } from './locationLayer';
   import { addRouteLayer, fitRoute, updateRouteLayer } from './routeLayer';
   import { addSelectionLayer, updateSelectionLayer } from './selectionLayer';
+  import { addSosLayer, updateSosLayer } from './sosLayer';
+  import { sosMarkers } from '../sos';
   import { bindInteraction } from './interaction';
   import { selection } from '../state/selection.svelte';
   import { routing, type Route } from '../routing';
@@ -59,6 +61,7 @@
       // Route below the selection ring, both above our overlays.
       addRouteLayer(instance);
       addSelectionLayer(instance);
+      addSosLayer(instance);
       applyFilters(instance);
     });
 
@@ -123,6 +126,13 @@
     const coords = selection.current?.coords ?? null;
     if (!map) return;
     updateSelectionLayer(map, coords);
+  });
+
+  // Red markers where help is asked.
+  $effect(() => {
+    const points = sosMarkers();
+    if (!map) return;
+    updateSosLayer(map, points);
   });
 
   // The route line, framed once when a new route arrives.
