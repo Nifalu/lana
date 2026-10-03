@@ -125,4 +125,6 @@ tags
 
 **__pycache__
 
+.zed
+
 # End of https://www.toptal.com/developers/gitignore/api/macos,linux,visualstudiocode,vim,svelte

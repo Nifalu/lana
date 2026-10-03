@@ -10,3 +10,6 @@ dependencies = [
     "psycopg[c]>=3.3.6",
     "pytz>=2026.4",
 ]
+
+[tool.fastapi]
+entrypoint = "app.main:app"
