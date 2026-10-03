@@ -103,11 +103,6 @@ async def upsert_location(conn: DbConnection, device_id: str, location: Location
     return fastapi.Response(status_code=200)
 
 
-@app.post("/sos")
-async def sos(conn: DbConnection, location: LocationIN):
-    pass
-
-
 @app.post("/get_closest_helpers")
 async def get_closest_helpers(conn: DbConnection, sos_location: LocationIN):
     async with conn.cursor() as cur:
@@ -192,7 +187,7 @@ async def get_route_closest_cooling(
             SELECT
                 id,
                 name,
-                '{location_type}' AS type,
+                '{location_type}' AS kind,
                 ST_X(location::geometry) AS longitude,
                 ST_Y(location::geometry) AS latitude,
                 ST_Distance(
@@ -299,8 +294,14 @@ async def _get_route(start: LocationIN, end: LocationIN):
 @app.post("/calculate_route")
 async def get_route(start: LocationIN, end: LocationIN, verbose: bool = False):
     response = await _get_route(start=start, end=end)
+    if response.is_error:
+        data = response.json()
 
-    response.raise_for_status()
+        raise HTTPException(
+            status_code=422,
+            detail=data.get("error", "Unable to calculate route"),
+        )
+    # response.raise_for_status()
     if not verbose:
         data = response.json()
         shape = data.get("trip").get("legs")[0].get("shape")
