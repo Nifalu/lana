@@ -4,7 +4,8 @@
   import 'maplibre-gl/dist/maplibre-gl.css';
   import './worker';
   import { BASEL, INITIAL_ZOOM, filters, location, mapActions, view } from '../state/app.svelte';
-  import { LAYER, addAppLayers, setLayerVisible } from './layers';
+  import { addAppLayers, setFilterVisible } from './layers';
+  import { useOverlays } from './overlays.svelte';
   import { loadStyle, type Basemap } from './basemap';
 
   // Lets the parent (and later your layer modules) get the map instance
@@ -133,9 +134,12 @@
   });
 
   function applyFilters(m: Map) {
-    setLayerVisible(m, LAYER.heat, filters.heat);
-    setLayerVisible(m, LAYER.water, filters.water);
+    setFilterVisible(m, 'heat', filters.heat);
+    setFilterVisible(m, 'water', filters.water);
   }
+
+  // Keep the overlay sources in sync with the data store.
+  useOverlays(() => map);
 </script>
 
 <div class="map" bind:this={container}></div>
