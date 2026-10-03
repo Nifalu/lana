@@ -1,5 +1,6 @@
 <script lang="ts">
   import HudButton from './HudButton.svelte';
+  import Toast from './Toast.svelte';
   import {
     assistance,
     cancelAssistance,
@@ -49,6 +50,8 @@
   {#if location.picking}
     <p class="hint" role="status">Tap the map to set your location</p>
   {/if}
+
+  <Toast />
 
   <nav class="bar" aria-label="Map tools">
     <HudButton label="My location" onclick={() => mapActions.locate()}>
