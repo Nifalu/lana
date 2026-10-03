@@ -21,6 +21,7 @@ result-*
 /docs/
 /.scratch/
 
-# Secrets & OS junk
+# Secrets, OS & editor junk
 .env
 .DS_Store
+.idea/
