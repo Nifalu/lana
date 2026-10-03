@@ -84,6 +84,16 @@ type HelpRequestRow = (
     DateTime<Utc>,
 );
 
+/// The public column list, in [`HelpRequestRow`] order – shared by every
+/// SELECT/RETURNING clause in this module. A macro (not a `const`) so the
+/// statements splice it into `&'static str` literals, as sqlx requires.
+macro_rules! columns {
+    () => {
+        "id, status, note, ST_X(location::geometry), ST_Y(location::geometry), \
+         radius_m, created_at, updated_at"
+    };
+}
+
 impl HelpRequest {
     fn from_row(row: HelpRequestRow) -> Self {
         let (id, status, note, lon, lat, radius_m, created_at, updated_at) = row;
@@ -135,11 +145,13 @@ pub async fn create_help_request(
     .execute(&mut *tx)
     .await?;
 
-    const INSERT: &str = "INSERT INTO help_requests \
+    const INSERT: &str = concat!(
+        "INSERT INTO help_requests \
          (id, requester_id, status, note, location, radius_m) \
          VALUES ($1, $2, 'open', $3, ST_SetSRID(ST_MakePoint($4, $5), 4326)::geography, $6) \
-         RETURNING id, status, note, ST_X(location::geometry), ST_Y(location::geometry), \
-             radius_m, created_at, updated_at";
+         RETURNING ",
+        columns!()
+    );
     let row: HelpRequestRow = sqlx::query_as(INSERT)
         .bind(request_id)
         .bind(payload.device_id)
@@ -278,10 +290,7 @@ pub async fn list_help_requests(
         ApiError::check(types::validate_radius_m(radius_m))?;
     }
 
-    let mut qb = sqlx::QueryBuilder::new(
-        "SELECT id, status, note, ST_X(location::geometry), ST_Y(location::geometry), \
-             radius_m, created_at, updated_at FROM help_requests",
-    );
+    let mut qb = sqlx::QueryBuilder::new(concat!("SELECT ", columns!(), " FROM help_requests"));
     if let Some(status) = &query.status {
         qb.push(" WHERE status = ").push_bind(status.clone());
     }
@@ -338,11 +347,13 @@ pub async fn respond_help_request(
     let (request, changed) = if status == "open" && requester_id != action.device_id {
         // The atomic claim: a concurrent second responder's UPDATE affects no
         // row, and the None branch turns it into the conflict.
-        const CLAIM: &str = "UPDATE help_requests \
+        const CLAIM: &str = concat!(
+            "UPDATE help_requests \
              SET responder_id = $1, status = 'responded', updated_at = now() \
              WHERE id = $2 AND status = 'open' \
-             RETURNING id, status, note, ST_X(location::geometry), \
-                 ST_Y(location::geometry), radius_m, created_at, updated_at";
+             RETURNING ",
+            columns!()
+        );
         let claimed: Option<HelpRequestRow> = sqlx::query_as(CLAIM)
             .bind(action.device_id)
             .bind(request_id)
@@ -398,10 +409,12 @@ pub async fn resolve_help_request(
                 Err("the request cannot be resolved from its current status")
             }
         },
-        "UPDATE help_requests SET status = 'resolved', updated_at = now() \
-         WHERE id = $1 AND status = 'responded' \
-         RETURNING id, status, note, ST_X(location::geometry), \
-             ST_Y(location::geometry), radius_m, created_at, updated_at",
+        concat!(
+            "UPDATE help_requests SET status = 'resolved', updated_at = now() \
+             WHERE id = $1 AND status = 'responded' \
+             RETURNING ",
+            columns!()
+        ),
     )
     .await
 }
@@ -425,10 +438,12 @@ pub async fn cancel_help_request(
                 Err("only an open request can be cancelled")
             }
         },
-        "UPDATE help_requests SET status = 'cancelled', updated_at = now() \
-         WHERE id = $1 AND status = 'open' \
-         RETURNING id, status, note, ST_X(location::geometry), \
-             ST_Y(location::geometry), radius_m, created_at, updated_at",
+        concat!(
+            "UPDATE help_requests SET status = 'cancelled', updated_at = now() \
+             WHERE id = $1 AND status = 'open' \
+             RETURNING ",
+            columns!()
+        ),
     )
     .await
 }
@@ -488,9 +503,7 @@ async fn fetch_request(
     exec: impl sqlx::PgExecutor<'_>,
     request_id: uuid::Uuid,
 ) -> Result<Option<HelpRequest>, ApiError> {
-    const SELECT: &str = "SELECT id, status, note, ST_X(location::geometry), \
-         ST_Y(location::geometry), radius_m, created_at, updated_at \
-         FROM help_requests WHERE id = $1";
+    const SELECT: &str = concat!("SELECT ", columns!(), " FROM help_requests WHERE id = $1");
     let row: Option<HelpRequestRow> = sqlx::query_as(SELECT)
         .bind(request_id)
         .fetch_optional(exec)
