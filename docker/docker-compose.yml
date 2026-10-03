@@ -16,6 +16,8 @@ services:
 
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ../data:/data:ro
+      - ./init:/docker-entrypoint-initdb.d:ro
 
     restart: unless-stopped
 

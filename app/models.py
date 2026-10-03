@@ -1,6 +1,3 @@
-from datetime import datetime as dt
-
-import pytz
 from pydantic.dataclasses import dataclass
 
 
@@ -14,7 +11,7 @@ class LocationIN:
 class LocationOUT:
     longitude: float
     latitude: float
-    location_updated_at: str = dt.now(tz=pytz.timezone("Europe/Zurich")).isoformat()
+    location_updated_at: str
 
 
 @dataclass

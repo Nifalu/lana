@@ -370,6 +370,7 @@ version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "fastapi", extra = ["standard"] },
+    { name = "httpx" },
     { name = "psycopg", extra = ["c"] },
     { name = "psycopg-pool" },
     { name = "pytz" },
@@ -378,6 +379,7 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "fastapi", extras = ["standard"], specifier = ">=0.142.2" },
+    { name = "httpx", specifier = ">=0.28.1" },
     { name = "psycopg", extras = ["c"], specifier = ">=3.3.6" },
     { name = "psycopg-pool", specifier = ">=3.3.3" },
     { name = "pytz", specifier = ">=2026.4" },

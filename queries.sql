@@ -35,22 +35,19 @@ ORDER BY distance_m;
 -- Anon sender
 SELECT
     u.id,
-    u.name,
     ST_Distance(sender.location, u.location) AS distance_m,
-    u.location_updated_at,
-    now() - u.location_updated_at AS location_age
-FROM users u
+    u.location_updated_at
+    FROM users u
 CROSS JOIN (
     SELECT ST_SetSRID(
-        ST_MakePoint(8.5417, 47.3780),
+        ST_MakePoint(7.5896, 47.5670),
         4326
     )::geography AS location
 ) sender
-WHERE u.location_updated_at >= now() - interval '15 minutes'
-  AND ST_DWithin(
+WHERE ST_DWithin(
       sender.location,
       u.location,
-      10000
+      500
   )
 ORDER BY
     u.location_updated_at DESC,
