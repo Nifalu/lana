@@ -118,6 +118,8 @@
   .cool {
     position: relative;
     display: flex;
+    /* Row in a horizontal bar, column in the vertical one (set by the HUD). */
+    flex-direction: var(--cool-direction, row);
     gap: 2px;
   }
 
@@ -129,8 +131,8 @@
 
   .more {
     pointer-events: auto;
-    width: 22px;
-    height: 44px;
+    width: var(--more-w, 22px);
+    height: var(--more-h, 44px);
     padding: 0;
     border: none;
     border-radius: 10px;
@@ -151,8 +153,9 @@
 
   .chooser {
     position: absolute;
-    right: 0;
-    bottom: calc(100% + 16px);
+    /* Above the button in a horizontal bar, to its left in the vertical one. */
+    right: var(--chooser-right, 0px);
+    bottom: var(--chooser-bottom, calc(100% + 16px));
     z-index: 5;
     display: flex;
     flex-direction: column;
@@ -193,7 +196,7 @@
 
   @media (pointer: coarse) {
     .more {
-      height: 48px;
+      height: var(--more-h, 48px);
     }
   }
 </style>

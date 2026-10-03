@@ -26,15 +26,17 @@
 <style>
   .toast {
     position: absolute;
-    left: 50%;
-    /* Just above the bottom tool bar, or above the sheet when one is open
+    /* Centred in the width the tool bar leaves free. */
+    left: calc(env(safe-area-inset-left) + 16px);
+    right: calc(env(safe-area-inset-right) + var(--bar-right-space, 16px));
+    margin: 0 auto;
+    width: fit-content;
+    /* Above the bar's bottom space, or above the sheet when one is open
        on a phone (the HUD sets --toast-lift). */
-    bottom: calc(env(safe-area-inset-bottom) + 92px + var(--toast-lift, 0px));
-    transform: translateX(-50%);
+    bottom: calc(env(safe-area-inset-bottom) + var(--bar-bottom-space, 92px) + var(--toast-lift, 0px));
     display: flex;
     align-items: center;
     gap: 12px;
-    max-width: calc(100vw - 32px);
     padding: 10px 14px;
     border-radius: 12px;
     background: rgba(17, 18, 20, 0.85);

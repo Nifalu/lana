@@ -50,7 +50,7 @@
         customAttribution: '© swisstopo',
         compact: true,
       }),
-      'bottom-right',
+      'bottom-left',
     );
 
     // Fires for the initial style and again after every setStyle.

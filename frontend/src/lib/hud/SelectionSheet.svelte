@@ -278,11 +278,15 @@
     overflow-y: auto;
     overscroll-behavior: contain;
 
-    /* Phone: above the tool bar, full width minus gutters. */
+    /* Phone: at the bottom, full width minus gutters and the tool bar. */
     left: calc(env(safe-area-inset-left) + 16px);
-    right: calc(env(safe-area-inset-right) + 16px);
-    bottom: calc(env(safe-area-inset-bottom) + 92px);
-    max-height: calc(100dvh - env(safe-area-inset-bottom) - 92px - env(safe-area-inset-top) - 72px);
+    /* Clear of the tool bar: on the right edge, or below in landscape. */
+    right: calc(env(safe-area-inset-right) + var(--bar-right-space, 16px));
+    bottom: calc(env(safe-area-inset-bottom) + var(--bar-bottom-space, 92px));
+    max-height: calc(
+      100dvh - env(safe-area-inset-bottom) - var(--bar-bottom-space, 92px) -
+        env(safe-area-inset-top) - 72px
+    );
     border-radius: 18px 18px 14px 14px;
   }
 

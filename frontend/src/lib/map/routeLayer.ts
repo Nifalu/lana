@@ -96,9 +96,12 @@ export function fitRoute(map: Map, route: Route): void {
   // The phone sheet grows once the route stats show, so reserve its final
   // height (plus the tool bar below it), but never more than half the map.
   const bottom = Math.min(400, map.getContainer().clientHeight * 0.5);
+  // The tool bar is a column on the right edge, or a row along the bottom
+  // when a phone is held sideways.
+  const sideways = window.matchMedia('(orientation: landscape) and (max-height: 600px)').matches;
   const padding = desktop
     ? { top: 72, bottom: 100, left: 380, right: 80 }
-    : { top: 90, bottom, left: 40, right: 40 };
+    : { top: 90, bottom, left: 40, right: sideways ? 40 : 90 };
   const coords = route.line.coordinates;
   const [first, ...rest] = coords;
   const bounds = rest.reduce<[number, number, number, number]>(

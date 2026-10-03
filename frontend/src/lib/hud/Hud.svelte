@@ -116,9 +116,21 @@
     pointer-events: none;
     /* Extra bottom offset for the toast, read in Toast.svelte. */
     --toast-lift: 0px;
+    /* Room the tool bar occupies, read by the sheets and the toast.
+       Default: a vertical bar on the right edge (64 px + 12 px gap + air). */
+    --bar-right-space: 88px;
+    --bar-bottom-space: 16px;
   }
 
-  /* On phones the sheet sits above the bar; the toast goes above the sheet. */
+  /* Phone held sideways: the bar moves to the long (bottom) edge. */
+  @media (orientation: landscape) and (max-height: 600px) {
+    .hud {
+      --bar-right-space: 16px;
+      --bar-bottom-space: 92px;
+    }
+  }
+
+  /* On phones the sheet sits at the bottom; the toast goes above it. */
   @media (max-width: 767px) {
     .hud.sheet-open {
       --toast-lift: calc(var(--sheet-h) + 8px);
@@ -154,13 +166,23 @@
     white-space: nowrap;
   }
 
+  /* Main tools: a vertical stack at the bottom of the right edge, in thumb
+     reach, like the SAT/DBG/HILFE column above it. */
   .bar {
     position: absolute;
-    left: 50%;
+    right: calc(env(safe-area-inset-right) + 12px);
     bottom: calc(env(safe-area-inset-bottom) + 16px);
-    transform: translateX(-50%);
     display: flex;
-    gap: 12px;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    /* The KÜHL button stacks its filter tab below it and opens the
+       filter chooser to the left (read in CoolButton.svelte). */
+    --cool-direction: column;
+    --more-w: 100%;
+    --more-h: 22px;
+    --chooser-right: calc(100% + 16px);
+    --chooser-bottom: 0px;
     padding: 8px;
     border-radius: 16px;
     background: rgba(17, 18, 20, 0.6);
@@ -173,10 +195,19 @@
     font-weight: 600;
   }
 
-  /* Five buttons plus the cool-spot filter tab must fit a 320 px screen. */
-  @media (max-width: 400px) {
+  /* Phone held sideways: a row along the bottom edge. */
+  @media (orientation: landscape) and (max-height: 600px) {
     .bar {
-      gap: 8px;
+      right: auto;
+      left: 50%;
+      transform: translateX(-50%);
+      flex-direction: row;
+      gap: 12px;
+      --cool-direction: row;
+      --more-w: 22px;
+      --more-h: initial;
+      --chooser-right: 0px;
+      --chooser-bottom: calc(100% + 16px);
     }
   }
 </style>
