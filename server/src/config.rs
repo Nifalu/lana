@@ -6,13 +6,13 @@ use std::time::Duration;
 use anyhow::Context;
 
 /// Where the server listens unless `LANA_BIND_ADDR` says otherwise.
-pub const DEFAULT_BIND_ADDR: &str = "0.0.0.0:8080";
+pub const DEFAULT_BIND_ADDR: &str = "0.0.0.0:8090";
 
 /// How often the background poller refreshes live measurements unless
 /// `LANA_POLL_INTERVAL_SECS` says otherwise (roughly every 10 minutes).
 pub const DEFAULT_POLL_INTERVAL_SECS: u64 = 600;
 
-/// Resolves the bind address: `LANA_BIND_ADDR` if set, else `0.0.0.0:8080`.
+/// Resolves the bind address: `LANA_BIND_ADDR` if set, else `0.0.0.0:8090`.
 pub fn bind_addr() -> anyhow::Result<SocketAddr> {
     let addr = resolve_bind_addr(std::env::var("LANA_BIND_ADDR").ok());
     addr.parse().context("invalid LANA_BIND_ADDR")
@@ -59,10 +59,10 @@ fn resolve_helper_api_url(env_override: Option<String>) -> Option<String> {
 mod tests {
     use super::*;
 
-    /// The server binds 0.0.0.0:8080 unless configured otherwise.
+    /// The server binds 0.0.0.0:8090 unless configured otherwise.
     #[test]
-    fn default_bind_addr_is_all_interfaces_port_8080() {
-        assert_eq!(resolve_bind_addr(None), "0.0.0.0:8080");
+    fn default_bind_addr_is_all_interfaces_port_8090() {
+        assert_eq!(resolve_bind_addr(None), "0.0.0.0:8090");
     }
 
     /// An explicit env override wins over the default.

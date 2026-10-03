@@ -100,7 +100,7 @@ export async function getServerBaseUrl(): Promise<string> {
     await applyServerUrl();
     url = await invoke<string>('get_server_url');
   } else {
-    url = import.meta.env.VITE_SERVER_URL ?? 'http://127.0.0.1:8080';
+    url = import.meta.env.VITE_SERVER_URL ?? 'http://127.0.0.1:8090';
   }
   return url.replace(/\/+$/, '');
 }

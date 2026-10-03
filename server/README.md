@@ -10,7 +10,7 @@ just serve                          # migrations run on startup
 ```
 
 The same stack runs as a docker-compose deployment (postgis image + this
-server, API on 8080, data in a named volume) – see the root README,
+server, API on 8090, data in a named volume) – see the root README,
 "Deployment".
 
 The server applies the SQL migrations in `migrations/` on startup (tracked
@@ -59,7 +59,7 @@ fetched; failures are logged and retried on the next tick.
 Environment: `LANA_POLL_INTERVAL_SECS` (seconds, > 0, default 600),
 `LANA_ODS_BASE_URL` (data.bs.ch override for local experiments).
 
-Other `serve` settings: `LANA_BIND_ADDR` (default `0.0.0.0:8080`) and
+Other `serve` settings: `LANA_BIND_ADDR` (default `0.0.0.0:8090`) and
 `LANA_HELPER_API_URL` (base URL of the helper API; unset/empty =
 disabled, see "Helper matching and the helper API").
 

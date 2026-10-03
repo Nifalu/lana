@@ -44,11 +44,11 @@ PostgreSQL with PostGIS yourself.
 ```sh
 nix develop                                        # dev shell: rust, cargo-tauri, node, postgres+postgis, just
 just db-init && just db-start && just db-createdb  # once: local dev Postgres
-just serve                                         # backend API on http://127.0.0.1:8080 (terminal 1)
+just serve                                         # backend API on http://127.0.0.1:8090 (terminal 1)
 just dev                                           # the Tauri app (terminal 2)
 ```
 
-The app defaults to `http://127.0.0.1:8080` and caches a full snapshot in
+The app defaults to `http://127.0.0.1:8090` and caches a full snapshot in
 SQLite — after one sync it keeps working offline and shows how stale its
 data is. The dev shell exports `DATABASE_URL`
 (`postgres://lana:lana@127.0.0.1:5432/lana`); inspect it with
@@ -61,14 +61,14 @@ same files on a laptop and on the team's Proxmox host:
 
 ```sh
 docker compose up -d --build
-curl -s http://localhost:8080/api/v1/snapshot | head -c 300; echo
+curl -s http://localhost:8090/api/v1/snapshot | head -c 300; echo
 docker compose run --rm server import   # load the static datasets (one-shot)
 ```
 
 Migrations run on server startup; data survives restarts in the `pgdata`
 volume (`docker compose down -v` deletes it). For phones, point a
 [Cloudflare tunnel](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/)
-at port 8080 and set the tunnel URL in the app.
+at port 8090 and set the tunnel URL in the app.
 
 ## Development
 
@@ -84,7 +84,7 @@ The server is one binary with three modes: `serve` (API + SSE + background
 poller, applies migrations on startup), `import` (idempotent refresh of the
 static datasets), and `poll` (one manual poll cycle for demos/tests).
 Environment: `DATABASE_URL` (required), `LANA_BIND_ADDR` (default
-`0.0.0.0:8080`), `LANA_POLL_INTERVAL_SECS` (default 600),
+`0.0.0.0:8090`), `LANA_POLL_INTERVAL_SECS` (default 600),
 `LANA_HELPER_API_URL` (optional base URL of the live-location /
 closest-helpers API, e.g. `https://lana.heitzli.ch`; unset or empty =
 disabled: SOS helpers are then matched from the server's own database).

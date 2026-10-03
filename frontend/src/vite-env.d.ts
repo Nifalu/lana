@@ -10,8 +10,8 @@ interface ImportMetaEnv {
    */
   readonly VITE_API_URL?: string;
   /**
-   * Server base URL baked into the build, e.g. `http://192.168.1.20:8080`.
-   * Inside Tauri it replaces the shell's default (http://127.0.0.1:8080, which
+   * Server base URL baked into the build, e.g. `http://192.168.1.20:8090`.
+   * Inside Tauri it replaces the shell's default (http://127.0.0.1:8090, which
    * on a phone points at the phone itself). Unset: keep the stored URL.
    */
   readonly VITE_SERVER_URL?: string;

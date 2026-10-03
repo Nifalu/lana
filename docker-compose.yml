@@ -3,7 +3,7 @@
 # Cloudflare tunnel) – see README.md, "Deployment".
 #
 # The server container applies the SQL migrations on startup (its `serve`
-# mode always does), serves the API + SSE on 8080 and runs the background
+# mode always does), serves the API + SSE on 8090 and runs the background
 # measurement poller. All data lives in the named `pgdata` volume and
 # survives container restarts and rebuilds.
 
@@ -34,10 +34,10 @@ services:
       # deployment; set it in the environment or a .env file to enable.
       LANA_HELPER_API_URL: ${LANA_HELPER_API_URL:-}
       # Optional overrides (uncomment to set):
-      # LANA_BIND_ADDR: 0.0.0.0:8080
+      # LANA_BIND_ADDR: 0.0.0.0:8090
       # LANA_POLL_INTERVAL_SECS: 600
     ports:
-      - "8080:8080"
+      - "8090:8090"
     depends_on:
       db:
         condition: service_healthy

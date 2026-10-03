@@ -43,7 +43,7 @@ RUN apt-get update \
 COPY --from=build /build/target/release/lana-server /usr/local/bin/lana-server
 
 USER lana
-EXPOSE 8080
+EXPOSE 8090
 
 # `serve` applies the SQL migrations in server/migrations/ on startup, then
 # serves the API + SSE and runs the background measurement poller.
