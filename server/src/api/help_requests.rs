@@ -98,6 +98,8 @@ pub struct HelpRequestListQuery {
     pub near: Option<String>,
     /// Radius for the `near` filter in meters (default [`DEFAULT_RADIUS_M`]).
     pub radius_m: Option<f64>,
+    /// Leave out requests created by this device (a helper's own SOS).
+    pub exclude_device_id: Option<uuid::Uuid>,
 }
 
 /// A help request as served on the wire.
@@ -177,16 +179,7 @@ pub async fn create_help_request(
 
     let mut tx = state.pool.begin().await?;
 
-    // The requester is auto-registered when unknown (ADR 0004): an insert
-    // that only bumps `last_seen_at` on conflict, so an existing device
-    // keeps its helper flag and shared location.
-    sqlx::query(
-        "INSERT INTO devices (id, is_helper, last_seen_at) VALUES ($1, FALSE, now()) \
-         ON CONFLICT (id) DO UPDATE SET last_seen_at = now()",
-    )
-    .bind(payload.device_id)
-    .execute(&mut *tx)
-    .await?;
+    register_device(&mut tx, payload.device_id).await?;
 
     const INSERT: &str = concat!(
         "INSERT INTO help_requests \
@@ -229,11 +222,30 @@ pub async fn create_help_request(
     Ok((StatusCode::CREATED, Json(HelpRequest::from_row(row))))
 }
 
+/// Auto-registers an acting device when unknown (ADR 0004: the UUID is the
+/// whole identity): an insert that only bumps `last_seen_at` on conflict, so
+/// an existing device keeps its helper flag and shared location. Requests
+/// reference their requester and responder, so both must exist as devices.
+async fn register_device(
+    tx: &mut sqlx::PgConnection,
+    device_id: uuid::Uuid,
+) -> Result<(), ApiError> {
+    sqlx::query(
+        "INSERT INTO devices (id, is_helper, last_seen_at) VALUES ($1, FALSE, now()) \
+         ON CONFLICT (id) DO UPDATE SET last_seen_at = now()",
+    )
+    .bind(device_id)
+    .execute(tx)
+    .await?;
+    Ok(())
+}
+
 /// The devices matched for a new SOS, recorded in `help_request_notified`
 /// and returned for the SSE push (ADR 0004 matching rule):
 ///
 /// - live location: `is_helper`, a shared `last_location` within the
-///   effective radius, seen within the last 24 hours;
+///   effective radius, seen within the last 15 minutes (apps refresh their
+///   location every 5 minutes, so older positions are stale);
 /// - OR an `active` recurring window whose weekday + Zurich time-of-day
 ///   contains now (start and end inclusive) and whose point is within the
 ///   effective radius.
@@ -256,7 +268,7 @@ async fn match_devices(
             WHERE d.is_helper AND d.id <> $1 \
               AND ( \
                     (d.last_location IS NOT NULL \
-                     AND d.last_seen_at >= now() - INTERVAL '24 hours' \
+                     AND d.last_seen_at >= now() - INTERVAL '15 minutes' \
                      AND ST_DWithin(d.last_location, \
                          ST_SetSRID(ST_MakePoint($2, $3), 4326)::geography, $4)) \
                  OR EXISTS ( \
@@ -340,11 +352,19 @@ pub async fn list_help_requests(
     }
 
     let mut qb = sqlx::QueryBuilder::new(concat!("SELECT ", columns!(), " FROM help_requests"));
+    let mut clause = " WHERE ";
     if let Some(status) = status {
-        qb.push(" WHERE status = ").push_bind(status.as_str());
+        qb.push(clause).push("status = ").push_bind(status.as_str());
+        clause = " AND ";
+    }
+    if let Some(device_id) = query.exclude_device_id {
+        qb.push(clause)
+            .push("requester_id <> ")
+            .push_bind(device_id);
+        clause = " AND ";
     }
     if let Some(near) = near {
-        qb.push(if status.is_some() { " AND " } else { " WHERE " })
+        qb.push(clause)
             .push("ST_DWithin(location, ST_SetSRID(ST_MakePoint(")
             .push_bind(near.lon)
             .push(",")
@@ -391,6 +411,9 @@ pub async fn respond_help_request(
     let status = lifecycle_status(&status);
 
     let (request, changed) = if status == Status::Open && requester_id != action.device_id {
+        // A responder the server has never seen (no PUT /devices yet) is
+        // registered first; `responder_id` references `devices`.
+        register_device(&mut tx, action.device_id).await?;
         // The atomic claim: a concurrent second responder's UPDATE affects no
         // row, and the None branch turns it into the conflict.
         const CLAIM: &str = concat!(
@@ -1047,12 +1070,12 @@ mod tests {
         }
     }
 
-    /// A helper whose last_seen_at is older than 24 h does not match via its
-    /// live location, even when the point is inside the radius. The age is
+    /// A helper whose last_seen_at is older than 15 minutes does not match via
+    /// its live location, even when the point is inside the radius. The age is
     /// backdated directly in the database: `last_seen_at` has no API lever
     /// (the devices API always refreshes it) and no clock control exists.
     #[tokio::test]
-    async fn sos_ignores_helpers_not_seen_in_last_24_hours() {
+    async fn sos_ignores_helpers_not_seen_in_last_15_minutes() {
         let Some(state) = test_state().await else {
             skip();
             return;
@@ -1064,11 +1087,13 @@ mod tests {
 
         let stale_helper = new_device_id();
         put_device(&app, stale_helper, true, Some(offset(sos_point, 30.0, 0.0))).await;
-        sqlx::query("UPDATE devices SET last_seen_at = now() - INTERVAL '25 hours' WHERE id = $1")
-            .bind(stale_helper)
-            .execute(&state.pool)
-            .await
-            .expect("backdate works");
+        sqlx::query(
+            "UPDATE devices SET last_seen_at = now() - INTERVAL '20 minutes' WHERE id = $1",
+        )
+        .bind(stale_helper)
+        .execute(&state.pool)
+        .await
+        .expect("backdate works");
 
         let mut stream = SseStream::connect(addr, stale_helper).await;
         create_request(&app, create_payload(new_device_id(), sos_point)).await;
@@ -1116,6 +1141,112 @@ mod tests {
         assert_eq!(data["id"], wide["id"], "notified about the wide-radius SOS");
         assert_ne!(data["id"], default_sos["id"]);
         assert_anonymous(&data);
+    }
+
+    /// A device the server has never seen (no PUT /devices) can still respond:
+    /// it is auto-registered instead of failing on the responder reference,
+    /// and can then resolve as the responder.
+    #[tokio::test]
+    async fn respond_auto_registers_unknown_responder() {
+        let Some(state) = test_state().await else {
+            skip();
+            return;
+        };
+        let _db = lock_db().await;
+        let app = router_with_state(&state);
+
+        let body = create_request(&app, create_payload(new_device_id(), scenario_point())).await;
+        let id = body["id"].as_str().unwrap().to_string();
+
+        let stranger = new_device_id();
+        let (status, responded) = send_json(
+            app.clone(),
+            "POST",
+            &format!("/api/v1/help-requests/{id}/respond"),
+            Some(json!({ "device_id": stranger })),
+        )
+        .await;
+        assert_eq!(status, StatusCode::OK, "unknown responder: {responded}");
+        assert_eq!(responded["status"], "responded");
+
+        let registered: (bool,) = sqlx::query_as("SELECT is_helper FROM devices WHERE id = $1")
+            .bind(stranger)
+            .fetch_one(&state.pool)
+            .await
+            .expect("responder was registered");
+        assert!(!registered.0, "auto-registration does not make a helper");
+
+        let (status, resolved) = send_json(
+            app,
+            "POST",
+            &format!("/api/v1/help-requests/{id}/resolve"),
+            Some(json!({ "device_id": stranger })),
+        )
+        .await;
+        assert_eq!(status, StatusCode::OK, "responder resolves: {resolved}");
+        assert_eq!(resolved["status"], "resolved");
+    }
+
+    /// `exclude_device_id` leaves out the given device's own requests and
+    /// keeps everyone else's.
+    #[tokio::test]
+    async fn list_excludes_own_requests() {
+        let Some(app) = list_app().await else {
+            skip();
+            return;
+        };
+        let _db = lock_db().await;
+        let base = scenario_point();
+        let me = new_device_id();
+
+        let mine = create_request(&app, create_payload(me, base)).await;
+        let theirs = create_request(
+            &app,
+            create_payload(new_device_id(), offset(base, 50.0, 0.0)),
+        )
+        .await;
+
+        let ids = |listed: &Value| -> Vec<String> {
+            listed
+                .as_array()
+                .expect("array")
+                .iter()
+                .map(|r| r["id"].as_str().expect("id").to_string())
+                .collect()
+        };
+        let near = format!("near={},{}&radius_m=200", base.lon, base.lat);
+
+        let (status, all) = send_json(
+            app.clone(),
+            "GET",
+            &format!("/api/v1/help-requests?status=open&{near}"),
+            None,
+        )
+        .await;
+        assert_eq!(status, StatusCode::OK);
+        let all = ids(&all);
+        assert!(
+            all.contains(&mine["id"].as_str().unwrap().to_string()),
+            "unfiltered has mine"
+        );
+
+        let (status, filtered) = send_json(
+            app,
+            "GET",
+            &format!("/api/v1/help-requests?status=open&{near}&exclude_device_id={me}"),
+            None,
+        )
+        .await;
+        assert_eq!(status, StatusCode::OK);
+        let filtered = ids(&filtered);
+        assert!(
+            !filtered.contains(&mine["id"].as_str().unwrap().to_string()),
+            "mine excluded: {filtered:?}"
+        );
+        assert!(
+            filtered.contains(&theirs["id"].as_str().unwrap().to_string()),
+            "theirs kept: {filtered:?}"
+        );
     }
 
     /// The respond transition: the first responder wins, repeating the same

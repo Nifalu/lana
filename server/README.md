@@ -151,15 +151,17 @@ observe status transitions.
   (`note` optional, ≤ 500 chars; `radius_m` optional, default 500). The
   requester device is auto-registered when unknown; status starts `open`.
   At creation the server matches helpers: devices sharing a live location
-  within the radius and seen in the last 24 h, or with an **active** window
+  within the radius and seen in the last 15 minutes, or with an **active** window
   whose weekday/time-of-day (Europe/Zurich) contains now and whose window
   point lies within the radius. Matched helpers receive `help_request_new`.
-- `GET /api/v1/help-requests?status=open&near=7.59,47.56&radius_m=500` –
-  list for the helper map; all filters optional. Response is a JSON **array**
+- `GET /api/v1/help-requests?status=open&near=7.59,47.56&radius_m=500&exclude_device_id=…` –
+  list for the helper map; all filters optional. `exclude_device_id` leaves
+  out requests that device created itself. Response is a JSON **array**
   of help-request documents (possibly empty).
 - `POST /api/v1/help-requests/{request_id}/respond` – payload
   `{ "device_id": "…" }`. First responder wins → `responded`; the same
   responder repeating is idempotent (`200`); a different device gets `409`.
+  A responder device unknown to the server is auto-registered.
 - `POST /api/v1/help-requests/{request_id}/resolve` – requester or
   responder → `resolved`.
 - `POST /api/v1/help-requests/{request_id}/cancel` – requester only, only
