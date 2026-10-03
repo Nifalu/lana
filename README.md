@@ -9,32 +9,26 @@ keeps working offline.
 
 ## Architecture
 
-Client/server split: one
-central backend owns all shared state; the Tauri app is a client with an
-embedded SQLite cache.
+Client/server split: one central backend owns all shared state; the Tauri
+app is a client with an embedded SQLite cache.
 
 ```
-┌────────────────────────┐             ┌───────────────────────────────┐
-│ Tauri app              │  REST       │ lana-server (Rust, axum)      │
-│ (desktop now,          │────────────►│  • REST API under /api/v1     │
-│  Android stretch)      │◄────────────│  • SSE events per device      │
-│                        │    SSE      │  • background poller for      │
-│ embedded SQLite cache  │             │    live data.bs.ch data       │
-└────────────────────────┘             └──────────────┬────────────────┘
-                                                      │
-                                        ┌─────────────▼─────────────┐
-                                        │  PostgreSQL + PostGIS     │
-                                        │  (POIs, measurements,     │
-                                        │   devices, help requests) │
-                                        └───────────────────────────┘
+┌────────────────────┐              ┌─────────────────────────────┐
+│ Tauri app          │     REST     │ lana-server (Rust, axum)    │
+│                    │─────────────►│ • REST API under /api/v1    │
+│ SQLite cache       │◄─────────────│ • SSE events per device     │
+│ (works offline)    │     SSE      │ • background poller         │
+└────────────────────┘              └──────────────┬──────────────┘
+                                                   │
+                                    ┌──────────────▼──────────────┐
+                                    │    PostgreSQL + PostGIS     │
+                                    └─────────────────────────────┘
 ```
 
-- The server imports Basel open data (data.bs.ch) and polls live values
-  every ~10 minutes; phones only ever talk to the server.
-- Helper notifications are Server-Sent Events; devices are anonymous
-  client-generated UUIDs.
-- The API reference — routes, payloads, SSE event names — lives in
-  [server/README.md](server/README.md).
+- The server imports Basel open data (data.bs.ch) and keeps temperatures
+  live; only the server calls external APIs.
+- Helper notifications arrive over Server-Sent Events; devices are
+  anonymous client-generated UUIDs — no accounts, no identity.
 
 ## Getting started
 
