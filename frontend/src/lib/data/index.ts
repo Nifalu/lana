@@ -67,11 +67,19 @@ const forceFixture = import.meta.env.VITE_DATA === 'fixture';
 
 export const repository: Repository = forceFixture || !isTauri() ? fixture : new AutoRepository();
 
+let urlApplied: Promise<void> | null = null;
+
 /**
  * Apply the build-time server URL (VITE_SERVER_URL) to the Tauri shell, which
- * stores it in its cache settings. Run before the first sync.
+ * stores it in its cache settings. Run before the first sync. Safe to call
+ * from several places: the work happens once.
  */
-export async function applyServerUrl(): Promise<void> {
+export function applyServerUrl(): Promise<void> {
+  urlApplied ??= doApplyServerUrl();
+  return urlApplied;
+}
+
+async function doApplyServerUrl(): Promise<void> {
   const url = import.meta.env.VITE_SERVER_URL;
   if (!url || forceFixture || !isTauri()) return;
   try {
@@ -79,4 +87,20 @@ export async function applyServerUrl(): Promise<void> {
   } catch (err) {
     console.error(`setting the server URL to ${url} failed`, err);
   }
+}
+
+/**
+ * Base URL of the middleware, without trailing slash. Tauri: the URL stored
+ * in the shell (after the build-time one was applied). Browser: the
+ * build-time URL, or the local dev server.
+ */
+export async function getServerBaseUrl(): Promise<string> {
+  let url: string;
+  if (isTauri()) {
+    await applyServerUrl();
+    url = await invoke<string>('get_server_url');
+  } else {
+    url = import.meta.env.VITE_SERVER_URL ?? 'http://127.0.0.1:8080';
+  }
+  return url.replace(/\/+$/, '');
 }
