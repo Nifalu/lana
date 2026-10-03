@@ -1,15 +1,8 @@
 <script lang="ts">
   import HudButton from './HudButton.svelte';
   import Toast from './Toast.svelte';
-  import {
-    assistance,
-    cancelAssistance,
-    filters,
-    location,
-    mapActions,
-    requestAssistance,
-    view,
-  } from '../state/app.svelte';
+  import { filters, location, mapActions, view } from '../state/app.svelte';
+  import { sos, triggerSos } from '../sos';
 
   // Debug tools are on in every build, including the bundle Tauri loads.
   // Release builds turn them off with VITE_RELEASE=true.
@@ -17,11 +10,6 @@
 
   function toggleBasemap() {
     view.basemap = view.basemap === 'standard' ? 'imagery' : 'standard';
-  }
-
-  function toggleAssistance() {
-    if (assistance.requested) cancelAssistance();
-    else requestAssistance();
   }
 </script>
 
@@ -79,10 +67,10 @@
       W
     </HudButton>
     <HudButton
-      label={assistance.requested ? 'Cancel assistance request' : 'I need assistance'}
+      label={sos.active ? 'Hilfe angefordert' : 'Hilfe anfordern'}
       variant="alert"
-      active={assistance.requested}
-      onclick={toggleAssistance}
+      active={sos.active}
+      onclick={triggerSos}
     >
       <!-- TODO: replace with the assistance icon SVG -->
       SOS

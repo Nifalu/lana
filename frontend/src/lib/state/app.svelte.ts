@@ -41,25 +41,6 @@ export const location = $state({
   picking: false,
 });
 
-/** Assistance request. Backend wiring comes later. */
-export const assistance = $state({
-  requested: false,
-  requestedAt: null as Date | null,
-});
-
-export function requestAssistance() {
-  assistance.requested = true;
-  assistance.requestedAt = new Date();
-  // TODO: send to backend (Tauri command) with location.coords
-  console.info('assistance requested', { at: assistance.requestedAt, coords: $state.snapshot(location.coords) });
-}
-
-export function cancelAssistance() {
-  assistance.requested = false;
-  assistance.requestedAt = null;
-  console.info('assistance cancelled');
-}
-
 /**
  * One-shot actions. MapView replaces these with real implementations
  * once the map is ready, so buttons can call them without knowing
