@@ -1,8 +1,15 @@
 //! SOS lifecycle: create, list, respond, resolve, cancel (spec ticket 05,
 //! ADR 0004).
 //!
-//! Slice 1 skeleton: only the wire shapes are fixed; the handlers still
-//! return 404 so their tests can go red before the implementation.
+//! A request is created `open`, with matching and the `help_request_new`
+//! fan-out running atomically on the insert. The first responder claims it
+//! (`responded`); repeating the same responder is idempotent, any other
+//! device gets a conflict. It ends as `resolved` (requester or responder,
+//! only from `responded`) or `cancelled` (requester only, only while
+//! `open`); terminal repeats are idempotent for the participants. Every
+//! state change fans `help_request_updated` out to the requester, the
+//! responder and the originally notified helpers; all bodies carry the
+//! anonymous public shape.
 
 use axum::extract::{Path, Query, State};
 use axum::http::StatusCode;
