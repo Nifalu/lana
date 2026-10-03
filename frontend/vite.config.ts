@@ -11,4 +11,15 @@ export default defineConfig({
   worker: {
     format: 'es',
   },
+  server: {
+    // Dev only: `VITE_API_URL=/heitzli npm run dev` reaches the lana API
+    // same-origin, whether or not the API answers CORS preflights.
+    proxy: {
+      '/heitzli': {
+        target: 'https://lana.heitzli.ch',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/heitzli/, ''),
+      },
+    },
+  },
 })

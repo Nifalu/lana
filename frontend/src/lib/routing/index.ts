@@ -1,3 +1,3 @@
 export * from './routing.svelte';
+export { apiUrl } from './api';
 export { route, stubRoute, haversineKm, type Route } from './route';
-export { decodePolyline6 } from './polyline';

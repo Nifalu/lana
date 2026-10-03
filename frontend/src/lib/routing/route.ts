@@ -1,24 +1,17 @@
 import { showToast } from '../hud/toasts.svelte';
 import type { LngLat } from '../state/app.svelte';
-import { decodePolyline6 } from './polyline';
+import { postJson } from './api';
 
 export type Route = {
   line: GeoJSON.LineString;
   distanceKm: number;
   durationS: number;
   /** `stub` is a straight line, not a real route. */
-  source: 'valhalla' | 'stub';
+  source: 'api' | 'stub';
 };
 
 /** Pedestrian speed used for the straight-line stub. */
 const WALKING_KMH = 5;
-const REQUEST_TIMEOUT_MS = 8000;
-
-/** Routing service base URL, e.g. `http://host:port`. Unset means stub only. */
-function baseUrl(): string | null {
-  const url = import.meta.env.VITE_ROUTING_URL?.trim();
-  return url ? url.replace(/\/+$/, '') : null;
-}
 
 /** Great-circle distance in kilometres. */
 export function haversineKm([lon1, lat1]: LngLat, [lon2, lat2]: LngLat): number {
@@ -41,78 +34,46 @@ export function stubRoute(from: LngLat, to: LngLat): Route {
   };
 }
 
-type ValhallaResponse = {
-  trip?: {
-    legs?: { shape: string }[];
-    summary?: { length: number; time: number };
-  };
+/** The route Feature the API returns (also carried inside `/route_to_closest_cooling`). */
+export type ApiRouteFeature = {
+  properties: { length_km: number; time_seconds: number };
+  geometry: GeoJSON.LineString;
 };
 
-async function fetchValhalla(
-  base: string,
-  from: LngLat,
-  to: LngLat,
-  signal?: AbortSignal,
-): Promise<Route> {
-  const body = {
-    locations: [
-      { lat: from[1], lon: from[0], type: 'break' },
-      { lat: to[1], lon: to[0], type: 'break' },
-    ],
-    costing: 'pedestrian',
-    units: 'kilometers',
-    shape_format: 'polyline6',
-  };
-  const timeout = AbortSignal.timeout(REQUEST_TIMEOUT_MS);
-  const response = await fetch(`${base}/route`, {
-    method: 'POST',
-    // text/plain keeps this a "simple" cross-origin request, so the browser
-    // sends no CORS preflight. Valhalla reads the body as JSON regardless.
-    headers: { 'Content-Type': 'text/plain' },
-    body: JSON.stringify(body),
-    signal: signal ? AbortSignal.any([signal, timeout]) : timeout,
-  });
-
-  if (!response.ok) {
-    // Valhalla errors are JSON: { error_code, error, status_code }.
-    const detail = await response
-      .json()
-      .then((e: { error?: string; error_code?: number }) => `${e.error_code} ${e.error}`)
-      .catch(() => response.statusText);
-    throw new Error(`routing HTTP ${response.status}: ${detail}`);
+/** Validate an API route Feature and turn it into a `Route`. Throws on a malformed one. */
+export function routeFromFeature(feature: ApiRouteFeature): Route {
+  const coordinates = feature?.geometry?.coordinates;
+  const { length_km, time_seconds } = feature?.properties ?? {};
+  if (!Array.isArray(coordinates) || coordinates.length < 2) throw new Error('routing: empty shape');
+  if (!Number.isFinite(length_km) || !Number.isFinite(time_seconds)) {
+    throw new Error('routing: response has no summary');
   }
-
-  const { trip }: ValhallaResponse = await response.json();
-  if (!trip?.legs?.length || !trip.summary) throw new Error('routing: response has no trip');
-
-  // Each leg starts where the previous one ended; drop the duplicate point.
-  const coordinates: LngLat[] = [];
-  trip.legs.forEach((leg, i) => {
-    const points = decodePolyline6(leg.shape);
-    coordinates.push(...(i === 0 ? points : points.slice(1)));
-  });
-  if (coordinates.length < 2) throw new Error('routing: empty shape');
-
   return {
-    line: { type: 'LineString', coordinates },
-    distanceKm: trip.summary.length,
-    durationS: trip.summary.time,
-    source: 'valhalla',
+    line: { type: 'LineString', coordinates: coordinates.map(([lon, lat]) => [lon, lat]) },
+    distanceKm: length_km,
+    durationS: time_seconds,
+    source: 'api',
   };
 }
 
 /**
- * Walking route from A to B.
+ * Walking route from A to B, from the lana API (`POST /calculate_route`).
  *
- * Without `VITE_ROUTING_URL` this is the straight-line stub. With it, a
- * failed request (network, CORS, 4xx) falls back to the stub too, with a
- * toast, so the UI keeps working. Only an abort by the caller rejects.
+ * A failed request (network, CORS, 4xx/5xx, timeout) falls back to the
+ * straight-line stub with a toast, so the UI keeps working. Only an abort
+ * by the caller rejects.
  */
 export async function route(from: LngLat, to: LngLat, signal?: AbortSignal): Promise<Route> {
-  const base = baseUrl();
-  if (!base) return stubRoute(from, to);
   try {
-    return await fetchValhalla(base, from, to, signal);
+    const feature = await postJson<ApiRouteFeature>(
+      '/calculate_route',
+      {
+        start: { longitude: from[0], latitude: from[1] },
+        end: { longitude: to[0], latitude: to[1] },
+      },
+      signal,
+    );
+    return routeFromFeature(feature);
   } catch (err) {
     if (signal?.aborted) throw err;
     console.warn('routing failed, using a straight line', err);
