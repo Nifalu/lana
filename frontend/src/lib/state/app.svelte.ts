@@ -47,7 +47,9 @@ export const location = $state({
  * whether the map exists yet.
  */
 export const mapActions = {
-  locate: () => {
+  /** Resolves once the attempt is over; `location.coords` is set on success. */
+  locate: (): Promise<void> => {
     console.warn('locate: map not ready yet');
+    return Promise.resolve();
   },
 };
