@@ -32,7 +32,7 @@ notifications, anonymous devices & matching).
 
 | Person | Scope |
 | ------ | ----- |
-| **Nico** | Frontend wiring (ticket 08): typed API client + stores, map layers, staleness badge, then SOS/helper UI. Plus the Android APK, following the [Android checklist](../README.md#android-apk-checklist-stretch-goal). |
+| **Nico** | Frontend wiring (ticket 08): typed API client + stores, map layers, staleness badge, then SOS/helper UI. Plus the Android APK, following the [Android checklist](../docs/ANDROID.md). |
 | **Luc** | Proximity/notification research (how matching radius + windows should really behave; what replaces SSE later) and routing (Valhalla demo lives on a separate branch — track it as its own ticket). |
 | *(open)* | Ticket 09, dataset normalization review — a joint session; decide fountain classification, dead-station filtering, snapshot trimming. |
 
