@@ -244,6 +244,7 @@ pub(crate) async fn fetch_latest_air(
 }
 
 /// What one poll cycle loaded; the serve loop and the `poll` mode log it.
+/// Its `Display` is the shared "poll complete" log line.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct PollSummary {
     /// Distinct air stations refreshed from dataset 100009.
@@ -252,6 +253,18 @@ pub struct PollSummary {
     pub rhine_updated: bool,
     /// Pools refreshed from dataset 100384.
     pub pools: usize,
+}
+
+impl std::fmt::Display for PollSummary {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "poll complete: {} air stations, Rhine water {}, {} pools refreshed",
+            self.air_stations,
+            if self.rhine_updated { "yes" } else { "no" },
+            self.pools
+        )
+    }
 }
 
 /// Upserts measurements keyed on `(station_id, measured_at)`: re-polling
@@ -329,12 +342,7 @@ pub(crate) async fn run_loop(
 ) {
     loop {
         match run(&pool, &source).await {
-            Ok(summary) => println!(
-                "poll complete: {} air stations, Rhine water {}, {} pools refreshed",
-                summary.air_stations,
-                if summary.rhine_updated { "yes" } else { "no" },
-                summary.pools
-            ),
+            Ok(summary) => println!("{summary}"),
             Err(err) => eprintln!("poll failed: {err:#} – retrying next tick"),
         }
         tokio::time::sleep(interval).await;

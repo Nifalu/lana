@@ -96,12 +96,7 @@ async fn import_mode() -> anyhow::Result<()> {
 async fn poll() -> anyhow::Result<()> {
     let pool = db::init().await?;
     let summary = poller::run(&pool, &OdsClient::from_env()).await?;
-    println!(
-        "poll complete: {} air stations, Rhine water {}, {} pools refreshed",
-        summary.air_stations,
-        if summary.rhine_updated { "yes" } else { "no" },
-        summary.pools
-    );
+    println!("{summary}");
     pool.close().await;
     Ok(())
 }
