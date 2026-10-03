@@ -4,8 +4,11 @@
   import 'maplibre-gl/dist/maplibre-gl.css';
   import './worker';
   import { BASEL, INITIAL_ZOOM, filters, location, mapActions, view } from '../state/app.svelte';
+  import { LocationError, getPosition } from '../location';
+  import { showToast } from '../hud/toasts.svelte';
   import { LAYER, addAppLayers, setLayerVisible } from './layers';
   import { loadStyle, type Basemap } from './basemap';
+  import { addLocationLayer, updateLocationLayer } from './locationLayer';
 
   // Lets the parent (and later your layer modules) get the map instance
   // once it exists. Optional for now, but it is the hand-off point.
@@ -46,6 +49,7 @@
     // Everything we add on top of the basemap must be (re)created here.
     instance.on('style.load', () => {
       addAppLayers(instance);
+      addLocationLayer(instance);
       applyFilters(instance);
     });
 
@@ -53,16 +57,13 @@
     instance.on('click', (e: MapMouseEvent) => {
       if (!location.picking) return;
       location.coords = [e.lngLat.lng, e.lngLat.lat];
+      location.accuracyM = null;
+      location.source = 'manual';
       location.picking = false;
     });
 
     instance.once('load', () => {
-      mapActions.locate = () => {
-        // TODO: replace with device GPS (browser geolocation / Tauri plugin).
-        // Until then a manual pick (debug button) or Basel is "here".
-        location.coords ??= BASEL;
-        instance.flyTo({ center: location.coords, zoom: 15 });
-      };
+      mapActions.locate = () => locate(instance);
 
       map = instance;
       onready?.(instance);
@@ -111,6 +112,13 @@
     map.getCanvas().style.cursor = location.picking ? 'crosshair' : '';
   });
 
+  // Accuracy circle follows the position (GPS fixes only).
+  $effect(() => {
+    const { coords, accuracyM } = location;
+    if (!map) return;
+    updateLocationLayer(map, coords, accuracyM);
+  });
+
   // Marker for the user's position. A DOM marker (not a layer) survives
   // basemap switches on its own and is cheap for a single point.
   let positionMarker: Marker | null = null;
@@ -131,6 +139,32 @@
       positionMarker.setLngLat(coords);
     }
   });
+
+  // One GPS fix, then fly there. Never zooms out below the current zoom.
+  async function locate(m: Map) {
+    if (location.status === 'locating') return;
+    location.status = 'locating';
+    try {
+      const fix = await getPosition();
+      location.coords = fix.coords;
+      location.accuracyM = fix.accuracyM;
+      location.source = 'gps';
+      location.status = 'idle';
+      m.flyTo({ center: fix.coords, zoom: Math.max(m.getZoom(), 16) });
+    } catch (err) {
+      location.status = 'error';
+      console.warn('locate failed', err);
+      if (location.source === 'manual' && location.coords) {
+        m.flyTo({ center: location.coords, zoom: Math.max(m.getZoom(), 16) });
+        showToast('GPS nicht verfügbar – manuelle Position');
+        return;
+      }
+      const denied = err instanceof LocationError && err.kind === 'denied';
+      showToast(denied ? 'Standortzugriff verweigert' : 'Standort nicht verfügbar', {
+        action: { label: 'Auf Karte wählen', run: () => (location.picking = true) },
+      });
+    }
+  }
 
   function applyFilters(m: Map) {
     setLayerVisible(m, LAYER.heat, filters.heat);

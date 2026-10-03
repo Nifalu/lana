@@ -4,12 +4,15 @@
   let {
     label,
     active = false,
+    busy = false,
     variant = 'default',
     onclick,
     children,
   }: {
     label: string;
     active?: boolean;
+    /** Shows a pulse while an action is in progress. */
+    busy?: boolean;
     /** `alert` is for the assistance call: stands out from the tool buttons. */
     variant?: 'default' | 'alert';
     onclick?: () => void;
@@ -21,6 +24,8 @@
   class="hud-button"
   class:active
   class:alert={variant === 'alert'}
+  class:busy
+  aria-busy={busy}
   aria-label={label}
   aria-pressed={active}
   type="button"
@@ -69,6 +74,20 @@
     animation: alert-pulse 1.2s ease-in-out infinite;
   }
 
+  .hud-button.busy {
+    animation: busy-pulse 1s ease-in-out infinite;
+  }
+
+  @keyframes busy-pulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.45;
+    }
+  }
+
   @keyframes alert-pulse {
     0%,
     100% {
@@ -87,6 +106,7 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
+    .hud-button.busy,
     .hud-button.alert.active {
       animation: none;
     }

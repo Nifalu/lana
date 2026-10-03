@@ -10,7 +10,7 @@ import type { Basemap } from '../map/basemap';
 /** [longitude, latitude] in WGS84, the order MapLibre uses. */
 export type LngLat = [number, number];
 
-/** Basel, Marktplatz. Initial view and stand-in for the device position. */
+/** Basel, Marktplatz. Initial view. */
 export const BASEL: LngLat = [7.5886, 47.5581];
 export const INITIAL_ZOOM = 13;
 
@@ -28,11 +28,16 @@ export const filters = $state({
 /**
  * The user's position.
  *  - `coords`: last known position, or null before any fix.
+ *  - `accuracyM`: radius of the position in metres, null for a manual pick.
+ *  - `source`: where `coords` came from.
+ *  - `status`: state of the current locate request.
  *  - `picking`: debug mode, the next map tap sets `coords` manually.
- * Later the GPS (browser geolocation / Tauri plugin) writes `coords` too.
  */
 export const location = $state({
   coords: null as LngLat | null,
+  accuracyM: null as number | null,
+  source: null as 'gps' | 'manual' | null,
+  status: 'idle' as 'idle' | 'locating' | 'error',
   picking: false,
 });
 

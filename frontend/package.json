@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "@tauri-apps/api": "^2.12.1",
+    "@tauri-apps/plugin-geolocation": "^2.4.1",
     "maplibre-gl": "^6.11.2"
   },
   "allowScripts": {

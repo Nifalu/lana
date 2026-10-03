@@ -54,7 +54,11 @@
   <Toast />
 
   <nav class="bar" aria-label="Map tools">
-    <HudButton label="My location" onclick={() => mapActions.locate()}>
+    <HudButton
+      label="My location"
+      busy={location.status === 'locating'}
+      onclick={() => mapActions.locate()}
+    >
       <!-- TODO: replace with the location icon SVG -->
       ⌖
     </HudButton>
