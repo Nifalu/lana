@@ -148,7 +148,7 @@ mod tests {
 
         let request = HelpRequest {
             id: uuid::Uuid::new_v4(),
-            status: "open".to_string(),
+            status: super::super::help_requests::Status::Open,
             note: None,
             location: super::super::types::LonLat {
                 lon: 7.5,

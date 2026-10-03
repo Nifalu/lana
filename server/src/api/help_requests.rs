@@ -28,8 +28,51 @@ pub const MAX_NOTE_CHARS: usize = 500;
 /// Default matching radius in meters when the request overrides nothing.
 pub const DEFAULT_RADIUS_M: f64 = 500.0;
 
-/// The lifecycle statuses of a help request, in state-machine order.
-pub const STATUSES: [&str; 4] = ["open", "responded", "resolved", "cancelled"];
+/// The lifecycle statuses of a help request (`open → responded → resolved`
+/// / `open → cancelled`), in state-machine order. The serde spelling is the
+/// lowercase wire/DB form (migration 0004's `status` CHECK constraint).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum Status {
+    Open,
+    Responded,
+    Resolved,
+    Cancelled,
+}
+
+impl Status {
+    /// All statuses, in state-machine order.
+    pub const ALL: [Status; 4] = [
+        Status::Open,
+        Status::Responded,
+        Status::Resolved,
+        Status::Cancelled,
+    ];
+
+    /// The lowercase wire/DB spelling.
+    fn as_str(self) -> &'static str {
+        match self {
+            Status::Open => "open",
+            Status::Responded => "responded",
+            Status::Resolved => "resolved",
+            Status::Cancelled => "cancelled",
+        }
+    }
+
+    /// Parses a wire/DB status; `None` for anything outside the lifecycle.
+    fn parse(raw: &str) -> Option<Self> {
+        Status::ALL
+            .iter()
+            .copied()
+            .find(|status| status.as_str() == raw)
+    }
+}
+
+/// The stored `status` column value as the enum: the CHECK constraint in
+/// migration 0004 guarantees one of the four lifecycle spellings.
+fn lifecycle_status(raw: &str) -> Status {
+    Status::parse(raw).expect("CHECK constraint guarantees a lifecycle status")
+}
 
 /// Create payload (POST `/help-requests`).
 #[derive(Debug, Deserialize)]
@@ -64,7 +107,7 @@ pub struct HelpRequestListQuery {
 #[derive(Debug, Clone, Serialize)]
 pub struct HelpRequest {
     pub id: uuid::Uuid,
-    pub status: String,
+    pub status: Status,
     pub note: Option<String>,
     pub location: LonLat,
     pub radius_m: f64,
@@ -99,7 +142,7 @@ impl HelpRequest {
         let (id, status, note, lon, lat, radius_m, created_at, updated_at) = row;
         Self {
             id,
-            status,
+            status: lifecycle_status(&status),
             note,
             location: LonLat { lon, lat },
             radius_m,
@@ -268,14 +311,20 @@ pub async fn list_help_requests(
     State(state): State<AppState>,
     Query(query): Query<HelpRequestListQuery>,
 ) -> Result<Json<Vec<HelpRequest>>, ApiError> {
-    if let Some(status) = &query.status {
-        if !STATUSES.contains(&status.as_str()) {
-            return Err(ApiError::Validation(format!(
-                "status must be one of {}",
-                STATUSES.join("|")
-            )));
-        }
-    }
+    // Parsed once, up front: an unknown spelling is a client error with
+    // the same message as before (the wire form is unchanged).
+    let status = match &query.status {
+        Some(raw) => match Status::parse(raw) {
+            Some(status) => Some(status),
+            None => {
+                return Err(ApiError::Validation(format!(
+                    "status must be one of {}",
+                    Status::ALL.map(Status::as_str).join("|")
+                )))
+            }
+        },
+        None => None,
+    };
     let near = match &query.near {
         Some(near) => Some(parse_near(near)?),
         None => {
@@ -291,22 +340,18 @@ pub async fn list_help_requests(
     }
 
     let mut qb = sqlx::QueryBuilder::new(concat!("SELECT ", columns!(), " FROM help_requests"));
-    if let Some(status) = &query.status {
-        qb.push(" WHERE status = ").push_bind(status.clone());
+    if let Some(status) = status {
+        qb.push(" WHERE status = ").push_bind(status.as_str());
     }
     if let Some(near) = near {
-        qb.push(if query.status.is_some() {
-            " AND "
-        } else {
-            " WHERE "
-        })
-        .push("ST_DWithin(location, ST_SetSRID(ST_MakePoint(")
-        .push_bind(near.lon)
-        .push(",")
-        .push_bind(near.lat)
-        .push("), 4326)::geography, ")
-        .push_bind(radius_m)
-        .push(")");
+        qb.push(if status.is_some() { " AND " } else { " WHERE " })
+            .push("ST_DWithin(location, ST_SetSRID(ST_MakePoint(")
+            .push_bind(near.lon)
+            .push(",")
+            .push_bind(near.lat)
+            .push("), 4326)::geography, ")
+            .push_bind(radius_m)
+            .push(")");
     }
     qb.push(" ORDER BY created_at DESC");
 
@@ -343,8 +388,9 @@ pub async fn respond_help_request(
     let Some((requester_id, status, responder_id)) = parties else {
         return Err(ApiError::NotFound("help request not found"));
     };
+    let status = lifecycle_status(&status);
 
-    let (request, changed) = if status == "open" && requester_id != action.device_id {
+    let (request, changed) = if status == Status::Open && requester_id != action.device_id {
         // The atomic claim: a concurrent second responder's UPDATE affects no
         // row, and the None branch turns it into the conflict.
         const CLAIM: &str = concat!(
@@ -363,7 +409,7 @@ pub async fn respond_help_request(
             Some(row) => (HelpRequest::from_row(row), true),
             None => return Err(ApiError::Conflict("someone else is already responding")),
         }
-    } else if status == "responded" && responder_id == Some(action.device_id) {
+    } else if status == Status::Responded && responder_id == Some(action.device_id) {
         // Idempotent repeat: no state change, no fan-out.
         let request = fetch_request(&mut *tx, request_id)
             .await?
@@ -403,7 +449,7 @@ pub async fn resolve_help_request(
         |status, is_participant| {
             if !is_participant {
                 Err("only the requester or the responder can resolve")
-            } else if status == "resolved" || status == "responded" {
+            } else if matches!(status, Status::Resolved | Status::Responded) {
                 Ok(())
             } else {
                 Err("the request cannot be resolved from its current status")
@@ -432,7 +478,7 @@ pub async fn cancel_help_request(
         |status, is_participant| {
             if !is_participant {
                 Err("only the requester can cancel")
-            } else if status == "open" {
+            } else if status == Status::Open {
                 Ok(())
             } else {
                 Err("only an open request can be cancelled")
@@ -456,7 +502,7 @@ async fn transition_request(
     state: &AppState,
     request_id: uuid::Uuid,
     device_id: uuid::Uuid,
-    check: impl Fn(&str, bool) -> Result<(), &'static str>,
+    check: impl Fn(Status, bool) -> Result<(), &'static str>,
     update: &'static str,
 ) -> Result<Json<HelpRequest>, ApiError> {
     let mut tx = state.pool.begin().await?;
@@ -470,16 +516,17 @@ async fn transition_request(
     let Some((requester_id, status, responder_id)) = parties else {
         return Err(ApiError::NotFound("help request not found"));
     };
+    let status = lifecycle_status(&status);
     let is_participant = requester_id == device_id || responder_id == Some(device_id);
 
-    let (request, changed) = if status == "open" || status == "responded" {
-        check(&status, is_participant).map_err(ApiError::Conflict)?;
+    let (request, changed) = if matches!(status, Status::Open | Status::Responded) {
+        check(status, is_participant).map_err(ApiError::Conflict)?;
         let row: HelpRequestRow = sqlx::query_as(update)
             .bind(request_id)
             .fetch_one(&mut *tx)
             .await?;
         (HelpRequest::from_row(row), true)
-    } else if status == "resolved" && is_participant {
+    } else if status == Status::Resolved && is_participant {
         // Terminal repeat: idempotent, no state change, no fan-out.
         let request = fetch_request(&mut *tx, request_id)
             .await?
