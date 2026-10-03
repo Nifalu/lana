@@ -29,7 +29,19 @@ function loadFilter(): CoolFilter {
   return 'all';
 }
 
-export const cooling = $state({ filter: loadFilter() });
+/** One cool spot offered by the button: the route there and what it leads to. */
+export type CoolCandidate = { route: Route; target: Selection };
+
+/** How many cool spots one tap fetches, to browse through in the sheet. */
+const COOL_RESULTS = 5;
+
+export const cooling = $state({
+  filter: loadFilter(),
+  /** The spots from the last tap, nearest walk first. */
+  candidates: [] as CoolCandidate[],
+  /** Which candidate is on the map. */
+  index: 0,
+});
 
 export function setCoolFilter(filter: CoolFilter): void {
   cooling.filter = filter;
@@ -56,15 +68,17 @@ const UNKNOWN_LABEL = 'Kühler Ort / Brunnen';
 /** Max distance between the API's target and one of our POIs to call them the same place. */
 const MATCH_M = 30;
 
-/** Nearest loaded POI of the wanted kinds, with its distance in metres. */
+/** The `count` nearest loaded POIs of the wanted kinds, with their distance in metres. */
+function nearestPois(to: LngLat, kinds: CoolKind[], count: number): { poi: Poi; metres: number }[] {
+  return data.pois
+    .filter((poi) => kinds.includes(poi.kind as CoolKind))
+    .map((poi) => ({ poi, metres: haversineKm(to, [poi.lon, poi.lat]) * 1000 }))
+    .sort((a, b) => a.metres - b.metres)
+    .slice(0, count);
+}
+
 function nearestPoi(to: LngLat, kinds: CoolKind[]): { poi: Poi; metres: number } | null {
-  let best: { poi: Poi; metres: number } | null = null;
-  for (const poi of data.pois) {
-    if (!kinds.includes(poi.kind as CoolKind)) continue;
-    const metres = haversineKm(to, [poi.lon, poi.lat]) * 1000;
-    if (!best || metres < best.metres) best = { poi, metres };
-  }
-  return best;
+  return nearestPois(to, kinds, 1)[0] ?? null;
 }
 
 /** The sheet's subject for a cool spot we have routed to. */
@@ -104,6 +118,31 @@ function show(result: Route, target: Selection): void {
   selection.current = target;
 }
 
+/** Put candidate `index` (clamped) on the map and in the sheet. */
+export function showCoolCandidate(index: number): void {
+  const list = cooling.candidates;
+  if (list.length === 0) return;
+  const i = Math.max(0, Math.min(list.length - 1, index));
+  cooling.index = i;
+  show(list[i].route, list[i].target);
+}
+
+/** True while the route on the map is one of the button's candidates. */
+export function isCoolCandidateShown(target: Selection | null): boolean {
+  const current = cooling.candidates[cooling.index];
+  return (
+    !!current &&
+    !!target &&
+    current.target.coords[0] === target.coords[0] &&
+    current.target.coords[1] === target.coords[1]
+  );
+}
+
+function offer(candidates: CoolCandidate[]): void {
+  cooling.candidates = candidates;
+  showCoolCandidate(0);
+}
+
 /**
  * Route from the user's position to the nearest cool spot of the chosen
  * kind, via `POST /route_to_closest_cooling`. Offline, falls back to a
@@ -118,7 +157,7 @@ export async function startNearestCooling(): Promise<void> {
   const filter = cooling.filter;
   try {
     const features = await postJson<CoolingFeature[]>(
-      '/route_to_closest_cooling?number_results=1',
+      `/route_to_closest_cooling?number_results=${COOL_RESULTS}`,
       {
         location: { longitude: origin[0], latitude: origin[1] },
         filter: apiFilter(filter),
@@ -126,24 +165,38 @@ export async function startNearestCooling(): Promise<void> {
       signal,
     );
     if (signal.aborted) return;
-    const first = features[0];
-    if (!first) throw new Error('no cooling location returned');
-    const coords: LngLat = [first.longitude, first.latitude];
-    if (!coords.every(Number.isFinite)) throw new Error('cooling target has no position');
-    const { kind, poi } = recoverKind(coords, filter);
-    show(routeFromFeature(first), targetSelection(coords, first.name?.trim() || null, kind, poi));
+    const candidates: CoolCandidate[] = [];
+    for (const feature of features) {
+      const coords: LngLat = [feature.longitude, feature.latitude];
+      if (!coords.every(Number.isFinite)) continue;
+      const { kind, poi } = recoverKind(coords, filter);
+      candidates.push({
+        route: routeFromFeature(feature),
+        target: targetSelection(coords, feature.name?.trim() || null, kind, poi),
+      });
+    }
+    if (candidates.length === 0) throw new Error('no cooling location returned');
+    // The API ranks by straight-line distance; offer the shortest walk first.
+    candidates.sort((a, b) => a.route.distanceKm - b.route.distanceKm);
+    offer(candidates);
   } catch (err) {
     if (signal.aborted) return;
     console.warn('nearest cool spot failed', err);
-    const fallback = nearestPoi(origin, kindsOf(filter));
-    if (!fallback) {
+    const fallback = nearestPois(origin, kindsOf(filter), COOL_RESULTS);
+    if (fallback.length === 0) {
       routing.status = 'idle';
       showToast('Kühler Ort nicht erreichbar');
       return;
     }
-    const { poi } = fallback;
-    const coords: LngLat = [poi.lon, poi.lat];
-    show(stubRoute(origin, coords), targetSelection(coords, null, poi.kind as CoolKind, poi));
+    offer(
+      fallback.map(({ poi }) => {
+        const coords: LngLat = [poi.lon, poi.lat];
+        return {
+          route: stubRoute(origin, coords),
+          target: targetSelection(coords, null, poi.kind as CoolKind, poi),
+        };
+      }),
+    );
     showToast('Kühler Ort nicht erreichbar – Luftlinie zum nächsten');
   }
 }

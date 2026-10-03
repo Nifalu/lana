@@ -2,7 +2,14 @@
   import { tick } from 'svelte';
   import { fly } from 'svelte/transition';
   import { selection } from '../state/selection.svelte';
-  import { endRoute, routing, startRoute } from '../routing';
+  import {
+    cooling,
+    endRoute,
+    isCoolCandidateShown,
+    routing,
+    showCoolCandidate,
+    startRoute,
+  } from '../routing';
 
   /** Rendered height in px, so the HUD can lift the toast above the sheet. */
   let { height = $bindable(0) }: { height?: number } = $props();
@@ -21,6 +28,30 @@
       routing.target.coords[0] === subject.coords[0] &&
       routing.target.coords[1] === subject.coords[1],
   );
+
+  // Browsing the KÜHL button's results: only while one of them is shown.
+  const browsing = $derived(
+    cooling.candidates.length > 1 && !!routing.current && isCoolCandidateShown(routing.target),
+  );
+
+  function step(delta: number) {
+    if (!browsing) return;
+    const next = cooling.index + delta;
+    if (next >= 0 && next < cooling.candidates.length) showCoolCandidate(next);
+  }
+
+  // Horizontal swipe on the sheet: left = next place, right = previous.
+  let swipeStart: { x: number; y: number } | null = null;
+  function onpointerdown(e: PointerEvent) {
+    swipeStart = browsing ? { x: e.clientX, y: e.clientY } : null;
+  }
+  function onpointerup(e: PointerEvent) {
+    if (!swipeStart) return;
+    const dx = e.clientX - swipeStart.x;
+    const dy = e.clientY - swipeStart.y;
+    swipeStart = null;
+    if (Math.abs(dx) >= 50 && Math.abs(dx) > 1.5 * Math.abs(dy)) step(dx < 0 ? 1 : -1);
+  }
 
   let sheet = $state<HTMLElement>();
   let heading = $state<HTMLElement>();
@@ -53,6 +84,11 @@
 
   function onkeydown(e: KeyboardEvent) {
     if (e.key === 'Escape' && subject && !e.defaultPrevented) close();
+    // Arrow keys page through the KÜHL results while the sheet has focus.
+    if (browsing && sheet?.contains(document.activeElement)) {
+      if (e.key === 'ArrowRight') step(1);
+      if (e.key === 'ArrowLeft') step(-1);
+    }
   }
 
   // Slides up on phones, in from the left on the docked desktop panel.
@@ -108,6 +144,9 @@
     bind:this={sheet}
     bind:clientHeight={height}
     transition:fly={flyParams()}
+    {onpointerdown}
+    {onpointerup}
+    onpointercancel={() => (swipeStart = null)}
   >
     <header>
       <div class="titles">
@@ -143,6 +182,27 @@
     <p class="coords" aria-label="Koordinaten">{coordinates(s.coords)}</p>
 
     {#if route && isRouteTarget}
+      {#if browsing}
+        <nav class="pager" aria-label="Kühle Orte in der Nähe">
+          <button
+            type="button"
+            aria-label="Vorheriger Ort"
+            disabled={cooling.index === 0}
+            onclick={() => step(-1)}
+          >
+            ‹
+          </button>
+          <span aria-live="polite">{cooling.index + 1} / {cooling.candidates.length}</span>
+          <button
+            type="button"
+            aria-label="Nächster Ort"
+            disabled={cooling.index === cooling.candidates.length - 1}
+            onclick={() => step(1)}
+          >
+            ›
+          </button>
+        </nav>
+      {/if}
       <div class="route" aria-live="polite">
         <p class="stats">
           <strong>{distance(route.distanceKm)}</strong>
@@ -176,6 +236,32 @@
 {/if}
 
 <style>
+  .pager {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 8px 0 4px;
+    font-size: 13px;
+    color: #555;
+  }
+
+  .pager button {
+    width: 44px;
+    height: 32px;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 8px;
+    background: #fff;
+    color: #111214;
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .pager button:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+
   .sheet {
     position: absolute;
     pointer-events: auto;
