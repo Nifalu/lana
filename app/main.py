@@ -11,7 +11,7 @@ from psycopg.rows import dict_row
 from psycopg_pool import AsyncConnectionPool
 
 # from initdb import init_db
-from .models import LocationIN, LocationOUT, NeighborhoodResponse
+from .models import LocationIN, LocationOUT
 from .utils import decode_valhalla_shape
 
 
@@ -95,8 +95,13 @@ async def upsert_location(conn: DbConnection, device_id: str, location: Location
     return fastapi.Response(status_code=200)
 
 
+@app.post("/sos")
+async def sos(conn: DbConnection, location: LocationIN):
+    pass
+
+
 @app.post("/get_closest_helpers")
-async def get_closest_helpers(conn: DbConnection, location: LocationIN):
+async def get_closest_helpers(conn: DbConnection, sos_location: LocationIN):
     async with conn.cursor() as cur:
         await cur.execute(
             """
@@ -122,7 +127,7 @@ async def get_closest_helpers(conn: DbConnection, location: LocationIN):
                    distance_m ASC,
                    u.location_updated_at DESC;
                """,
-            (location.longitude, location.latitude),
+            (sos_location.longitude, sos_location.latitude),
         )
         res = await cur.fetchall()
         ret_res = [
@@ -137,6 +142,7 @@ async def get_closest_helpers(conn: DbConnection, location: LocationIN):
         return ret_res
 
 
+"""
 @app.get("/quartiere", response_model=NeighborhoodResponse)
 async def get_neighborhoods(conn: DbConnection):
     async with conn.cursor() as cur:
@@ -147,7 +153,7 @@ async def get_neighborhoods(conn: DbConnection):
     return NeighborhoodResponse(
         neighborhoods=neighborhoods,
     )
-
+"""
 
 LocationType = Literal["fountain", "cool_place", "all"]
 
@@ -157,6 +163,7 @@ async def get_route_closest_cooling(
     conn: DbConnection,
     location: LocationIN,
     filter: list[LocationType] | None = None,
+    number_results: int = 1,
 ):
     TABLES = {
         "fountain": "fountains",
@@ -197,7 +204,7 @@ async def get_route_closest_cooling(
             {" UNION ALL ".join(queries)}
         ) AS locations
         ORDER BY distance
-        LIMIT 1;
+        LIMIT {number_results};
     """
 
     params = []
@@ -206,33 +213,38 @@ async def get_route_closest_cooling(
 
     async with conn.cursor(row_factory=dict_row) as cur:
         await cur.execute(sql, params)
-        result = await cur.fetchone()
+        result = await cur.fetchall()
 
     if result is None:
         raise HTTPException(status_code=404, detail="No cooling location found")
 
-    response = await _get_route(
-        start=location,
-        end=LocationIN(
-            longitude=result["longitude"],
-            latitude=result["latitude"],
-        ),
-    )
-    data = response.json()
-    shape = data.get("trip").get("legs")[0].get("shape")
-    coordinates = decode_valhalla_shape(shape)
-    return {
-        **result,
-        "type": "Feature",
-        "properties": {
-            "length_km": data["trip"]["summary"]["length"],
-            "time_seconds": data["trip"]["summary"]["time"],
-        },
-        "geometry": {
-            "type": "LineString",
-            "coordinates": coordinates,
-        },
-    }
+    final_res = []
+    for res in result:
+        response = await _get_route(
+            start=location,
+            end=LocationIN(
+                longitude=res["longitude"],
+                latitude=res["latitude"],
+            ),
+        )
+        data = response.json()
+        shape = data.get("trip").get("legs")[0].get("shape")
+        coordinates = decode_valhalla_shape(shape)
+        final_res.append(
+            {
+                **res,
+                "type": "Feature",
+                "properties": {
+                    "length_km": data["trip"]["summary"]["length"],
+                    "time_seconds": data["trip"]["summary"]["time"],
+                },
+                "geometry": {
+                    "type": "LineString",
+                    "coordinates": coordinates,
+                },
+            }
+        )
+    return final_res
 
 
 async def _get_route(start: LocationIN, end: LocationIN):
