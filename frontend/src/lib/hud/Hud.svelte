@@ -1,6 +1,7 @@
 <script lang="ts">
   import HudButton from './HudButton.svelte';
   import Toast from './Toast.svelte';
+  import ConnectionIndicator from './ConnectionIndicator.svelte';
   import {
     assistance,
     cancelAssistance,
@@ -26,6 +27,8 @@
 </script>
 
 <div class="hud">
+  <ConnectionIndicator />
+
   <div class="tools">
     <HudButton
       label={view.basemap === 'imagery' ? 'Show map' : 'Show satellite imagery'}
@@ -108,7 +111,8 @@
 
   .hint {
     position: absolute;
-    top: calc(env(safe-area-inset-top) + 16px);
+    /* Below the connection pill, which owns the top-left corner. */
+    top: calc(env(safe-area-inset-top) + 56px);
     left: 50%;
     transform: translateX(-50%);
     margin: 0;
