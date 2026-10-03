@@ -2,11 +2,20 @@ import type {
   ExpressionSpecification,
   FilterSpecification,
   GeoJSONSource,
+  ImageSource,
   Map,
 } from 'maplibre-gl';
 import type { Feature, FeatureCollection } from 'geojson';
 import { data } from '../data/store.svelte';
 import { dataSource, type DataSource } from '../data';
+import type { Station } from '../data/types';
+import {
+  EMPTY_IMAGE,
+  TEMP_COORDINATES,
+  TEMP_STOPS,
+  freshReadings,
+  renderTemperature,
+} from './temperature';
 
 /**
  * Sources and layers this app adds on top of the swisstopo basemap.
@@ -17,6 +26,7 @@ import { dataSource, type DataSource } from '../data';
 export const SOURCE = {
   pois: 'lana-pois',
   stations: 'lana-stations',
+  temperature: 'lana-temperature',
 } as const;
 
 export const LAYER = {
@@ -45,6 +55,27 @@ const LABEL_FONT = ['Frutiger Neue Condensed Regular'];
 
 const kindIs = (kind: string): FilterSpecification => ['==', ['get', 'kind'], kind];
 const hasTemperature: FilterSpecification = ['==', ['typeof', ['get', 'temperature_c']], 'number'];
+/** Only the readings that feed the temperature surface (fresh, not outliers). */
+const isFresh: FilterSpecification = ['==', ['get', 'fresh'], true];
+const freshReading = ['all', hasTemperature, isFresh] as FilterSpecification;
+
+/** The fixed temperature scale as a MapLibre colour expression. */
+const temperatureColor: ExpressionSpecification = [
+  'interpolate',
+  ['linear'],
+  ['to-number', ['get', 'temperature_c'], 20],
+  ...TEMP_STOPS.flatMap(([t, [r, g, b]]) => [t, `rgb(${r}, ${g}, ${b})`]),
+] as ExpressionSpecification;
+
+/** Rendered surface, cached per stations array so a basemap switch doesn't recompute it. */
+let surface: { stations: Station[]; url: string } | null = null;
+
+function temperatureImage(): string {
+  if (surface?.stations !== data.stations) {
+    surface = { stations: data.stations, url: renderTemperature(freshReadings(data.stations)) };
+  }
+  return surface.url;
+}
 
 const temperature: ExpressionSpecification = ['to-number', ['get', 'temperature_c'], 20];
 
@@ -85,6 +116,7 @@ export function poiCollection(): FeatureCollection {
 }
 
 export function stationCollection(): FeatureCollection {
+  const fresh = new Set(freshReadings(data.stations).map((r) => r.id));
   return {
     type: 'FeatureCollection',
     features: data.stations.map(
@@ -99,6 +131,7 @@ export function stationCollection(): FeatureCollection {
           source: s.source,
           temperature_c: s.temperature_c,
           measured_at: s.measured_at,
+          fresh: fresh.has(s.id),
         },
       }),
     ),
@@ -118,6 +151,10 @@ export function updateAppData(map: Map): void {
     stations.setData(stationCollection());
     stations.attribution = attribution.stations;
   }
+  map.getSource<ImageSource>(SOURCE.temperature)?.updateImage({
+    url: temperatureImage(),
+    coordinates: TEMP_COORDINATES,
+  });
 }
 
 /**
@@ -151,6 +188,14 @@ export function addAppLayers(map: Map): void {
     });
   }
 
+  if (!map.getSource(SOURCE.temperature)) {
+    map.addSource(SOURCE.temperature, {
+      type: 'image',
+      url: data.stations.length ? temperatureImage() : EMPTY_IMAGE,
+      coordinates: TEMP_COORDINATES,
+    });
+  }
+
   const before = BELOW_LABELS.find((id) => map.getLayer(id));
   const add = (layer: Parameters<Map['addLayer']>[0]) => {
     if (!map.getLayer(layer.id)) map.addLayer(layer, before);
@@ -178,30 +223,16 @@ export function addAppLayers(map: Map): void {
     },
   });
 
+  // Interpolated live temperature (see temperature.ts): colour = °C, not sensor density.
   add({
     id: LAYER.heat,
-    type: 'heatmap',
-    source: SOURCE.stations,
-    filter: hasTemperature,
+    type: 'raster',
+    source: SOURCE.temperature,
     layout: { ...hidden },
     paint: {
-      // ~20 °C and below barely registers, ~35 °C and above is full weight.
-      'heatmap-weight': ['interpolate', ['linear'], temperature, 20, 0, 35, 1],
-      'heatmap-intensity': ['interpolate', ['linear'], ['zoom'], 11, 1.3, 15, 2.4],
-      'heatmap-radius': ['interpolate', ['exponential', 2], ['zoom'], 10, 28, 13, 80, 15, 160],
-      'heatmap-color': [
-        'interpolate',
-        ['linear'],
-        ['heatmap-density'],
-        0, 'rgba(255, 235, 59, 0)',
-        0.1, 'rgba(255, 235, 59, 0.4)',
-        0.3, 'rgba(255, 193, 7, 0.7)',
-        0.55, 'rgba(255, 112, 25, 0.85)',
-        0.8, 'rgba(230, 60, 40, 0.9)',
-        1, 'rgba(180, 20, 30, 0.95)',
-      ],
-      // Fades out as the stations' own markers take over.
-      'heatmap-opacity': ['interpolate', ['linear'], ['zoom'], 12, 0.9, 14, 0.8, 15.5, 0],
+      'raster-opacity': ['interpolate', ['linear'], ['zoom'], 11, 0.65, 16, 0.5],
+      'raster-resampling': 'linear',
+      'raster-fade-duration': 0,
     },
   });
 
@@ -212,9 +243,10 @@ export function addAppLayers(map: Map): void {
     filter: kindIs('cool_place'),
     layout: { ...hidden },
     paint: {
-      'circle-color': '#12a38a',
-      'circle-stroke-color': '#ffffff',
-      'circle-stroke-width': 1.5,
+      // White with a teal ring: a place, not a temperature reading.
+      'circle-color': '#ffffff',
+      'circle-stroke-color': '#0f8a75',
+      'circle-stroke-width': 3,
       'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 3.5, 13, 5.5, 15, 8, 18, 11],
     },
   });
@@ -223,23 +255,13 @@ export function addAppLayers(map: Map): void {
     id: LAYER.stations,
     type: 'circle',
     source: SOURCE.stations,
-    filter: hasTemperature,
+    filter: freshReading,
     layout: { ...hidden },
     paint: {
-      'circle-color': [
-        'interpolate',
-        ['linear'],
-        temperature,
-        16, '#4a90e2',
-        22, '#f6d84a',
-        28, '#f08a24',
-        34, '#d32f2f',
-      ],
+      'circle-color': temperatureColor,
       'circle-stroke-color': '#ffffff',
       'circle-stroke-width': 1.5,
-      'circle-radius': ['interpolate', ['linear'], ['zoom'], 12, 3, 14, 6, 17, 9],
-      'circle-opacity': ['interpolate', ['linear'], ['zoom'], 12, 0, 13.5, 1],
-      'circle-stroke-opacity': ['interpolate', ['linear'], ['zoom'], 12, 0, 13.5, 1],
+      'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 6, 17, 9],
     },
   });
 
@@ -248,7 +270,7 @@ export function addAppLayers(map: Map): void {
     type: 'symbol',
     source: SOURCE.stations,
     minzoom: 13.5,
-    filter: hasTemperature,
+    filter: freshReading,
     layout: {
       ...hidden,
       'text-field': [

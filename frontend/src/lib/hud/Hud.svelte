@@ -3,6 +3,7 @@
   import Toast from './Toast.svelte';
   import ConnectionIndicator from './ConnectionIndicator.svelte';
   import SelectionSheet from './SelectionSheet.svelte';
+  import TemperatureLegend from './TemperatureLegend.svelte';
   import { filters, location, mapActions, view } from '../state/app.svelte';
   import { sos, triggerSos } from '../sos';
   import { selection } from '../state/selection.svelte';
@@ -42,6 +43,10 @@
       >
         DBG
       </HudButton>
+    {/if}
+
+    {#if filters.heat}
+      <TemperatureLegend />
     {/if}
   </div>
 
@@ -114,6 +119,7 @@
     right: calc(env(safe-area-inset-right) + 12px);
     display: flex;
     flex-direction: column;
+    align-items: flex-end;
     gap: 8px;
     font-size: 11px;
     font-weight: 600;
