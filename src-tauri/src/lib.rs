@@ -99,10 +99,9 @@ pub fn run() {
                     format!("failed to open the offline cache: {err:#}").into()
                 },
             )?;
-            let http = sync::http_client()
-                .map_err(|err| -> Box<dyn std::error::Error> {
-                    format!("failed to build the HTTP client: {err:#}").into()
-                })?;
+            let http = sync::http_client().map_err(|err| -> Box<dyn std::error::Error> {
+                format!("failed to build the HTTP client: {err:#}").into()
+            })?;
             app.manage(AppState { pool, http });
             Ok(())
         })

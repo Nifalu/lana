@@ -237,8 +237,8 @@ mod tests {
         assert_eq!(status, StatusCode::OK);
 
         // Stop sharing: location omitted from the update.
-        let (status, body) = send_json(app.clone(), "PUT", &uri, Some(json!({ "is_helper": true })))
-            .await;
+        let (status, body) =
+            send_json(app.clone(), "PUT", &uri, Some(json!({ "is_helper": true }))).await;
         assert_eq!(status, StatusCode::OK);
         assert_eq!(body["location"], serde_json::Value::Null);
         let (location_cleared,): (bool,) =
