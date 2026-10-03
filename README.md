@@ -9,9 +9,9 @@ keeps working offline.
 
 ## Architecture
 
-Client/server split ([ADR 0001](docs/adr/0001-client-server-split.md)): one
+Client/server split: one
 central backend owns all shared state; the Tauri app is a client with an
-embedded SQLite cache ([ADR 0002](docs/adr/0002-snapshot-offline-cache.md)).
+embedded SQLite cache.
 
 ```
 ┌────────────────────────┐             ┌───────────────────────────────┐
@@ -31,9 +31,8 @@ embedded SQLite cache ([ADR 0002](docs/adr/0002-snapshot-offline-cache.md)).
 
 - The server imports Basel open data (data.bs.ch) and polls live values
   every ~10 minutes; phones only ever talk to the server.
-- Helper notifications are Server-Sent Events
-  ([ADR 0003](docs/adr/0003-sse-notifications.md)); devices are anonymous
-  client-generated UUIDs ([ADR 0004](docs/adr/0004-anonymous-devices-and-matching.md)).
+- Helper notifications are Server-Sent Events; devices are anonymous
+  client-generated UUIDs.
 - The API reference — routes, payloads, SSE event names — lives in
   [server/README.md](server/README.md).
 
@@ -71,8 +70,7 @@ docker compose run --rm server import   # load the static datasets (one-shot)
 Migrations run on server startup; data survives restarts in the `pgdata`
 volume (`docker compose down -v` deletes it). For phones, point a
 [Cloudflare tunnel](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/)
-at port 8080 and set the tunnel URL in the app — the
-[Android checklist](docs/ANDROID.md) covers the APK and the two-phone demo.
+at port 8080 and set the tunnel URL in the app.
 
 ## Development
 
@@ -97,7 +95,3 @@ filename order at server startup — never edit an applied migration.
 
 - [server/README.md](server/README.md) — API reference, import/poll
   internals, test conventions
-- [docs/adr/](docs/adr) — architecture decision records
-- [docs/ANDROID.md](docs/ANDROID.md) — Android APK checklist and two-phone
-  demo
-- [docs/HANDOVER.md](docs/HANDOVER.md) — who owns what, open tickets
