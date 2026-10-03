@@ -46,7 +46,7 @@ pub fn resolve_base_url(env_override: Option<String>) -> String {
 /// Raw dataset bodies for the import. The production implementation fetches
 /// from data.bs.ch; tests feed committed fixture files instead, keeping the
 /// import logic offline.
-pub trait DatasetSource {
+pub(crate) trait DatasetSource {
     async fn fountains(&self) -> anyhow::Result<String>;
     async fn swim_areas(&self) -> anyhow::Result<String>;
     /// All record pages of the air-station dataset, in listing order.

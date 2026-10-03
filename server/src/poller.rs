@@ -183,7 +183,7 @@ pub struct PoolSample {
 /// Raw record pages for the live datasets. The production implementation
 /// ([`crate::ods::OdsClient`]) fetches from data.bs.ch; tests feed scripted
 /// or fixture pages, keeping the poller offline.
-pub trait MeasurementSource {
+pub(crate) trait MeasurementSource {
     /// One newest-first page of air-temperature records (dataset 100009),
     /// starting at `offset` rows. The source chooses its page size; pages
     /// arrive sorted by measurement timestamp, newest first.
@@ -207,7 +207,9 @@ pub const AIR_STALL_PAGE_LIMIT: usize = 2;
 /// are newest-first, so that is its newest row). Stops after
 /// [`AIR_STALL_PAGE_LIMIT`] consecutive pages without a new station, or at
 /// [`AIR_PAGE_CAP`] pages.
-pub async fn fetch_latest_air(source: &impl MeasurementSource) -> anyhow::Result<Vec<AirSample>> {
+pub(crate) async fn fetch_latest_air(
+    source: &impl MeasurementSource,
+) -> anyhow::Result<Vec<AirSample>> {
     let mut latest: Vec<AirSample> = Vec::new();
     let mut seen: std::collections::HashSet<String> = std::collections::HashSet::new();
     let mut offset = 0;
@@ -279,7 +281,10 @@ pub async fn upsert_measurements(pool: &PgPool, rows: &[MeasurementInsert]) -> a
 /// ensures the station rows (Rhine/pool stations are owned here; air
 /// stations are re-ensured from the measurement rows so `serve` works
 /// without a prior ticket-02 import) and upserts the latest values.
-pub async fn run(pool: &PgPool, source: &impl MeasurementSource) -> anyhow::Result<PollSummary> {
+pub(crate) async fn run(
+    pool: &PgPool,
+    source: &impl MeasurementSource,
+) -> anyhow::Result<PollSummary> {
     // Rhine water temperature: one fixed station owned by the poller.
     let rhine = parse_rhine(&source.rhine().await?)?;
     if rhine.is_some() {
@@ -317,7 +322,11 @@ pub async fn run(pool: &PgPool, source: &impl MeasurementSource) -> anyhow::Resu
 /// The serve-mode poll loop: one poll immediately, then every `interval`.
 /// Failures are logged and retried on the next tick – they never take the
 /// API down. Runs until the task is aborted (server shutdown).
-pub async fn run_loop(pool: PgPool, source: impl MeasurementSource, interval: std::time::Duration) {
+pub(crate) async fn run_loop(
+    pool: PgPool,
+    source: impl MeasurementSource,
+    interval: std::time::Duration,
+) {
     loop {
         match run(&pool, &source).await {
             Ok(summary) => println!(
