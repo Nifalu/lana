@@ -443,7 +443,7 @@ async function catchUp(): Promise<void> {
   const here = location.coords;
   if (!helper.on || !here) return;
   try {
-    const open = await listHelpRequests(here, RADIUS_M, 'open');
+    const open = await listHelpRequests(here, RADIUS_M, 'open', true);
     if (!helper.on) return;
     const ids = new Set(open.map((r) => r.id));
     // Anything on offer that is gone from the list was taken or withdrawn

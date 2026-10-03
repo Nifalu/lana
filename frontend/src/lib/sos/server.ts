@@ -117,14 +117,20 @@ export async function helpRequestAction(
   return call('POST', `/help-requests/${id}/${action}`, { device_id: await getDeviceId() });
 }
 
-/** Requests within `radiusM` of `near`; `status` omitted = any. */
-export function listHelpRequests(
+/**
+ * Requests within `radiusM` of `near`; `status` omitted = any.
+ * `excludeOwn` asks the server to leave out this device's own requests
+ * (servers without that filter ignore the parameter).
+ */
+export async function listHelpRequests(
   near: LngLat,
   radiusM: number,
   status?: HelpStatus,
+  excludeOwn = false,
 ): Promise<HelpRequest[]> {
   const q = new URLSearchParams({ near: `${near[0]},${near[1]}`, radius_m: String(radiusM) });
   if (status) q.set('status', status);
+  if (excludeOwn) q.set('exclude_device_id', await getDeviceId());
   return call('GET', `/help-requests?${q}`);
 }
 
