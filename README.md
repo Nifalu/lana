@@ -1,6 +1,6 @@
-lana
+# lana
 
-local aid notification assistant
+## local aid notification assistant
 
 lana is a heat-relief map and anonymous help platform for Basel (Hack am Rhein 2026, challenge #3): public drinking fountains, Rhine swim areas, cool places, and live temperatures (air, Rhine water, pools) on a map — plus a way to ask people nearby for help when the heat gets to you. No account, no identity, no live location feed; the app keeps working offline.
 
