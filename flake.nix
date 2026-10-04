@@ -72,7 +72,7 @@
 
             env = {
               # Local dev database (create with: just db-init && just db-start && just db-createdb)
-              DATABASE_URL = "postgres://lana:lana@127.0.0.1:5432/lana";
+              DATABASE_URL = "postgres://lana:lana@127.0.0.1:5433/lana";
             } // lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
               # Runtime lookup for shared libs when running the debug binary
               LD_LIBRARY_PATH = lib.makeLibraryPath linuxGuiLibs;

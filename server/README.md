@@ -214,5 +214,5 @@ silently when `DATABASE_URL` is unset:
 
 ```sh
 nix develop -c bash -c \
-  'export DATABASE_URL=postgres://lana:lana@127.0.0.1:5432/lana; just test'
+  'export DATABASE_URL=postgres://lana:lana@127.0.0.1:5433/lana; just test'
 ```
