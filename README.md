@@ -32,6 +32,26 @@ just dev    # Tauri app (desktop/mobile)
 
 Deploy: `docker compose up -d --build`, then `docker compose run --rm server import`.
 
+## Troubleshooting (Linux)
+
+**`Could not create default EGL display: EGL_BAD_PARAMETER. Aborting...`** (blank/frozen
+window; the render process crashes in a loop): nix-built Mesa only searches
+`/run/opengl-driver` — a NixOS-only symlink — for its DRI/GBM drivers. On non-NixOS
+hosts (Fedora here) that path doesn't exist, so WebKit's render process can't create
+its EGL display. The flake env fixes this by pointing `GBM_BACKENDS_PATH`,
+`LIBGL_DRIVERS_PATH` and `__EGL_VENDOR_LIBRARY_FILENAMES` into the nix store and
+disabling the WebKit sandbox (it would hide those paths from the render process).
+Just make sure the direnv/nix shell is loaded (`direnv reload` after flake changes).
+
+Alternatively, keep the sandbox by making the NixOS-style symlink yourself
+(adapt the mesa store path to `nix store --realise` output of your flake):
+`sudo ln -sfn /nix/store/<mesa> /run/opengl-driver` + drop
+`WEBKIT_DISABLE_SANDBOX_THIS_IS_DANGEROUS` from the flake.
+
+**GStreamer `appsink`/`autoaudiosink` warnings at startup**: cosmetic — the nix env
+has no GStreamer plugins, so WebKit media playback is unavailable. The app doesn't
+use it.
+
 ## Layout
 
 - `frontend/` – Svelte map / HUD / SOS UI

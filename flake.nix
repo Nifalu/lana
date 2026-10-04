@@ -35,6 +35,10 @@
             librsvg
             gobject-introspection
             glib-networking # TLS support inside WebKitGTK
+            gst_all_1.gstreamer # WebKitGTK media pipeline (SOS audio in the webview)
+            gst_all_1.gst-plugins-base # appsink etc.
+            gst_all_1.gst-plugins-good # autoaudiosink etc.
+            gst_all_1.gst-plugins-bad # WebVTT encoder, fakevideosink (WebKit probes these at startup)
             dbus
             openssl
             curl
@@ -80,6 +84,25 @@
               GDK_PIXBUF_MODULE_FILE = "${pkgs.librsvg}/lib/gdk-pixbuf/loaders.cache";
               # glib networking modules (TLS) for WebKitGTK
               GIO_MODULE_DIR = "${pkgs.glib-networking}/lib/gio/modules/";
+
+              # Mesa/GPU on non-NixOS hosts: nix-built Mesa only searches
+              # /run/opengl-driver (a NixOS-only symlink) for its DRI/GBM
+              # drivers, so WebKit's WebProcess aborts with
+              # "Could not create default EGL display: EGL_BAD_PARAMETER".
+              # Point it into the nix store, let glvnd find Mesa's vendor
+              # JSON, and keep the WebKit sandbox off — it would otherwise
+              # hide these paths from the render process. Dev-only tradeoff.
+              GBM_BACKENDS_PATH = "${pkgs.mesa}/lib/gbm";
+              LIBGL_DRIVERS_PATH = "${pkgs.mesa}/lib/dri";
+              __EGL_VENDOR_LIBRARY_FILENAMES = "${pkgs.mesa}/share/glvnd/egl_vendor.d/50_mesa.json";
+              WEBKIT_DISABLE_SANDBOX_THIS_IS_DANGEROUS = "1";
+              # Where GStreamer scans for plugins (non-NixOS: must be explicit)
+              GST_PLUGIN_SYSTEM_PATH_1_0 = lib.makeSearchPath "lib/gstreamer-1.0" [
+                pkgs.gst_all_1.gstreamer
+                pkgs.gst_all_1.gst-plugins-base
+                pkgs.gst_all_1.gst-plugins-good
+                pkgs.gst_all_1.gst-plugins-bad
+              ];
             };
 
             shellHook = ''
