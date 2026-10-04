@@ -27,7 +27,7 @@ async fn get_device_id(state: State<'_, AppState>) -> Result<String, String> {
         .map_err(|e| e.to_string())
 }
 
-/// Returns the configured server base URL (`http://127.0.0.1:8090` unless
+/// Returns the configured server base URL (`https://lana-mw.heitzli.ch` unless
 /// another server was set).
 #[tauri::command]
 async fn get_server_url(state: State<'_, AppState>) -> Result<String, String> {

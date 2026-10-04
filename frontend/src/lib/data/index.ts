@@ -69,10 +69,20 @@ export const repository: Repository = forceFixture || !isTauri() ? fixture : new
 
 let urlApplied: Promise<void> | null = null;
 
+/** The deployed middleware: map data, SOS and live notifications. */
+export const DEFAULT_SERVER_URL = 'https://lana-mw.heitzli.ch';
+
+/** VITE_SERVER_URL when the build sets a non-empty one, else the deployed middleware. */
+function configuredServerUrl(): string {
+  return import.meta.env.VITE_SERVER_URL?.trim() || DEFAULT_SERVER_URL;
+}
+
 /**
- * Apply the build-time server URL (VITE_SERVER_URL) to the Tauri shell, which
- * stores it in its cache settings. Run before the first sync. Safe to call
- * from several places: the work happens once.
+ * Apply the server URL to the Tauri shell, which stores it in its cache
+ * settings: VITE_SERVER_URL when the build sets one, else the deployed
+ * middleware. Applied on every start, so a URL stored by an older build (e.g.
+ * a LAN address) cannot linger. Run before the first sync. Safe to call from
+ * several places: the work happens once.
  */
 export function applyServerUrl(): Promise<void> {
   urlApplied ??= doApplyServerUrl();
@@ -80,8 +90,8 @@ export function applyServerUrl(): Promise<void> {
 }
 
 async function doApplyServerUrl(): Promise<void> {
-  const url = import.meta.env.VITE_SERVER_URL;
-  if (!url || forceFixture || !isTauri()) return;
+  const url = configuredServerUrl();
+  if (forceFixture || !isTauri()) return;
   try {
     await invoke('set_server_url', { url });
   } catch (err) {
@@ -91,8 +101,8 @@ async function doApplyServerUrl(): Promise<void> {
 
 /**
  * Base URL of the middleware, without trailing slash. Tauri: the URL stored
- * in the shell (after the build-time one was applied). Browser: the
- * build-time URL, or the local dev server.
+ * in the shell (after the configured one was applied). Browser: the
+ * configured one directly.
  */
 export async function getServerBaseUrl(): Promise<string> {
   let url: string;
@@ -100,7 +110,7 @@ export async function getServerBaseUrl(): Promise<string> {
     await applyServerUrl();
     url = await invoke<string>('get_server_url');
   } else {
-    url = import.meta.env.VITE_SERVER_URL ?? 'http://127.0.0.1:8090';
+    url = configuredServerUrl();
   }
   return url.replace(/\/+$/, '');
 }

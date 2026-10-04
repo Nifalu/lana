@@ -10,9 +10,10 @@ interface ImportMetaEnv {
    */
   readonly VITE_API_URL?: string;
   /**
-   * Server base URL baked into the build, e.g. `http://192.168.1.20:8090`.
-   * Inside Tauri it replaces the shell's default (http://127.0.0.1:8090, which
-   * on a phone points at the phone itself). Unset: keep the stored URL.
+   * Middleware base URL. Unset or empty: the deployed middleware
+   * (https://lana-mw.heitzli.ch). Set it to test against another one, e.g. a
+   * local stack (`http://127.0.0.1:8090`) or a Mac on the LAN for a phone
+   * (`http://192.168.1.20:8090`). Inside Tauri it is applied on every start.
    */
   readonly VITE_SERVER_URL?: string;
   /** `true` hides the debug tools. */
