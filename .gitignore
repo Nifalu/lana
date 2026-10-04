@@ -12,6 +12,7 @@ frontend/dist/
 result
 result-*
 .direnv/
+.envrc.local
 
 # Local Postgres dev cluster
 /.pgdata/
