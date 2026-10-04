@@ -1,6 +1,6 @@
 # lana demo/production stack: Postgres with PostGIS + the lana server.
 # Runs unchanged on a demo laptop and on the team's Proxmox host (behind a
-# Cloudflare tunnel) – see README.md, "Deployment".
+# Cloudflare tunnel) - see README.md, "Deployment".
 #
 # The server container applies the SQL migrations on startup (its `serve`
 # mode always does), serves the API + SSE on 8080 and runs the background
@@ -16,7 +16,7 @@ services:
       POSTGRES_DB: lana
     volumes:
       # Named volume: data survives `docker compose restart` / `down` (and
-      # re-up) – only `docker compose down -v` deletes it.
+      # re-up) - only `docker compose down -v` deletes it.
       - pgdata:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U lana -d lana"]

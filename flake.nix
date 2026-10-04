@@ -1,5 +1,5 @@
 {
-  description = "lana – Hack am Rhein challenge #3 (Tauri + Rust + SQLite)";
+  description = "lana - Hack am Rhein challenge #3 (Tauri + Rust + SQLite)";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -52,10 +52,10 @@
             # Tauri CLI (tauri dev / tauri build)
             cargo-tauri
 
-            # Frontend tooling – extend once the framework is chosen
+            # Frontend tooling - extend once the framework is chosen
             nodejs
 
-            # Postgres with PostGIS (GIS work) – CLI + local server for dev
+            # Postgres with PostGIS (GIS work) - CLI + local server for dev
             (if pkgs.stdenv.hostPlatform.isLinux then
               pkgs.postgresql.withPackages (p: [ p.postgis ])
             else pkgs.postgresql)
@@ -83,7 +83,7 @@
             };
 
             shellHook = ''
-              echo "lana dev shell – rust $(rustc --version | cut -d' ' -f2), node $(node --version), postgres $(psql --version | awk '{print $3}')"
+              echo "lana dev shell - rust $(rustc --version | cut -d' ' -f2), node $(node --version), postgres $(psql --version | awk '{print $3}')"
               echo "quick start: just db-init && just db-start && just db-createdb (once), then just dev"
             '';
           };

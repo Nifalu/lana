@@ -40,7 +40,7 @@
    "properties": {
     "name": "Novartis Pavillon",
     "address": "St. Johanns-Hafen-Weg 5, 4056 Basel",
-    "note": "Open foyer with coffee corner (no purchase obligation) and free SchoolHub; Tue–Fri 08–18, Sat/Sun 10–18",
+    "note": "Open foyer with coffee corner (no purchase obligation) and free SchoolHub; Tue-Fri 08-18, Sat/Sun 10-18",
     "url": "https://www.campus.novartis.com/de/novartis-pavillon"
    }
   },
@@ -56,7 +56,7 @@
    "properties": {
     "name": "Öffentliche Plaza im k Haus",
     "address": "Kasernenhof 9, 4058 Basel",
-    "note": "Public plaza open daily 09:00–21:00, no purchase obligation",
+    "note": "Public plaza open daily 09:00-21:00, no purchase obligation",
     "url": "https://www.khaus.ch/de/mitgestalten/die-oeffentliche-plaza"
    }
   },
@@ -72,7 +72,7 @@
    "properties": {
     "name": "Foyer Public, Theater Basel",
     "address": "Theaterstrasse 9, 4051 Basel",
-    "note": "Public theatre foyer Tue–Sun 11:00–18:00, no purchase obligation (seasonal closures possible)",
+    "note": "Public theatre foyer Tue-Sun 11:00-18:00, no purchase obligation (seasonal closures possible)",
     "url": "https://www.theater-basel.ch/de/foyerpublic"
    }
   },
@@ -152,7 +152,7 @@
    "properties": {
     "name": "Theodorskirche",
     "address": "Theodorskirchplatz 5, 4058 Basel",
-    "note": "TheoBar open meeting Wed 12:00–18:00 in the pleasantly cool church, free quarter lunch table",
+    "note": "TheoBar open meeting Wed 12:00-18:00 in the pleasantly cool church, free quarter lunch table",
     "url": ""
    }
   },
