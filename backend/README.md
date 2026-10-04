@@ -1,98 +1,57 @@
-# lana
+# Lana Backend
 
-lana is a heat-relief map and anonymous help platform for Basel
-([Hack am Rhein](https://hackamrhein.ch) 2026, challenge #3): public drinking
-fountains, Rhine swim areas, cool places, and live temperatures (air, Rhine
-water, pools) on a map — plus a way to ask people nearby for help when the
-heat gets to you. No account, no identity, no live location feed; the app
-keeps working offline.
+FastAPI backend for finding nearby helpers and routing to cooling spots during heat events.
 
-## Architecture
+## What it does
 
-Client/server split: one central backend owns all shared state; the Tauri
-app is a client with an embedded SQLite cache.
+- **Tracks live locations** (PostGIS `geography`): `POST /location`
+- **Finds nearby helpers** within 500 m, updated in the last 15 min: `POST /get_closest_helpers`
+- **Routes to closest cooling spots** (fountains / cool places) via Valhalla pedestrian routing: `POST /route_to_closest_cooling`
+- **Calculates pedestrian routes** A → B, returns GeoJSON `LineString`: `POST /calculate_route`
 
-```
-┌────────────────────┐              ┌─────────────────────────────┐
-│ Tauri app          │     REST     │ lana-server (Rust, axum)    │
-│                    │─────────────►│ • REST API under /api/v1    │
-│ SQLite cache       │◄─────────────│ • SSE events per device     │
-│ (works offline)    │     SSE      │ • background poller         │
-└────────────────────┘              └──────────────┬──────────────┘
-                                                   │
-                                    ┌──────────────▼──────────────┐
-                                    │    PostgreSQL + PostGIS     │
-                                    └─────────────────────────────┘
-```
+Stack: `app/` (FastAPI, Python 3.13, `uv`) + `docker/` (Postgres 17 + PostGIS + pg_cron) + `routing/` (Valhalla + nginx).
 
-- The server imports Basel open data (data.bs.ch) and keeps temperatures
-  live; only the server calls external APIs.
-- Helper notifications arrive over Server-Sent Events; devices are
-  anonymous client-generated UUIDs — no accounts, no identity. Anyone can
-  opt in as a helper ("Ich kann helfen").
-- Optionally the server forwards helper locations to a separate
-  live-location API and asks it for the helpers closest to an SOS (see
-  `LANA_HELPER_API_URL` and server/README.md).
+Seed data on first DB start (`data/`): Basel neighborhoods, fountains, cool places. A pg_cron job deletes stale `users` (> ~15 min).
 
-## Getting started
+## Start services
 
-Prerequisites: [Nix](https://nixos.org/download) with flakes enabled
-(`experimental-features = nix-command flakes`). No Nix? Install Rust, Node,
-the [Tauri prerequisites](https://v2.tauri.app/start/prerequisites/), and
-PostgreSQL with PostGIS yourself.
+Prerequisites: Docker, `uv`, Python 3.13.
 
-```sh
-nix develop                                        # dev shell: rust, cargo-tauri, node, postgres+postgis, just
-just db-init && just db-start && just db-createdb  # once: local dev Postgres
-just serve                                         # backend API on http://127.0.0.1:8090 (terminal 1)
-just dev                                           # the Tauri app (terminal 2)
+```bash
+# 1. Database (from backend/)
+docker compose -f docker/docker-compose.yml up --build
+# Postgres: localhost:5432, db: hackamrhein, user: postgres, password: hackzheworld
+
+# 2. Routing (from backend/routing/, requires tiles.tar / tiles/)
+docker compose up
+# Routing: http://localhost:8080/route -> valhalla:8002
+
+# 3. API (from backend/)
+uv sync
+uv run fastapi dev
+# API: http://localhost:8000, docs: http://localhost:8000/docs
 ```
 
-The app defaults to `http://127.0.0.1:8090` and caches a full snapshot in
-SQLite — after one sync it keeps working offline and shows how stale its
-data is. The dev shell exports `DATABASE_URL`
-(`postgres://lana:lana@127.0.0.1:5432/lana`); inspect it with
-`psql "$DATABASE_URL"`.
+The API expects the DB on `localhost:5432` and routing on `localhost:8080` (see `app/main.py`).
 
-## Deployment
+## Examples
 
-The backend is a two-service docker compose stack (PostGIS + server) — the
-same files on a laptop and on the team's Proxmox host:
+```bash
+# Health check
+curl http://localhost:8000/
 
-```sh
-docker compose up -d --build
-curl -s http://localhost:8090/api/v1/snapshot | head -c 300; echo
-docker compose run --rm server import   # load the static datasets (one-shot)
+# Share / update location
+curl -X POST "http://localhost:8000/location?device_id=abc123" \
+  -H "Content-Type: application/json" \
+  -d '{"longitude": 7.5896, "latitude": 47.5476}'
+
+# Find closest helpers near an SOS location
+curl -X POST http://localhost:8000/get_closest_helpers \
+  -H "Content-Type: application/json" \
+  -d '{"longitude": 7.5896, "latitude": 47.5476}'
+
+# Calculate pedestrian route A -> B
+curl -X POST http://localhost:8000/calculate_route \
+  -H "Content-Type: application/json" \
+  -d '{"start": {"longitude": 7.5896, "latitude": 47.5476}, "end": {"longitude": 7.6075, "latitude": 47.5670}}'
 ```
-
-Migrations run on server startup; data survives restarts in the `pgdata`
-volume (`docker compose down -v` deletes it). For phones, point a
-[Cloudflare tunnel](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/)
-at port 8090 and set the tunnel URL in the app.
-
-## Development
-
-| Command                                   | What it does                                        |
-| ----------------------------------------- | --------------------------------------------------- |
-| `just serve`                              | backend API (needs the dev database)                |
-| `just dev`                                | Tauri app in dev mode                               |
-| `just check` / `just lint` / `just fmt`   | type-check / clippy `-D warnings` / format          |
-| `just test`                               | workspace tests (backend tests need the database)   |
-| `just db-init` / `db-start` / `db-stop`   | local dev Postgres lifecycle                        |
-
-The server is one binary with three modes: `serve` (API + SSE + background
-poller, applies migrations on startup), `import` (idempotent refresh of the
-static datasets), and `poll` (one manual poll cycle for demos/tests).
-Environment: `DATABASE_URL` (required), `LANA_BIND_ADDR` (default
-`0.0.0.0:8090`), `LANA_POLL_INTERVAL_SECS` (default 600),
-`LANA_HELPER_API_URL` (optional base URL of the live-location /
-closest-helpers API, e.g. `https://lana.heitzli.ch`; unset or empty =
-disabled: SOS helpers are then matched from the server's own database).
-
-Schema changes are plain SQL files in `server/migrations/`, applied in
-filename order at server startup — never edit an applied migration.
-
-## Documentation
-
-- [server/README.md](server/README.md) — API reference, import/poll
-  internals, test conventions
