@@ -6,6 +6,7 @@ use std::net::SocketAddr;
 use crate::api;
 use crate::config;
 use crate::db;
+use crate::helper_api::HelperApi;
 use crate::import;
 use crate::ods::OdsClient;
 use crate::poller;
@@ -70,9 +71,18 @@ async fn serve() -> anyhow::Result<()> {
     });
 
     let addr: SocketAddr = config::bind_addr()?;
-    let app = api::router(pool.clone());
+    let helper_api = config::helper_api_url()
+        .map(|url| HelperApi::new(&url))
+        .transpose()?;
+    let helper_api_note = match &helper_api {
+        Some(api) => format!("helper API {}", api.base_url()),
+        None => "no helper API, matching helpers locally".to_string(),
+    };
+    let app = api::router_with_state(api::AppState::new(pool.clone()).with_helper_api(helper_api));
     let listener = tokio::net::TcpListener::bind(addr).await?;
-    println!("lana-server listening on http://{addr} (polling live data every {interval:?})");
+    println!(
+        "lana-server listening on http://{addr} (polling live data every {interval:?}; {helper_api_note})"
+    );
     axum::serve(listener, app).await?;
     pool.close().await;
     Ok(())

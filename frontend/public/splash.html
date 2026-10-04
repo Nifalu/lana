@@ -1,0 +1,67 @@
+<!doctype html>
+<!--
+  Framework-free splash screen for the Tauri shell.
+
+  Vite copies this file unchanged into dist/, so a Tauri window can point
+  at "splash.html" and show it while the main window boots. No JavaScript,
+  no network, no dependencies, so it renders instantly.
+-->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Lana</title>
+    <style>
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+        background: #111214;
+        color: #f1f1ef;
+      }
+      body {
+        display: grid;
+        place-items: center;
+      }
+      svg {
+        display: block;
+        width: clamp(9rem, 30vw, 17rem);
+        height: auto;
+        overflow: visible;
+      }
+      .outline {
+        stroke-dasharray: 90 10;
+        animation:
+          outline-chase 2.4s linear infinite,
+          outline-breathe 4.8s ease-in-out infinite;
+      }
+      @keyframes outline-breathe {
+        0%, 100% { stroke-dasharray: 90 10; }
+        25% { stroke-dasharray: 98 2; }
+        75% { stroke-dasharray: 65 35; }
+      }
+      @keyframes outline-chase {
+        from { stroke-dashoffset: 0; }
+        to { stroke-dashoffset: -100; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .outline { animation: none; stroke-dasharray: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <svg viewBox="0 0 240 320" role="img" aria-label="Lana logo">
+      <path
+        class="outline"
+        d="M107 30H133Q140 31 141 38L177 269Q178 287 162 292Q120 303 78 292Q62 287 63 269L99 38Q100 31 107 30Z"
+        pathLength="100"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+  </body>
+</html>

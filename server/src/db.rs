@@ -3,7 +3,7 @@
 //! The connection string comes from `DATABASE_URL` (the nix dev shell exports
 //! a default pointing at the local dev cluster). Schema changes are plain SQL
 //! files in `migrations/`, applied in filename order at server startup.
-//! Never edit an already-applied migration - add a new numbered file instead.
+//! Never edit an already-applied migration – add a new numbered file instead.
 //!
 //! The server keeps its own migration bookkeeping table
 //! (`_sqlx_server_migrations`) so the Tauri app and the server can share one
@@ -15,7 +15,7 @@ use sqlx::PgPool;
 /// Connects to Postgres (via `DATABASE_URL`) and applies pending migrations.
 pub async fn init() -> anyhow::Result<PgPool> {
     let url = std::env::var("DATABASE_URL").context(
-        "DATABASE_URL is not set - the nix dev shell exports a default; \
+        "DATABASE_URL is not set – the nix dev shell exports a default; \
          create the local cluster with `just db-init && just db-start && just db-createdb`",
     )?;
     init_with_url(&url).await
@@ -50,7 +50,7 @@ mod tests {
     #[tokio::test]
     async fn migrations_bootstrap_postgis_and_create_schema() {
         let Ok(url) = std::env::var("DATABASE_URL") else {
-            eprintln!("DATABASE_URL not set - skipping postgres test");
+            eprintln!("DATABASE_URL not set – skipping postgres test");
             return;
         };
         let pool = init_with_url(&url).await.expect("db init failed");
@@ -69,7 +69,6 @@ mod tests {
             "stations",
             "measurements",
             "devices",
-            "helper_windows",
             "help_requests",
             "help_request_notified",
         ] {
@@ -110,19 +109,23 @@ mod tests {
         .expect("information_schema query failed");
         assert_eq!(source_col.as_deref(), Some("source"));
 
-        // Device and window positions use the same geography convention.
-        for (table, column) in [("devices", "last_location"), ("helper_windows", "location")] {
-            let (srid,): (i32,) = sqlx::query_as(
-                "SELECT srid FROM geography_columns \
-                 WHERE f_table_name = $1 AND f_geography_column = $2",
-            )
-            .bind(table)
-            .bind(column)
-            .fetch_one(&pool)
-            .await
-            .expect("geography column should exist");
-            assert_eq!(srid, 4326, "{table}.{column} should be SRID 4326");
-        }
+        // Device positions use the same geography convention.
+        let (srid,): (i32,) = sqlx::query_as(
+            "SELECT srid FROM geography_columns \
+             WHERE f_table_name = 'devices' AND f_geography_column = 'last_location'",
+        )
+        .fetch_one(&pool)
+        .await
+        .expect("devices.last_location should be a geography column");
+        assert_eq!(srid, 4326);
+
+        // Migration 0005 dropped the helper availability windows.
+        let (windows,): (Option<String>,) =
+            sqlx::query_as("SELECT to_regclass('helper_windows')::text")
+                .fetch_one(&pool)
+                .await
+                .expect("to_regclass query failed");
+        assert_eq!(windows, None, "helper_windows must be gone");
 
         pool.close().await;
     }

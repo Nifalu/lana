@@ -7,7 +7,7 @@ use axum::Json;
 use serde::de::DeserializeOwned;
 
 /// JSON extractor that maps deserialization failures onto the uniform error
-/// shape (422 `{"error": …}`) instead of axum's plain-text rejections - a
+/// shape (422 `{"error": …}`) instead of axum's plain-text rejections – a
 /// malformed payload is a validation failure, not an axum-internal one.
 pub struct ApiJson<T>(pub T);
 

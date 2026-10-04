@@ -2,7 +2,7 @@
 //!
 //! This module only *fetches* raw bodies. All parsing lives in
 //! [`crate::import`] and [`crate::poller`] as pure functions tested against
-//! committed fixtures - nothing here is exercised by tests, and the import
+//! committed fixtures – nothing here is exercised by tests, and the import
 //! and poller never touch the network in tests (see [`DatasetSource`] and
 //! [`crate::poller::MeasurementSource`]).
 //!
@@ -11,7 +11,7 @@
 //!   FeatureCollection (no pagination support); used for the static datasets.
 //! - `/records` pages with `limit`/`offset` (max limit 100, no `next` links);
 //!   stop when a page returns fewer rows than the page size. Always pass an
-//!   explicit `order_by` (field id) - the default order is not contractual.
+//!   explicit `order_by` (field id) – the default order is not contractual.
 
 use anyhow::Context;
 
@@ -23,7 +23,7 @@ pub const DATASET_AIR_MEASUREMENTS: &str = "100009";
 pub const DATASET_RHINE: &str = "100046";
 pub const DATASET_POOLS: &str = "100384";
 
-/// Deterministic newest-first sorts for the live datasets - the poller reads
+/// Deterministic newest-first sorts for the live datasets – the poller reads
 /// only the newest rows, so each dataset's timestamp field (they all name it
 /// differently) must be sorted descending.
 pub const ORDER_BY_AIR_MEASUREMENTS: &str = "dates_max_date desc";

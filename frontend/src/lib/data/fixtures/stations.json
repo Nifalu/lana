@@ -1,0 +1,1566 @@
+[
+ {
+  "id": "0020F940",
+  "kind": "air",
+  "name": "Syngenta",
+  "source": "data.bs.ch",
+  "lon": 7.604605,
+  "lat": 47.566564,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.604605,
+    47.566564
+   ]
+  },
+  "temperature_c": 21.68,
+  "measured_at": "2026-10-03T12:00:01+00:00"
+ },
+ {
+  "id": "03200243",
+  "kind": "air",
+  "name": "Brombi",
+  "source": "data.bs.ch",
+  "lon": 7.596074,
+  "lat": 47.570538,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.596074,
+    47.570538
+   ]
+  },
+  "temperature_c": 20.67,
+  "measured_at": "2026-10-03T09:55:47+00:00"
+ },
+ {
+  "id": "03200246",
+  "kind": "air",
+  "name": "Binningen",
+  "source": "data.bs.ch",
+  "lon": 7.58355,
+  "lat": 47.5411,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.58355,
+    47.5411
+   ]
+  },
+  "temperature_c": 23.72,
+  "measured_at": "2026-10-03T11:59:13+00:00"
+ },
+ {
+  "id": "03200248",
+  "kind": "air",
+  "name": "GEO",
+  "source": "data.bs.ch",
+  "lon": 7.588426,
+  "lat": 47.548886,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.588426,
+    47.548886
+   ]
+  },
+  "temperature_c": 24.94,
+  "measured_at": "2026-10-03T10:04:18+00:00"
+ },
+ {
+  "id": "0320024A",
+  "kind": "air",
+  "name": "St. Johann",
+  "source": "data.bs.ch",
+  "lon": 7.58201,
+  "lat": 47.56597,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.58201,
+    47.56597
+   ]
+  },
+  "temperature_c": 22.88,
+  "measured_at": "2026-10-03T12:09:39+00:00"
+ },
+ {
+  "id": "03400156",
+  "kind": "air",
+  "name": "Gleisbett (Mast 4)",
+  "source": "data.bs.ch",
+  "lon": 7.6033,
+  "lat": 47.54355,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6033,
+    47.54355
+   ]
+  },
+  "temperature_c": 25.84,
+  "measured_at": "2026-10-03T11:59:14+00:00"
+ },
+ {
+  "id": "0340015E",
+  "kind": "air",
+  "name": "Lysbüchel 1",
+  "source": "data.bs.ch",
+  "lon": 7.57355,
+  "lat": 47.57355,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.57355,
+    47.57355
+   ]
+  },
+  "temperature_c": 24.86,
+  "measured_at": "2026-10-03T11:55:18+00:00"
+ },
+ {
+  "id": "03400161",
+  "kind": "air",
+  "name": "Spitalstrasse",
+  "source": "data.bs.ch",
+  "lon": 7.58294,
+  "lat": 47.56335,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.58294,
+    47.56335
+   ]
+  },
+  "temperature_c": 32.59,
+  "measured_at": "2026-10-03T12:09:06+00:00"
+ },
+ {
+  "id": "03400163",
+  "kind": "air",
+  "name": "Schützenmattpark",
+  "source": "data.bs.ch",
+  "lon": 7.57439,
+  "lat": 47.55279,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.57439,
+    47.55279
+   ]
+  },
+  "temperature_c": 21.21,
+  "measured_at": "2026-10-03T12:06:58+00:00"
+ },
+ {
+  "id": "03400168",
+  "kind": "air",
+  "name": "Schweizerhalle",
+  "source": "data.bs.ch",
+  "lon": 7.66182,
+  "lat": 47.53086,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.66182,
+    47.53086
+   ]
+  },
+  "temperature_c": 22.57,
+  "measured_at": "2026-10-03T10:54:03+00:00"
+ },
+ {
+  "id": "0340016A",
+  "kind": "air",
+  "name": "Schaffhauserrheinweg",
+  "source": "data.bs.ch",
+  "lon": 7.60092,
+  "lat": 47.55702,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.60092,
+    47.55702
+   ]
+  },
+  "temperature_c": 25.61,
+  "measured_at": "2026-10-03T12:07:01+00:00"
+ },
+ {
+  "id": "0340016D",
+  "kind": "air",
+  "name": "Binningen",
+  "source": "data.bs.ch",
+  "lon": 7.58367,
+  "lat": 47.54101,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.58367,
+    47.54101
+   ]
+  },
+  "temperature_c": 24.98,
+  "measured_at": "2026-10-03T12:02:23+00:00"
+ },
+ {
+  "id": "0340019A",
+  "kind": "air",
+  "name": "Gleisbett (Mast 2)",
+  "source": "data.bs.ch",
+  "lon": 7.60985,
+  "lat": 47.54253,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.60985,
+    47.54253
+   ]
+  },
+  "temperature_c": 24.21,
+  "measured_at": "2026-10-03T11:57:49+00:00"
+ },
+ {
+  "id": "0340019D",
+  "kind": "air",
+  "name": "Gleisbett (Mast 3)",
+  "source": "data.bs.ch",
+  "lon": 7.60833,
+  "lat": 47.54192,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.60833,
+    47.54192
+   ]
+  },
+  "temperature_c": 24.14,
+  "measured_at": "2026-10-03T12:03:21+00:00"
+ },
+ {
+  "id": "0340019F",
+  "kind": "air",
+  "name": "Gleisbett (Mast 1)",
+  "source": "data.bs.ch",
+  "lon": 7.6135,
+  "lat": 47.54212,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6135,
+    47.54212
+   ]
+  },
+  "temperature_c": 25.4,
+  "measured_at": "2026-10-03T12:07:41+00:00"
+ },
+ {
+  "id": "034001A3",
+  "kind": "air",
+  "name": "Aeschenplatz",
+  "source": "data.bs.ch",
+  "lon": 7.59498,
+  "lat": 47.55119,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.59498,
+    47.55119
+   ]
+  },
+  "temperature_c": 20.92,
+  "measured_at": "2026-10-03T12:00:11+00:00"
+ },
+ {
+  "id": "034001A4",
+  "kind": "air",
+  "name": "Bahnhof SBB",
+  "source": "data.bs.ch",
+  "lon": 7.58976,
+  "lat": 47.54789,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.58976,
+    47.54789
+   ]
+  },
+  "temperature_c": 20.91,
+  "measured_at": "2026-10-03T11:58:35+00:00"
+ },
+ {
+  "id": "034001A5",
+  "kind": "air",
+  "name": "Schulhaus Leonhard 1",
+  "source": "data.bs.ch",
+  "lon": 7.587061072,
+  "lat": 47.55426883,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.587061072,
+    47.55426883
+   ]
+  },
+  "temperature_c": 21.71,
+  "measured_at": "2026-10-03T11:57:04+00:00"
+ },
+ {
+  "id": "034001A7",
+  "kind": "air",
+  "name": "Schulhaus Leonhard 4",
+  "source": "data.bs.ch",
+  "lon": 7.586700005026201,
+  "lat": 47.55445323222687,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.586700005026201,
+    47.55445323222687
+   ]
+  },
+  "temperature_c": 31.75,
+  "measured_at": "2026-10-03T11:59:12+00:00"
+ },
+ {
+  "id": "034001A8",
+  "kind": "air",
+  "name": "Kleinriehenstrasse",
+  "source": "data.bs.ch",
+  "lon": 7.61365,
+  "lat": 47.56673,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.61365,
+    47.56673
+   ]
+  },
+  "temperature_c": 25.52,
+  "measured_at": "2026-10-03T12:03:03+00:00"
+ },
+ {
+  "id": "034001A9",
+  "kind": "air",
+  "name": "Tüllingerstraße",
+  "source": "data.bs.ch",
+  "lon": 7.6506304,
+  "lat": 47.615889,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6506304,
+    47.615889
+   ]
+  },
+  "temperature_c": 27.77,
+  "measured_at": "2026-10-03T12:06:18+00:00"
+ },
+ {
+  "id": "034001AA",
+  "kind": "air",
+  "name": "Mast 5 (Gleisbett)",
+  "source": "data.bs.ch",
+  "lon": 7.60326,
+  "lat": 47.5428,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.60326,
+    47.5428
+   ]
+  },
+  "temperature_c": 23.36,
+  "measured_at": "2026-10-03T11:55:53+00:00"
+ },
+ {
+  "id": "034001AD",
+  "kind": "air",
+  "name": "Kannenfeldstrasse",
+  "source": "data.bs.ch",
+  "lon": 7.57315,
+  "lat": 47.56591,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.57315,
+    47.56591
+   ]
+  },
+  "temperature_c": 23.84,
+  "measured_at": "2026-10-03T12:03:58+00:00"
+ },
+ {
+  "id": "034001AF",
+  "kind": "air",
+  "name": "St. Johann",
+  "source": "data.bs.ch",
+  "lon": 7.58201,
+  "lat": 47.56597,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.58201,
+    47.56597
+   ]
+  },
+  "temperature_c": 24.86,
+  "measured_at": "2026-10-03T12:09:54+00:00"
+ },
+ {
+  "id": "03400394",
+  "kind": "air",
+  "name": "Brünnlinrain (Laterne)",
+  "source": "data.bs.ch",
+  "lon": 7.65379,
+  "lat": 47.59267,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.65379,
+    47.59267
+   ]
+  },
+  "temperature_c": 21.08,
+  "measured_at": "2026-10-03T11:41:47+00:00"
+ },
+ {
+  "id": "03400395",
+  "kind": "air",
+  "name": "Rheinpromenade 4",
+  "source": "data.bs.ch",
+  "lon": 7.58309,
+  "lat": 47.57551,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.58309,
+    47.57551
+   ]
+  },
+  "temperature_c": 21.93,
+  "measured_at": "2026-10-03T12:01:05+00:00"
+ },
+ {
+  "id": "03400397",
+  "kind": "air",
+  "name": "Lindenplatz",
+  "source": "data.bs.ch",
+  "lon": 7.56055,
+  "lat": 47.55811,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.56055,
+    47.55811
+   ]
+  },
+  "temperature_c": 23.05,
+  "measured_at": "2026-10-03T12:07:27+00:00"
+ },
+ {
+  "id": "0340039D",
+  "kind": "air",
+  "name": "Bottminger Strasse",
+  "source": "data.bs.ch",
+  "lon": 7.57343,
+  "lat": 47.53058,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.57343,
+    47.53058
+   ]
+  },
+  "temperature_c": 23.85,
+  "measured_at": "2026-10-03T11:30:58+00:00"
+ },
+ {
+  "id": "034003A7",
+  "kind": "air",
+  "name": "Rheinpromenade 2",
+  "source": "data.bs.ch",
+  "lon": 7.58357,
+  "lat": 47.57244,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.58357,
+    47.57244
+   ]
+  },
+  "temperature_c": 26.25,
+  "measured_at": "2026-10-03T11:58:16+00:00"
+ },
+ {
+  "id": "034003AB",
+  "kind": "air",
+  "name": "Avenue General de Gaulle",
+  "source": "data.bs.ch",
+  "lon": 7.553681,
+  "lat": 47.581168,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.553681,
+    47.581168
+   ]
+  },
+  "temperature_c": 22.46,
+  "measured_at": "2026-10-03T11:56:59+00:00"
+ },
+ {
+  "id": "034003B0",
+  "kind": "air",
+  "name": "Gotthelfstrasse",
+  "source": "data.bs.ch",
+  "lon": 7.56913,
+  "lat": 47.55282,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.56913,
+    47.55282
+   ]
+  },
+  "temperature_c": 18.26,
+  "measured_at": "2026-10-03T09:43:25+00:00"
+ },
+ {
+  "id": "034003B1",
+  "kind": "air",
+  "name": "Falkensteinerstrasse",
+  "source": "data.bs.ch",
+  "lon": 7.60136,
+  "lat": 47.53901,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.60136,
+    47.53901
+   ]
+  },
+  "temperature_c": 24.77,
+  "measured_at": "2026-10-03T12:04:53+00:00"
+ },
+ {
+  "id": "03409965",
+  "kind": "air",
+  "name": "Fasanenstrasse",
+  "source": "data.bs.ch",
+  "lon": 7.61641,
+  "lat": 47.571,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.61641,
+    47.571
+   ]
+  },
+  "temperature_c": 22.36,
+  "measured_at": "2026-10-03T12:01:20+00:00"
+ },
+ {
+  "id": "0340996A",
+  "kind": "air",
+  "name": "Bahnweg",
+  "source": "data.bs.ch",
+  "lon": 7.622005925,
+  "lat": 47.58915311,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.622005925,
+    47.58915311
+   ]
+  },
+  "temperature_c": 25.56,
+  "measured_at": "2026-10-03T11:59:20+00:00"
+ },
+ {
+  "id": "0340996D",
+  "kind": "air",
+  "name": "Gempenstrasse 1",
+  "source": "data.bs.ch",
+  "lon": 7.68611,
+  "lat": 47.52096,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.68611,
+    47.52096
+   ]
+  },
+  "temperature_c": 24.25,
+  "measured_at": "2026-10-03T11:49:20+00:00"
+ },
+ {
+  "id": "0340996E",
+  "kind": "air",
+  "name": "Dorenbachstrasse",
+  "source": "data.bs.ch",
+  "lon": 7.57394,
+  "lat": 47.54426,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.57394,
+    47.54426
+   ]
+  },
+  "temperature_c": 23.85,
+  "measured_at": "2026-10-03T12:03:38+00:00"
+ },
+ {
+  "id": "03409972",
+  "kind": "air",
+  "name": "Hasenrainstrasse",
+  "source": "data.bs.ch",
+  "lon": 7.56751,
+  "lat": 47.54391,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.56751,
+    47.54391
+   ]
+  },
+  "temperature_c": 20.27,
+  "measured_at": "2026-10-03T12:00:10+00:00"
+ },
+ {
+  "id": "03409974",
+  "kind": "air",
+  "name": "Hofstrasse",
+  "source": "data.bs.ch",
+  "lon": 7.62675,
+  "lat": 47.55773,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.62675,
+    47.55773
+   ]
+  },
+  "temperature_c": 23.41,
+  "measured_at": "2026-10-03T12:05:02+00:00"
+ },
+ {
+  "id": "0340997A",
+  "kind": "air",
+  "name": "Sevogelstrasse",
+  "source": "data.bs.ch",
+  "lon": 7.60123,
+  "lat": 47.54891,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.60123,
+    47.54891
+   ]
+  },
+  "temperature_c": 23.32,
+  "measured_at": "2026-10-03T11:59:24+00:00"
+ },
+ {
+  "id": "0340997C",
+  "kind": "air",
+  "name": "Lehenmattstrasse",
+  "source": "data.bs.ch",
+  "lon": 7.62052,
+  "lat": 47.54845,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.62052,
+    47.54845
+   ]
+  },
+  "temperature_c": 21.09,
+  "measured_at": "2026-10-03T10:13:00+00:00"
+ },
+ {
+  "id": "0340997F",
+  "kind": "air",
+  "name": "Kohlenstrasse",
+  "source": "data.bs.ch",
+  "lon": 7.57353,
+  "lat": 47.57612,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.57353,
+    47.57612
+   ]
+  },
+  "temperature_c": 24.49,
+  "measured_at": "2026-10-03T12:01:39+00:00"
+ },
+ {
+  "id": "03409984",
+  "kind": "air",
+  "name": "Brüglingerstrasse",
+  "source": "data.bs.ch",
+  "lon": 7.61556,
+  "lat": 47.54,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.61556,
+    47.54
+   ]
+  },
+  "temperature_c": 22.24,
+  "measured_at": "2026-10-03T10:15:22+00:00"
+ },
+ {
+  "id": "03409987",
+  "kind": "air",
+  "name": "Kraftwerkinsel",
+  "source": "data.bs.ch",
+  "lon": 7.63502,
+  "lat": 47.55939,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.63502,
+    47.55939
+   ]
+  },
+  "temperature_c": 25.05,
+  "measured_at": "2026-10-03T11:59:11+00:00"
+ },
+ {
+  "id": "03409988",
+  "kind": "air",
+  "name": "Heuwaage",
+  "source": "data.bs.ch",
+  "lon": 7.587,
+  "lat": 47.55095,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.587,
+    47.55095
+   ]
+  },
+  "temperature_c": 24.79,
+  "measured_at": "2026-10-03T11:58:55+00:00"
+ },
+ {
+  "id": "0340998A",
+  "kind": "air",
+  "name": "Rheinstrasse",
+  "source": "data.bs.ch",
+  "lon": 7.62065,
+  "lat": 47.55743,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.62065,
+    47.55743
+   ]
+  },
+  "temperature_c": 22.85,
+  "measured_at": "2026-10-03T12:06:04+00:00"
+ },
+ {
+  "id": "0340998E",
+  "kind": "air",
+  "name": "Grenzacherstrasse 487",
+  "source": "data.bs.ch",
+  "lon": 7.62656,
+  "lat": 47.56241,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.62656,
+    47.56241
+   ]
+  },
+  "temperature_c": 24.29,
+  "measured_at": "2026-10-03T11:56:59+00:00"
+ },
+ {
+  "id": "03409990",
+  "kind": "air",
+  "name": "Georges-Köhler-Straße",
+  "source": "data.bs.ch",
+  "lon": 7.656698461915,
+  "lat": 47.610674968339,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.656698461915,
+    47.610674968339
+   ]
+  },
+  "temperature_c": 25.39,
+  "measured_at": "2026-10-03T12:01:51+00:00"
+ },
+ {
+  "id": "03409993",
+  "kind": "air",
+  "name": "Rüdinstrasse",
+  "source": "data.bs.ch",
+  "lon": 7.64038,
+  "lat": 47.5713,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.64038,
+    47.5713
+   ]
+  },
+  "temperature_c": 24.86,
+  "measured_at": "2026-10-03T12:06:00+00:00"
+ },
+ {
+  "id": "03409994",
+  "kind": "air",
+  "name": "Badischer Bahnhof",
+  "source": "data.bs.ch",
+  "lon": 7.60742,
+  "lat": 47.56586,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.60742,
+    47.56586
+   ]
+  },
+  "temperature_c": 23.38,
+  "measured_at": "2026-10-03T12:05:41+00:00"
+ },
+ {
+  "id": "0340999B",
+  "kind": "air",
+  "name": "Hafenstrasse",
+  "source": "data.bs.ch",
+  "lon": 7.63747,
+  "lat": 47.55646,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.63747,
+    47.55646
+   ]
+  },
+  "temperature_c": 23.04,
+  "measured_at": "2026-10-03T11:03:20+00:00"
+ },
+ {
+  "id": "034099A0",
+  "kind": "air",
+  "name": "Rheinpromenade 1",
+  "source": "data.bs.ch",
+  "lon": 7.58329,
+  "lat": 47.57121,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.58329,
+    47.57121
+   ]
+  },
+  "temperature_c": 24.57,
+  "measured_at": "2026-10-03T11:58:55+00:00"
+ },
+ {
+  "id": "034099A3",
+  "kind": "air",
+  "name": "Münchensteinstrasse",
+  "source": "data.bs.ch",
+  "lon": 7.60646,
+  "lat": 47.53936,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.60646,
+    47.53936
+   ]
+  },
+  "temperature_c": 27.79,
+  "measured_at": "2026-10-03T12:09:33+00:00"
+ },
+ {
+  "id": "034099A5",
+  "kind": "air",
+  "name": "Gundeldingerstrasse 3",
+  "source": "data.bs.ch",
+  "lon": 7.58838,
+  "lat": 47.54169,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.58838,
+    47.54169
+   ]
+  },
+  "temperature_c": 21.81,
+  "measured_at": "2026-10-03T09:31:04+00:00"
+ },
+ {
+  "id": "034099AB",
+  "kind": "air",
+  "name": "Ahornstrasse",
+  "source": "data.bs.ch",
+  "lon": 7.57464,
+  "lat": 47.557275,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.57464,
+    47.557275
+   ]
+  },
+  "temperature_c": 21.44,
+  "measured_at": "2026-10-03T11:59:15+00:00"
+ },
+ {
+  "id": "034099B2",
+  "kind": "air",
+  "name": "In den Schorenmatten",
+  "source": "data.bs.ch",
+  "lon": 7.60819,
+  "lat": 47.57105,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.60819,
+    47.57105
+   ]
+  },
+  "temperature_c": 24.35,
+  "measured_at": "2026-10-03T12:08:51+00:00"
+ },
+ {
+  "id": "034099BD",
+  "kind": "air",
+  "name": "Bundesstrasse",
+  "source": "data.bs.ch",
+  "lon": 7.57615,
+  "lat": 47.55207,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.57615,
+    47.55207
+   ]
+  },
+  "temperature_c": 22.76,
+  "measured_at": "2026-10-03T11:52:38+00:00"
+ },
+ {
+  "id": "034099BE",
+  "kind": "air",
+  "name": "Wilhelm-Klein-Strasse",
+  "source": "data.bs.ch",
+  "lon": 7.56761,
+  "lat": 47.56991,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.56761,
+    47.56991
+   ]
+  },
+  "temperature_c": 18.61,
+  "measured_at": "2026-10-03T10:16:58+00:00"
+ },
+ {
+  "id": "034099C0",
+  "kind": "air",
+  "name": "Pfalz",
+  "source": "data.bs.ch",
+  "lon": 7.5923,
+  "lat": 47.55674,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5923,
+    47.55674
+   ]
+  },
+  "temperature_c": 21.37,
+  "measured_at": "2026-10-03T11:58:55+00:00"
+ },
+ {
+  "id": "034099D6",
+  "kind": "air",
+  "name": "St. Johanns-Ring",
+  "source": "data.bs.ch",
+  "lon": 7.57414,
+  "lat": 47.56208,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.57414,
+    47.56208
+   ]
+  },
+  "temperature_c": 24.28,
+  "measured_at": "2026-10-03T11:39:44+00:00"
+ },
+ {
+  "id": "03409FEF",
+  "kind": "air",
+  "name": "Hauptstraße W a R",
+  "source": "data.bs.ch",
+  "lon": 7.6097220186571,
+  "lat": 47.592609307299,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6097220186571,
+    47.592609307299
+   ]
+  },
+  "temperature_c": 15.53,
+  "measured_at": "2026-10-03T08:17:14+00:00"
+ },
+ {
+  "id": "03409FF2",
+  "kind": "air",
+  "name": "Güterstrasse",
+  "source": "data.bs.ch",
+  "lon": 7.58816,
+  "lat": 47.54538,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.58816,
+    47.54538
+   ]
+  },
+  "temperature_c": 23.98,
+  "measured_at": "2026-10-03T12:09:58+00:00"
+ },
+ {
+  "id": "03409FF3",
+  "kind": "air",
+  "name": "Im Wannenboden",
+  "source": "data.bs.ch",
+  "lon": 7.71486,
+  "lat": 47.52331,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.71486,
+    47.52331
+   ]
+  },
+  "temperature_c": 24.5,
+  "measured_at": "2026-10-03T11:58:25+00:00"
+ },
+ {
+  "id": "03409FFC",
+  "kind": "air",
+  "name": "Horburgstrasse",
+  "source": "data.bs.ch",
+  "lon": 7.59273,
+  "lat": 47.57082,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.59273,
+    47.57082
+   ]
+  },
+  "temperature_c": 23.59,
+  "measured_at": "2026-10-03T11:58:31+00:00"
+ },
+ {
+  "id": "03409FFD",
+  "kind": "air",
+  "name": "Sandweg",
+  "source": "data.bs.ch",
+  "lon": 7.55328,
+  "lat": 47.55277,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.55328,
+    47.55277
+   ]
+  },
+  "temperature_c": 17.61,
+  "measured_at": "2026-10-03T09:17:20+00:00"
+ },
+ {
+  "id": "0340A000",
+  "kind": "air",
+  "name": "Brünnlinrain (Schild)",
+  "source": "data.bs.ch",
+  "lon": 7.65389,
+  "lat": 47.59263,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.65389,
+    47.59263
+   ]
+  },
+  "temperature_c": 21.72,
+  "measured_at": "2026-10-03T11:56:45+00:00"
+ },
+ {
+  "id": "0340A001",
+  "kind": "air",
+  "name": "Alte Straße",
+  "source": "data.bs.ch",
+  "lon": 7.5985499475578,
+  "lat": 47.5994809271,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.5985499475578,
+    47.5994809271
+   ]
+  },
+  "temperature_c": 24.07,
+  "measured_at": "2026-10-03T11:11:59+00:00"
+ },
+ {
+  "id": "0340A00A",
+  "kind": "air",
+  "name": "Dorenbachviadukt",
+  "source": "data.bs.ch",
+  "lon": 7.58122,
+  "lat": 47.54394,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.58122,
+    47.54394
+   ]
+  },
+  "temperature_c": 23.44,
+  "measured_at": "2026-10-03T11:56:32+00:00"
+ },
+ {
+  "id": "0340A00E",
+  "kind": "air",
+  "name": "Kannenfeldpark",
+  "source": "data.bs.ch",
+  "lon": 7.56897,
+  "lat": 47.56569,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.56897,
+    47.56569
+   ]
+  },
+  "temperature_c": 23.76,
+  "measured_at": "2026-10-03T11:26:47+00:00"
+ },
+ {
+  "id": "0340A0D7",
+  "kind": "air",
+  "name": "Gempenstrasse",
+  "source": "data.bs.ch",
+  "lon": 7.58671,
+  "lat": 47.54428,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.58671,
+    47.54428
+   ]
+  },
+  "temperature_c": 24.66,
+  "measured_at": "2026-10-03T12:03:40+00:00"
+ },
+ {
+  "id": "0340AD71",
+  "kind": "air",
+  "name": "Schulhaus Leonhard 2",
+  "source": "data.bs.ch",
+  "lon": 7.586940062736751,
+  "lat": 47.5544591200586,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.586940062736751,
+    47.5544591200586
+   ]
+  },
+  "temperature_c": 29.14,
+  "measured_at": "2026-10-03T12:01:20+00:00"
+ },
+ {
+  "id": "0340AD72",
+  "kind": "air",
+  "name": "Ingelsteinweg",
+  "source": "data.bs.ch",
+  "lon": 7.59381,
+  "lat": 47.53983,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.59381,
+    47.53983
+   ]
+  },
+  "temperature_c": 21.33,
+  "measured_at": "2026-10-03T11:58:48+00:00"
+ },
+ {
+  "id": "0340AD73",
+  "kind": "air",
+  "name": "Bahnhofsplatz",
+  "source": "data.bs.ch",
+  "lon": 7.664,
+  "lat": 47.614,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.664,
+    47.614
+   ]
+  },
+  "temperature_c": 25.33,
+  "measured_at": "2026-10-03T11:56:27+00:00"
+ },
+ {
+  "id": "0340AD7D",
+  "kind": "air",
+  "name": "Bäumlihofstrasse",
+  "source": "data.bs.ch",
+  "lon": 7.62723,
+  "lat": 47.56967,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.62723,
+    47.56967
+   ]
+  },
+  "temperature_c": 21.87,
+  "measured_at": "2026-10-03T11:47:26+00:00"
+ },
+ {
+  "id": "0340AD7E",
+  "kind": "air",
+  "name": "Erlenmatt 4",
+  "source": "data.bs.ch",
+  "lon": 7.60209,
+  "lat": 47.57016,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.60209,
+    47.57016
+   ]
+  },
+  "temperature_c": 23.35,
+  "measured_at": "2026-10-03T11:56:20+00:00"
+ },
+ {
+  "id": "0340AD84",
+  "kind": "air",
+  "name": "Kornhausgasse",
+  "source": "data.bs.ch",
+  "lon": 7.58304,
+  "lat": 47.55607,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.58304,
+    47.55607
+   ]
+  },
+  "temperature_c": 22.15,
+  "measured_at": "2026-10-03T12:08:35+00:00"
+ },
+ {
+  "id": "0340AD87",
+  "kind": "air",
+  "name": "Steingasse",
+  "source": "data.bs.ch",
+  "lon": 7.638298944054,
+  "lat": 47.594049365313,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.638298944054,
+    47.594049365313
+   ]
+  },
+  "temperature_c": 23.51,
+  "measured_at": "2026-10-03T12:07:32+00:00"
+ },
+ {
+  "id": "0340AD89",
+  "kind": "air",
+  "name": "Unterer Rheinweg 82",
+  "source": "data.bs.ch",
+  "lon": 7.58697,
+  "lat": 47.56599,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.58697,
+    47.56599
+   ]
+  },
+  "temperature_c": 26.68,
+  "measured_at": "2026-10-03T12:09:47+00:00"
+ },
+ {
+  "id": "0340AD8B",
+  "kind": "air",
+  "name": "Klingelbergstrasse1",
+  "source": "data.bs.ch",
+  "lon": 7.58068,
+  "lat": 47.56157,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.58068,
+    47.56157
+   ]
+  },
+  "temperature_c": 23.02,
+  "measured_at": "2026-10-03T11:08:45+00:00"
+ },
+ {
+  "id": "0340AD8E",
+  "kind": "air",
+  "name": "Am Wasserkraftwerk",
+  "source": "data.bs.ch",
+  "lon": 7.705843832,
+  "lat": 47.54116176,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.705843832,
+    47.54116176
+   ]
+  },
+  "temperature_c": 27.06,
+  "measured_at": "2026-10-03T12:07:06+00:00"
+ },
+ {
+  "id": "0340AD90",
+  "kind": "air",
+  "name": "Claraplatz",
+  "source": "data.bs.ch",
+  "lon": 7.59474,
+  "lat": 47.56191,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.59474,
+    47.56191
+   ]
+  },
+  "temperature_c": 22.59,
+  "measured_at": "2026-10-03T11:59:35+00:00"
+ },
+ {
+  "id": "0340AD93",
+  "kind": "air",
+  "name": "St. Johanntunnel",
+  "source": "data.bs.ch",
+  "lon": 7.58095,
+  "lat": 47.57066,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.58095,
+    47.57066
+   ]
+  },
+  "temperature_c": 20.67,
+  "measured_at": "2026-10-03T12:08:32+00:00"
+ },
+ {
+  "id": "0340AD94",
+  "kind": "air",
+  "name": "Gundeldingerstrasse 1",
+  "source": "data.bs.ch",
+  "lon": 7.58335,
+  "lat": 47.54323,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.58335,
+    47.54323
+   ]
+  },
+  "temperature_c": 23.56,
+  "measured_at": "2026-10-03T11:56:04+00:00"
+ },
+ {
+  "id": "0340AD9F",
+  "kind": "air",
+  "name": "Lysbüchel 3",
+  "source": "data.bs.ch",
+  "lon": 7.57367,
+  "lat": 47.57342,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.57367,
+    47.57342
+   ]
+  },
+  "temperature_c": 25.57,
+  "measured_at": "2026-10-03T12:01:16+00:00"
+ },
+ {
+  "id": "0340ADA1",
+  "kind": "air",
+  "name": "Grenzstrasse Mast",
+  "source": "data.bs.ch",
+  "lon": 7.597262,
+  "lat": 47.587792,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.597262,
+    47.587792
+   ]
+  },
+  "temperature_c": 24.28,
+  "measured_at": "2026-10-03T12:04:30+00:00"
+ },
+ {
+  "id": "0340D1EF",
+  "kind": "air",
+  "name": "Lindenplatz (Park)",
+  "source": "data.bs.ch",
+  "lon": 7.56024,
+  "lat": 47.558,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.56024,
+    47.558
+   ]
+  },
+  "temperature_c": 20.2,
+  "measured_at": "2026-10-03T11:27:27+00:00"
+ },
+ {
+  "id": "0340D1F8",
+  "kind": "air",
+  "name": "Schützenstrasse",
+  "source": "data.bs.ch",
+  "lon": 7.57335,
+  "lat": 47.52154,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.57335,
+    47.52154
+   ]
+  },
+  "temperature_c": 24.49,
+  "measured_at": "2026-10-03T12:01:30+00:00"
+ },
+ {
+  "id": "0340D1FD",
+  "kind": "air",
+  "name": "Muttenzerstrasse",
+  "source": "data.bs.ch",
+  "lon": 7.6267,
+  "lat": 47.54494,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.6267,
+    47.54494
+   ]
+  },
+  "temperature_c": 25.75,
+  "measured_at": "2026-10-03T12:07:54+00:00"
+ },
+ {
+  "id": "0340F2EB",
+  "kind": "air",
+  "name": "Paul-Sacher-Anlage",
+  "source": "data.bs.ch",
+  "lon": 7.60913,
+  "lat": 47.55915,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.60913,
+    47.55915
+   ]
+  },
+  "temperature_c": 20.81,
+  "measured_at": "2026-10-03T11:56:28+00:00"
+ },
+ {
+  "id": "0340F2EF",
+  "kind": "air",
+  "name": "Dreirosenbrücke",
+  "source": "data.bs.ch",
+  "lon": 7.585160728836051,
+  "lat": 47.5708030291399,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.585160728836051,
+    47.5708030291399
+   ]
+  },
+  "temperature_c": 23.72,
+  "measured_at": "2026-10-03T12:06:49+00:00"
+ },
+ {
+  "id": "0340F2F3",
+  "kind": "air",
+  "name": "Offline",
+  "source": "data.bs.ch",
+  "lon": 7.692281242,
+  "lat": 47.53809301,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.692281242,
+    47.53809301
+   ]
+  },
+  "temperature_c": 29.27,
+  "measured_at": "2026-10-03T11:57:33+00:00"
+ },
+ {
+  "id": "0340F2F5",
+  "kind": "air",
+  "name": "Altrheinweg",
+  "source": "data.bs.ch",
+  "lon": 7.58727,
+  "lat": 47.5737,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.58727,
+    47.5737
+   ]
+  },
+  "temperature_c": 20.53,
+  "measured_at": "2026-10-03T11:55:39+00:00"
+ },
+ {
+  "id": "0340F2F6",
+  "kind": "air",
+  "name": "Hüningerstrasse",
+  "source": "data.bs.ch",
+  "lon": 7.57492,
+  "lat": 47.57124,
+  "geometry": {
+   "type": "Point",
+   "coordinates": [
+    7.57492,
+    47.57124
+   ]
+  },
+  "temperature_c": 25.69,
+  "measured_at": "2026-10-03T11:48:06+00:00"
+ }
+]

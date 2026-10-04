@@ -1,11 +1,17 @@
-//! `PUT /api/v1/devices/{device_id}` - anonymous device upsert (ADR 0004).
+//! `PUT /api/v1/devices/{device_id}` – anonymous device upsert (ADR 0004).
 //!
 //! The client-generated UUID in the path is the device's whole identity: no
-//! accounts, no secrets. The payload is the device's current state - helper
+//! accounts, no secrets. The payload is the device's current state – helper
 //! flag and, optionally, the live location it shares (null or omitted =
 //! not sharing). The first call creates the row; later calls update it and
 //! refresh `last_seen_at`. The response is only ever served to the device
 //! it describes.
+//!
+//! A shared location is also forwarded to the live-location API when one is
+//! configured (see [`crate::helper_api`]): fire-and-forget after the database
+//! write, so the app's PUT neither waits for nor fails because of that
+//! service. Not sharing (null location) forwards nothing – the API has no
+//! delete; SOS matching filters opted-out devices itself.
 
 use axum::extract::{Path, State};
 use axum::Json;
@@ -87,6 +93,18 @@ pub async fn upsert_device(
         }
     };
 
+    // Fire-and-forget: the database is the source of truth, the helper API is
+    // best effort (failures are only logged).
+    if let (Some(helper_api), Some(location)) = (state.helper_api.clone(), payload.location) {
+        tokio::spawn(async move {
+            if let Err(err) = helper_api.post_location(device_id, location).await {
+                eprintln!(
+                    "helper API: forwarding the location of device {device_id} failed: {err:#}"
+                );
+            }
+        });
+    }
+
     Ok(Json(Device {
         device_id,
         is_helper: payload.is_helper,
@@ -100,6 +118,7 @@ pub async fn upsert_device(
 mod tests {
     use super::super::test_support::{
         new_device_id, router_with_state, send_json, send_raw, skip, test_app, test_state,
+        test_state_with_helper_api, MockHelperApi,
     };
     use axum::http::StatusCode;
     use chrono::{DateTime, Utc};
@@ -209,7 +228,7 @@ mod tests {
         );
     }
 
-    /// A device that stops sharing - update with `location` omitted - has
+    /// A device that stops sharing – update with `location` omitted – has
     /// its stored point cleared. The devices API has no read endpoint, so
     /// the row is observed through the pool; the alternative (matching)
     /// could not distinguish a cleared point from a stale-but-fresh one,
@@ -327,5 +346,118 @@ mod tests {
             .as_str()
             .expect("error message")
             .contains("lon"));
+    }
+
+    /// A PUT with a location forwards exactly one `POST /location` to the
+    /// helper API, with the device id as query parameter and the coordinates
+    /// as `{longitude, latitude}`.
+    #[tokio::test]
+    async fn upsert_with_location_forwards_it_to_the_helper_api() {
+        let mock = MockHelperApi::spawn().await;
+        let Some(state) = test_state_with_helper_api(&mock.url()).await else {
+            skip();
+            return;
+        };
+        let app = router_with_state(&state);
+        let device_id = new_device_id();
+
+        let (status, _) = send_json(
+            app,
+            "PUT",
+            &format!("/api/v1/devices/{device_id}"),
+            Some(json!({
+                "is_helper": true,
+                "location": {"lon": 7.5886, "lat": 47.5596},
+            })),
+        )
+        .await;
+        assert_eq!(status, StatusCode::OK);
+
+        let calls = mock.wait_for_location_calls(1).await;
+        // Let a (wrong) second call show up before asserting "exactly one".
+        tokio::time::sleep(std::time::Duration::from_millis(200)).await;
+        let calls_after = mock.location_calls();
+        assert_eq!(calls.len(), 1);
+        assert_eq!(calls_after.len(), 1, "exactly one forwarded call");
+        assert_eq!(calls_after[0].device_id, device_id.to_string());
+        assert_eq!(
+            calls_after[0].body,
+            json!({"longitude": 7.5886, "latitude": 47.5596})
+        );
+    }
+
+    /// A PUT without a shared location (explicit null or omitted) forwards
+    /// nothing.
+    #[tokio::test]
+    async fn upsert_without_location_forwards_nothing() {
+        let mock = MockHelperApi::spawn().await;
+        let Some(state) = test_state_with_helper_api(&mock.url()).await else {
+            skip();
+            return;
+        };
+        let app = router_with_state(&state);
+        let uri = format!("/api/v1/devices/{}", new_device_id());
+
+        for body in [
+            json!({ "is_helper": false, "location": null }),
+            json!({ "is_helper": false }),
+        ] {
+            let (status, _) = send_json(app.clone(), "PUT", &uri, Some(body)).await;
+            assert_eq!(status, StatusCode::OK);
+        }
+
+        tokio::time::sleep(std::time::Duration::from_millis(400)).await;
+        assert!(mock.location_calls().is_empty(), "nothing is forwarded");
+    }
+
+    /// The PUT still succeeds when the helper API answers 500 (the call is
+    /// attempted, its failure is only logged).
+    #[tokio::test]
+    async fn upsert_succeeds_when_the_helper_api_fails() {
+        let mock = MockHelperApi::spawn().await;
+        mock.set_failing(true);
+        let Some(state) = test_state_with_helper_api(&mock.url()).await else {
+            skip();
+            return;
+        };
+        let app = router_with_state(&state);
+
+        let (status, body) = send_json(
+            app,
+            "PUT",
+            &format!("/api/v1/devices/{}", new_device_id()),
+            Some(json!({
+                "is_helper": true,
+                "location": {"lon": 7.5886, "lat": 47.5596},
+            })),
+        )
+        .await;
+
+        assert_eq!(status, StatusCode::OK, "PUT must not fail: {body}");
+        assert_eq!(mock.wait_for_location_calls(1).await.len(), 1);
+    }
+
+    /// The PUT still succeeds, promptly, when the helper API is unreachable.
+    #[tokio::test]
+    async fn upsert_succeeds_when_the_helper_api_is_unreachable() {
+        let Some(state) = test_state_with_helper_api(&MockHelperApi::unreachable_url()).await
+        else {
+            skip();
+            return;
+        };
+        let app = router_with_state(&state);
+
+        let (status, body) = send_json(
+            app,
+            "PUT",
+            &format!("/api/v1/devices/{}", new_device_id()),
+            Some(json!({
+                "is_helper": true,
+                "location": {"lon": 7.5886, "lat": 47.5596},
+            })),
+        )
+        .await;
+
+        assert_eq!(status, StatusCode::OK, "PUT must not fail: {body}");
     }
 }

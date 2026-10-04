@@ -12,7 +12,6 @@ frontend/dist/
 result
 result-*
 .direnv/
-.envrc.local
 
 # Local Postgres dev cluster
 /.pgdata/
@@ -22,6 +21,7 @@ result-*
 /docs/
 /.scratch/
 
-# Secrets & OS junk
+# Secrets, OS & editor junk
 .env
 .DS_Store
+.idea/

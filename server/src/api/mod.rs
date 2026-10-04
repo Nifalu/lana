@@ -8,33 +8,53 @@ pub mod snapshot;
 #[cfg(test)]
 pub(crate) mod test_support;
 pub mod types;
-pub mod windows;
 
 use axum::response::{IntoResponse, Response};
-use axum::routing::{get, patch, post, put};
+use axum::routing::{get, post, put};
 use axum::Router;
 use sqlx::PgPool;
 use tower_http::cors::CorsLayer;
 
-/// Shared handler state: the Postgres pool plus the in-memory SSE hub that
-/// routes notifications to connected devices (ADR 0003).
+use crate::helper_api::HelperApi;
+
+/// Shared handler state: the Postgres pool, the in-memory SSE hub that
+/// routes notifications to connected devices (ADR 0003) and the optional
+/// client for the live-location / closest-helpers API.
 #[derive(Clone)]
 pub struct AppState {
     pub pool: PgPool,
     pub hub: events::Hub,
+    /// `None` = no helper API configured: device locations are not
+    /// forwarded and SOS matching uses the local database only.
+    pub helper_api: Option<HelperApi>,
+}
+
+impl AppState {
+    /// State around `pool` with a fresh notification hub and no helper API.
+    pub fn new(pool: PgPool) -> Self {
+        Self {
+            pool,
+            hub: events::Hub::new(),
+            helper_api: None,
+        }
+    }
+
+    /// The same state with the helper API set (or cleared).
+    pub fn with_helper_api(mut self, helper_api: Option<HelperApi>) -> Self {
+        self.helper_api = helper_api;
+        self
+    }
 }
 
 /// Builds the application router around the shared Postgres pool (CORS is
-/// permissive for the prototype) with a fresh notification hub.
+/// permissive for the prototype) with a fresh notification hub and no helper
+/// API (see [`AppState::with_helper_api`] + [`router_with_state`] for that).
 ///
 /// Identity note: the `device_id` in a request path *is* the caller (ADR 0004
-/// - no accounts, no secrets). Every devices/windows handler scopes its SQL to
+/// – no accounts, no secrets). Every devices handler scopes its SQL to
 /// that id, so a device can only ever read or change its own rows.
 pub fn router(pool: PgPool) -> Router {
-    router_with_state(AppState {
-        pool,
-        hub: events::Hub::new(),
-    })
+    router_with_state(AppState::new(pool))
 }
 
 /// Builds the router around an explicit state (used by tests to share one
@@ -43,14 +63,6 @@ pub fn router_with_state(state: AppState) -> Router {
     Router::new()
         .route("/api/v1/snapshot", get(snapshot::get_snapshot))
         .route("/api/v1/devices/{device_id}", put(devices::upsert_device))
-        .route(
-            "/api/v1/devices/{device_id}/windows",
-            get(windows::list_windows).post(windows::create_window),
-        )
-        .route(
-            "/api/v1/devices/{device_id}/windows/{window_id}",
-            patch(windows::patch_window).delete(windows::delete_window),
-        )
         .route(
             "/api/v1/help-requests",
             get(help_requests::list_help_requests).post(help_requests::create_help_request),
@@ -107,11 +119,11 @@ mod tests {
 
     /// GET /api/v1/snapshot returns 200 with empty GeoJSON FeatureCollections
     /// for pois and stations plus a generated_at timestamp. DB-gated: the
-    /// router now carries the Postgres pool (ticket 04 devices/windows).
+    /// router now carries the Postgres pool (ticket 04 devices).
     #[tokio::test]
     async fn snapshot_returns_empty_feature_collections_and_generated_at() {
         let Some(app) = test_support::test_app().await else {
-            eprintln!("DATABASE_URL not set - skipping postgres test");
+            eprintln!("DATABASE_URL not set – skipping postgres test");
             return;
         };
 
@@ -135,7 +147,7 @@ mod tests {
 
         // Structural assertions only: whether pois/stations are empty depends
         // on whether the import (ticket 02) has run against this shared,
-        // persistent per-ticket database - an emptiness claim can never hold
+        // persistent per-ticket database – an emptiness claim can never hold
         // there once it has.
         assert_eq!(json["pois"]["type"], "FeatureCollection");
         assert!(json["pois"]["features"].is_array());

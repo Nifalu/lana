@@ -39,7 +39,7 @@ impl Feature {
         self.properties.get(key)
     }
 
-    /// String property, erroring when absent - kind/name/source/id are
+    /// String property, erroring when absent – kind/name/source/id are
     /// structural and a snapshot without them is broken data.
     pub fn required_string(&self, key: &str) -> anyhow::Result<String> {
         match self.properties.get(key) {
@@ -63,7 +63,7 @@ impl Feature {
 
     /// The feature's representative point: the coordinate itself for Points,
     /// the mean of the outer ring for Polygons (bbox filtering is
-    /// approximate there - good enough to decide what the map loads).
+    /// approximate there – good enough to decide what the map loads).
     pub fn representative_point(&self) -> anyhow::Result<(f64, f64)> {
         let kind = self
             .geometry

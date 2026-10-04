@@ -1,14 +1,14 @@
--- lana app cache schema (embedded SQLite, ticket 06 - ADR 0002).
+-- lana app cache schema (embedded SQLite, ticket 06 – ADR 0002).
 --
 -- The app is a client: it owns no Postgres, only this local cache that is
 -- replaced wholesale by a full-snapshot sync. Tables:
 --
--- - settings  - on-device key/value store (device id, server base URL)
--- - pois      - cached POIs (kind/name/source plus point or polygon
+-- - settings  – on-device key/value store (device id, server base URL)
+-- - pois      – cached POIs (kind/name/source plus point or polygon
 --   geometry as GeoJSON text; lon/lat duplicate the representative point
 --   for bbox filtering)
--- - stations  - cached measurement stations with their latest reading
--- - cache_meta - single row: last successful sync + snapshot generated_at
+-- - stations  – cached measurement stations with their latest reading
+-- - cache_meta – single row: last successful sync + snapshot generated_at
 
 CREATE TABLE settings (
     key   TEXT PRIMARY KEY,

@@ -1,4 +1,4 @@
-# server/seed - committed data seeds
+# server/seed – committed data seeds
 
 ## cool-places.geojson
 
@@ -9,7 +9,7 @@ cantonal heat-prevention page
 
 **Provenance / geocoding:** the addresses in this file were geocoded **once**
 with Nominatim (OpenStreetMap) when the seed was authored. **Addresses are
-never geocoded at runtime** - the import loads this file as-is
+never geocoded at runtime** – the import loads this file as-is
 (`include_str!`, embedded in the server binary).
 
 The file's top-level `metadata` member records the sources and the geocoding

@@ -1,9 +1,9 @@
 # lana demo/production stack: Postgres with PostGIS + the lana server.
 # Runs unchanged on a demo laptop and on the team's Proxmox host (behind a
-# Cloudflare tunnel) - see README.md, "Deployment".
+# Cloudflare tunnel) – see README.md, "Deployment".
 #
 # The server container applies the SQL migrations on startup (its `serve`
-# mode always does), serves the API + SSE on 8080 and runs the background
+# mode always does), serves the API + SSE on 8090 and runs the background
 # measurement poller. All data lives in the named `pgdata` volume and
 # survives container restarts and rebuilds.
 
@@ -16,7 +16,7 @@ services:
       POSTGRES_DB: lana
     volumes:
       # Named volume: data survives `docker compose restart` / `down` (and
-      # re-up) - only `docker compose down -v` deletes it.
+      # re-up) – only `docker compose down -v` deletes it.
       - pgdata:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U lana -d lana"]
@@ -29,11 +29,15 @@ services:
     build: .
     environment:
       DATABASE_URL: postgres://lana:lana@db:5432/lana
+      # Base URL of the live-location / closest-helpers API. Empty (the
+      # default) disables it, so a local stack never writes to a shared
+      # deployment; set it in the environment or a .env file to enable.
+      LANA_HELPER_API_URL: ${LANA_HELPER_API_URL:-}
       # Optional overrides (uncomment to set):
-      # LANA_BIND_ADDR: 0.0.0.0:8080
+      # LANA_BIND_ADDR: 0.0.0.0:8090
       # LANA_POLL_INTERVAL_SECS: 600
     ports:
-      - "8080:8080"
+      - "8090:8090"
     depends_on:
       db:
         condition: service_healthy

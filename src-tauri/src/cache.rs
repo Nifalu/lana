@@ -18,8 +18,9 @@ const DEVICE_ID_KEY: &str = "device_id";
 /// Settings-table key holding the server base URL.
 const SERVER_URL_KEY: &str = "server_url";
 
-/// Server the app syncs from until another one is configured.
-pub const DEFAULT_SERVER_URL: &str = "http://127.0.0.1:8080";
+/// Server the app syncs from until another one is configured: the deployed
+/// middleware. (The frontend also applies its configured URL on every start.)
+pub const DEFAULT_SERVER_URL: &str = "https://lana-mw.heitzli.ch";
 
 /// A cached POI: server data with its geometry as GeoJSON (points and
 /// polygons) and the representative point used for bbox filtering.
@@ -453,12 +454,12 @@ mod tests {
             DEFAULT_SERVER_URL,
             "default before anything is configured"
         );
-        set_server_url(&pool, "http://192.168.1.42:8080")
+        set_server_url(&pool, "http://192.168.1.42:8090")
             .await
             .expect("valid url accepted");
         assert_eq!(
             get_server_url(&pool).await.unwrap(),
-            "http://192.168.1.42:8080"
+            "http://192.168.1.42:8090"
         );
     }
 
@@ -471,7 +472,7 @@ mod tests {
         assert_eq!(get_server_url(&pool).await.unwrap(), "http://example.com");
     }
 
-    /// Only http(s) URLs are accepted - typos should fail loudly at save
+    /// Only http(s) URLs are accepted – typos should fail loudly at save
     /// time, not as a confusing sync error later.
     #[tokio::test]
     async fn server_url_rejects_non_http_values() {
