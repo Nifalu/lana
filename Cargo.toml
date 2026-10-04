@@ -10,3 +10,11 @@ serde_json = "1"
 # (`postgres` for the server, `sqlite` for the app) so the app binary never
 # links Postgres code.
 sqlx = { version = "0.9", features = ["runtime-tokio", "tls-rustls"] }
+
+# Build scripts and proc macros (e.g. sqlx-macros) run on the build machine
+# only. Xcode 27's `strip` corrupts the dylibs it strips ("mis-aligned
+# LINKEDIT string pool"), which breaks release builds such as
+# `cargo tauri ios build`. Not stripping these host-only artifacts costs
+# nothing: they are never shipped.
+[profile.release.build-override]
+strip = false
